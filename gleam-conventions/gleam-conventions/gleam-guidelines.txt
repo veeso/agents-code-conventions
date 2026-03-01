@@ -1,0 +1,1971 @@
+# Pragmatic Gleam Guidelines
+
+This file contains all guidelines concatenated for easy reference.
+
+The guidelines in this document are organized from most authoritative to supplementary.
+The "Official Gleam Conventions" section contains rules from the official Gleam website
+and takes **maximum priority** — they are mandatory rules that must be adhered to always.
+Subsequent sections provide additional guidance that complements the official conventions.
+
+---
+
+
+# Official Gleam Conventions (Maximum Priority)
+
+These conventions come directly from the official Gleam project
+(gleam-lang/website conventions-patterns-anti-patterns.djot).
+They are **mandatory rules** that must be adhered to always.
+
+
+
+## Avoid Unqualified Importing of Functions and Constants (G-QUALIFIED-ONLY) { #G-QUALIFIED-ONLY }
+
+<why>To make the origin of each function call explicit and improve readability.</why>
+<version>2.0</version>
+
+Always use the qualified syntax for functions and constants defined in other modules.
+
+```gleam
+// Good
+import gleam/list
+import gleam/string
+
+pub fn reverse(input: String) -> String {
+  input
+  |> string.to_graphemes
+  |> list.reverse
+  |> string.concat
+}
+
+// Bad
+import gleam/list.{reverse}
+import gleam/string.{to_graphemes, concat}
+
+pub fn reverse(input: String) -> String {
+  input
+  |> to_graphemes
+  |> reverse
+  |> concat
+}
+```
+
+Types and record constructors may be used with the unqualified syntax,
+providing it does not make the code more difficult to read:
+
+```gleam
+// Acceptable: importing types and constructors unqualified
+import gleam/option.{type Option, None, Some}
+
+// Bad: importing functions unqualified
+import gleam/io.{println}
+```
+
+**Important**: Even commonly used functions like `io.println` must be imported qualified.
+Only type names (with `type` keyword) and record constructors may be unqualified.
+
+
+
+## Annotate All Module Functions (G-ANNOTATE-FN) { #G-ANNOTATE-FN }
+
+<why>To improve readability and enable better tooling support.</why>
+<version>2.0</version>
+
+All module functions should have annotations for their argument types and for their return type.
+
+```gleam
+// Good
+fn calculate_total(amounts: List(Float), service_charge: Float) -> Float {
+  list.fold(amounts, 0.0, float.add) *. service_charge
+}
+
+// Bad: missing argument annotations
+fn calculate_total(amounts, service_charge) {
+  list.fold(amounts, 0.0, float.add) *. service_charge
+}
+
+// Bad: missing return annotation
+fn calculate_total(amounts: List(Float), service_charge: Float) {
+  list.fold(amounts, 0.0, float.add) *. service_charge
+}
+```
+
+
+
+## Use Result for Fallible Functions (G-RESULT-ERRORS) { #G-RESULT-ERRORS }
+
+<why>To leverage Gleam's type system for explicit error handling.</why>
+<version>2.0</version>
+
+Gleam has no exceptions. All functions that can succeed or fail must return `Result`.
+
+Some languages use both `Result` and `Option` for fallible functions, but Gleam does not.
+Using `Result` always makes code consistent and removes boilerplate to convert between the two.
+If there is no extra information to return for failure, the result error type can be `Nil`.
+
+Panics are not used for fallible functions, especially within libraries. Panicking may be
+appropriate at the top level of application code, handling the result returned by fallible functions.
+
+```gleam
+// Good
+pub fn first(list: List(a)) -> Result(a, Nil) {
+  case list {
+    [item, ..] -> Ok(item)
+    _ -> Error(Nil)
+  }
+}
+
+// Bad: using Option
+pub fn first(list: List(a)) -> option.Option(a) {
+  case list {
+    [item, ..] -> option.Some(item)
+    _ -> option.None
+  }
+}
+
+// Bad: panicking
+pub fn first(list: List(a)) -> a {
+  case list {
+    [item, ..] -> item
+    _ -> panic as "cannot get first of empty list"
+  }
+}
+```
+
+
+
+## Use Singular Module Names (G-SINGULAR-MODULES) { #G-SINGULAR-MODULES }
+
+<why>To follow the universal Gleam naming convention.</why>
+<version>2.0</version>
+
+Module names are singular, not plural. This applies to all segments, not just the final one.
+
+```gleam
+// Good
+import app/user
+import app/payment/invoice
+
+// Bad
+import app/users
+import app/payments/invoice
+```
+
+
+
+## Treat Acronyms as Single Words (G-ACRONYMS) { #G-ACRONYMS }
+
+<why>To produce clean BEAM identifiers and follow Gleam conventions.</why>
+<version>2.0</version>
+
+Acronyms are always written as if they were a single word.
+
+```gleam
+// Good
+let json: Json = build_json()
+pub type HttpRequest { ... }
+
+// Bad — produces j_s_o_n / h_t_t_p in generated BEAM code
+let j_s_o_n: JSON = build_j_s_o_n()
+pub type HTTPRequest { ... }
+```
+
+
+
+## Name Conversion Functions as Prescribed (G-CONVERSION-NAMES) { #G-CONVERSION-NAMES }
+
+<why>To provide consistent naming for type conversions across the ecosystem.</why>
+<version>2.0</version>
+
+When naming a function that converts from one type to another, use the convention `x_to_y`.
+
+```gleam
+// Good
+pub fn json_to_string(data: Json) -> String
+
+// Bad
+pub fn json_into_string(data: Json) -> String
+pub fn json_as_string(data: Json) -> String
+pub fn string_of_json(data: Json) -> String
+```
+
+If the module name matches the type name, do not repeat the type name:
+
+```gleam
+// In src/my_app/identifier.gleam
+
+// Good
+pub fn to_string(id: Identifier) -> String
+
+// Bad
+pub fn identifier_to_string(id: Identifier) -> String
+```
+
+If there is a name for the encoding, format, or variant, use that in the name:
+
+```gleam
+// Good
+pub fn date_to_rfc3339(date: Date) -> String
+
+// Bad
+pub fn date_to_string(date: Date) -> String
+```
+
+If there is a more descriptive name for the conversion, use that instead:
+
+```gleam
+// Good
+pub fn round(data: Float) -> Int
+
+// Bad
+pub fn float_to_int(data: Float) -> Int
+```
+
+
+
+## Name Short-Circuiting Result Functions with try_ (G-TRY-PREFIX) { #G-TRY-PREFIX }
+
+<why>To distinguish result-handling versions of existing functions.</why>
+<version>2.0</version>
+
+Functions that return results should be given a name appropriate for the domain.
+If the function is a special result-handling version of an existing function that
+short-circuits on error, use the `try_` prefix (unless a more appropriate domain name exists).
+
+```gleam
+pub fn map(list: List(a), f: fn(a) -> b) -> List(b)
+
+// Good
+pub fn try_map(
+  list: List(a),
+  f: fn(a) -> Result(b, e),
+) -> Result(List(b), e)
+
+// Bad: abstract concepts
+pub fn monadic_bind(
+  list: List(a),
+  f: fn(a) -> Result(b, e),
+) -> Result(List(b), e)
+```
+
+
+
+## Use the Core Libraries (G-CORE-LIBS) { #G-CORE-LIBS }
+
+<why>To build on the shared foundation of the Gleam ecosystem.</why>
+<version>2.0</version>
+
+The Gleam core team maintains several packages that serve as a shared foundation:
+
+- [`gleam_stdlib`](https://hexdocs.pm/gleam_stdlib)
+- [`gleam_time`](https://hexdocs.pm/gleam_time)
+- [`gleam_http`](https://hexdocs.pm/gleam_http)
+- [`gleam_erlang`](https://hexdocs.pm/gleam_erlang)
+- [`gleam_otp`](https://hexdocs.pm/gleam_otp)
+- [`gleam_javascript`](https://hexdocs.pm/gleam_javascript)
+
+Do not replicate functionality provided by these packages. For example, do not create
+a new time type instead of using `gleam_time`'s `Timestamp`.
+
+
+
+## Keep Tool Config in gleam.toml (G-TOOL-CONFIG) { #G-TOOL-CONFIG }
+
+<why>To avoid config file proliferation in Gleam projects.</why>
+<version>2.0</version>
+
+If development tools need configuration files, that file should be `gleam.toml`,
+with configuration going under the `tools.$TOOL_NAME` key prefix.
+
+```toml
+name = "thingy"
+version = "1.0.0"
+
+[dependencies]
+gleam_stdlib = "<= 1.0.0 and < 2.0.0"
+
+[tools.lustre.dev]
+host = "0.0.0.0"
+
+[tools.lustre.build]
+minify = true
+outdir = "../server/priv/static"
+```
+
+Do not use dedicated configuration files such as `my-tool.toml` or `config/my-tool.yaml`.
+Dynamic configuration can be read from environment variables or provided as CLI arguments.
+
+
+
+## Use the Correct Source Code Directory (G-SOURCE-DIRS) { #G-SOURCE-DIRS }
+
+<why>To leverage Gleam's build tool directory semantics correctly.</why>
+<version>2.0</version>
+
+Gleam's build tool offers 3 directories for source code, each with a different purpose:
+
+- **`src/`** — Code included in the application or library itself. Can import modules from
+  `dependencies` and `src/`, but NOT `dev_dependencies`, `dev/`, or `test/`.
+
+- **`test/`** — Code that tests the package (automated unit and integration tests).
+  Can import modules from any dependencies and any directory.
+
+- **`dev/`** — Any additional code used in development, such as code generators,
+  helper scripts, and examples. Can import modules from any dependencies and any directory.
+
+
+---
+
+
+# AI Guidelines
+
+
+
+## Design with AI Use in Mind (G-DESIGN-FOR-AI) { #G-DESIGN-FOR-AI }
+
+<why>To maximize the utility you get from letting agents work in your code base.</why>
+<version>2.0</version>
+
+As a general rule, making APIs easier to use for humans also makes them easier to use by AI.
+If you follow the guidelines in this book, you should be in good shape.
+
+Gleam's strong type system and exhaustive pattern matching are a boon for agents, as their lack of genuine understanding can often be
+counterbalanced by comprehensive compiler checks, which Gleam provides in abundance.
+
+With that said, there are a few guidelines which are particularly important to help make AI coding in Gleam more effective:
+
+* **Create Idiomatic Gleam API Patterns**. The more your APIs, whether public or internal, look and feel like the majority of
+Gleam code in the world, the better it is for AI. Follow the conventions from the standard library and this guideline set.
+
+* **Provide Thorough Docs**. Agents love good detailed docs. Include docs for all of your modules and public items in your package.
+Assume the reader has a solid, but not expert, level of understanding of Gleam, and that the reader understands the standard library.
+Follow [G-MODULE-DOCS] and [G-CANONICAL-DOCS].
+
+* **Provide Thorough Examples**. Your documentation should have directly usable examples. The repository should include
+runnable examples in the `dev/` directory. Follow [G-DEV-EXAMPLES].
+
+* **Use Strong Types**. Avoid primitive obsession by using opaque types and custom types with strict well-documented semantics.
+Follow [G-OPAQUE-TYPES] and [G-CUSTOM-TYPES].
+
+* **Make Your APIs Testable**. Design APIs which allow your consumers to test their use of your API in unit tests.
+AI agents need to be able to iterate quickly to prove that the code they are writing that calls your API is working correctly.
+
+* **Ensure Test Coverage**. Your own code should have good test coverage over observable behavior.
+This enables agents to work in a mostly hands-off mode when refactoring.
+
+[G-MODULE-DOCS]: #G-MODULE-DOCS
+[G-CANONICAL-DOCS]: #G-CANONICAL-DOCS
+[G-DEV-EXAMPLES]: #G-DEV-EXAMPLES
+[G-OPAQUE-TYPES]: #G-OPAQUE-TYPES
+[G-CUSTOM-TYPES]: #G-CUSTOM-TYPES
+
+
+---
+
+
+# Naming Conventions
+
+
+
+## Use snake_case for Functions and Variables (G-SNAKE-CASE-FN) { #G-SNAKE-CASE-FN }
+
+<why>To follow the universal Gleam convention and ensure consistency.</why>
+<version>1.0</version>
+
+All function names, variable bindings, and module names must use `snake_case`. This is enforced by the Gleam compiler.
+
+```gleam
+// Good
+fn get_username(user: User) -> String { ... }
+let first_name = "Alice"
+
+// Bad - will not compile
+fn getUsername(user: User) -> String { ... }
+let firstName = "Alice"
+```
+
+Module names follow the same convention. Files are named with lowercase letters and underscores:
+
+```text
+src/my_package/string_helper.gleam
+src/my_package/http_client.gleam
+```
+
+
+
+## Use PascalCase for Types and Constructors (G-PASCAL-CASE-TYPES) { #G-PASCAL-CASE-TYPES }
+
+<why>To follow the universal Gleam convention and visually distinguish types from values.</why>
+<version>2.0</version>
+
+All custom type names and their constructors must use `PascalCase`. This is enforced by the Gleam compiler.
+
+```gleam
+// Good - enumeration
+pub type Direction {
+  North
+  South
+  East
+  West
+}
+
+// Good - single-variant record type
+pub type User {
+  User(name: String, email: String)
+}
+```
+
+When a function can fail, use `Result` rather than encoding success and failure as
+variants of a custom type:
+
+```gleam
+// Good: use Result for fallibility
+pub type HttpError {
+  NotFound
+  ServerError(code: Int, message: String)
+}
+
+pub fn fetch(url: String) -> Result(String, HttpError) { ... }
+
+// Bad: encoding success/failure as variants of a custom type
+pub type HttpResponse {
+  Success(body: String)
+  NotFound
+  ServerError(code: Int, message: String)
+}
+```
+
+Type variables (generics) use lowercase names:
+
+```gleam
+pub type Option(value) {
+  Some(value)
+  None
+}
+```
+
+
+
+## Constants Use lowercase snake_case (G-CONST-NAMES) { #G-CONST-NAMES }
+
+<why>To follow established Gleam conventions.</why>
+<version>1.0</version>
+
+Module-level constants use `snake_case`, not `UPPER_SNAKE_CASE`. This differs from many other languages.
+
+```gleam
+// Good
+const default_timeout = 30_000
+const max_retries = 3
+
+// Bad
+const DEFAULT_TIMEOUT = 30_000
+const MAX_RETRIES = 3
+```
+
+
+
+## Follow Standard Library Naming Patterns (G-STDLIB-NAMES) { #G-STDLIB-NAMES }
+
+<why>To provide a consistent and predictable API surface.</why>
+<version>2.0</version>
+
+Function names should follow the conventions established by `gleam/stdlib`:
+
+| Pattern | Usage | Example |
+| --- | --- | --- |
+| `new` | Primary constructor | `list.new()`, `dict.new()` |
+| `from_*` | Conversion from another type | `int.from_string("42")` |
+| `to_*` | Conversion to another type | `int.to_string(42)` |
+| `is_*` | Boolean predicate | `list.is_empty(xs)` |
+| `map` | Transform contained value(s) | `result.map(r, fn(x) { ... })` |
+| `try_map` | Transform with possible failure | `list.try_map(xs, parse)` |
+| `filter` | Keep items matching predicate | `list.filter(xs, is_valid)` |
+| `fold` | Reduce collection to single value | `list.fold(xs, 0, add)` |
+| `each` | Side-effect iteration, returns `Nil` | `list.each(xs, io.println)` |
+| `wrap` | Put a value inside a container | `some.wrap(x)` |
+| `unwrap` | Extract with default | `option.unwrap(opt, default)` |
+| `values` | Extract present values | `option.values(opts)` |
+| `contains` | Membership check | `list.contains(xs, x)` |
+| `append` | Add to the end | `list.append(xs, ys)` |
+| `prepend` | Add to the front | `list.prepend(xs, x)` |
+| `first` / `last` | Access first/last element | `list.first(xs)` |
+| `drop` / `take` | Remove/keep N elements | `list.take(xs, 3)` |
+
+When your function is similar to one in the standard library, use the same name.
+
+### Subject-First Parameter Design
+
+Design functions so the primary "subject" is the first parameter. This enables clean pipe chains:
+
+```gleam
+"hello world"
+|> string.split(" ")
+|> list.map(string.capitalise)
+|> string.join(" ")
+```
+
+
+---
+
+
+# Module Organization
+
+
+
+## Modules Mirror the Package Name (G-MODULE-STRUCTURE) { #G-MODULE-STRUCTURE }
+
+<why>To maintain a clear and navigable project structure.</why>
+<version>2.0</version>
+
+A Gleam package named `my_package` should have:
+
+- `src/my_package.gleam` as the main entry point module
+- `src/my_package/*.gleam` for public sub-modules
+- `src/my_package/internal/*.gleam` for private implementation details
+
+```text
+src/
+  my_package.gleam              -- Main module, re-exports key types
+  my_package/
+    client.gleam                -- Public: client API
+    config.gleam                -- Public: configuration types
+    error.gleam                 -- Public: error types
+    internal/
+      protocol.gleam            -- Private: protocol implementation
+      parser.gleam              -- Private: internal parsing
+```
+
+The main module (`src/my_package.gleam`) should contain:
+
+- Module-level documentation (`////`) describing the package
+- The primary public API functions
+- Usage examples in the module docs
+
+Sub-modules should each contain a focused set of related types and functions.
+
+
+
+## Internal Modules are Private Implementation (G-INTERNAL-MODULES) { #G-INTERNAL-MODULES }
+
+<why>To clearly separate public API from implementation details.</why>
+<version>2.0</version>
+
+Modules under `<package>/internal/` are considered private implementation details. While Gleam allows any module to import
+them, they carry no stability guarantees and should not be imported by library consumers.
+
+```text
+src/
+  gftp/
+    internal/
+      command.gleam          -- Internal: FTP command encoding
+      data_channel.gleam     -- Internal: data channel helpers
+```
+
+Internal modules:
+
+- [ ] Must not be documented in the package's public documentation
+- [ ] May change or be removed without a major version bump
+- [ ] Should contain implementation details that don't belong in the public API
+- [ ] Can still have `pub` functions (for use by other modules within the same package)
+
+If you find yourself wanting to expose something from `internal/`, consider whether it belongs in a
+public module instead. Move it out of `internal/` and give it proper documentation.
+
+
+
+## Keep Modules Focused (G-FOCUSED-MODULES) { #G-FOCUSED-MODULES }
+
+<why>To improve readability and discoverability.</why>
+<version>1.0</version>
+
+Each module should contain a cohesive set of types and functions related to a single concept.
+Avoid kitchen-sink modules.
+
+```gleam
+// Good: dedicated modules
+// src/my_lib/user.gleam      -- User type and operations
+// src/my_lib/session.gleam   -- Session management
+// src/my_lib/auth.gleam      -- Authentication logic
+
+// Bad: everything in one file
+// src/my_lib.gleam            -- User + Session + Auth + Config + ...
+```
+
+A module typically contains:
+
+- One primary type (often matching the module name)
+- Constructor functions for that type
+- Operations on that type
+- Related helper types (if small enough)
+
+If a related type grows complex enough to warrant its own set of functions, extract it to its own module.
+For example, `my_lib/user.gleam` may initially contain `Permission`, but if permission logic grows,
+extract it to `my_lib/user/permission.gleam`.
+
+However, do not prematurely split modules. See [G-NO-FRAGMENTED-MODULES].
+
+[G-NO-FRAGMENTED-MODULES]: #G-NO-FRAGMENTED-MODULES
+
+
+---
+
+
+# Documentation
+
+
+
+## Module Documentation is Mandatory (G-MODULE-DOCS) { #G-MODULE-DOCS }
+
+<why>To allow for better API docs navigation and developer experience.</why>
+<version>1.0</version>
+
+Every public module must start with `////` module documentation. The first line should be a concise summary.
+
+```gleam
+//// Error types and result aliases for gftp operations.
+////
+//// All gftp functions return `Result(a, FtpError)`.
+////
+//// ## Usage
+////
+//// ```gleam
+//// import gftp
+//// import gftp/error
+////
+//// case gftp.cwd(client, "/nonexistent") {
+////   Ok(_) -> // success
+////   Error(err) -> {
+////     let msg = error.to_string(err)
+////   }
+//// }
+//// ```
+```
+
+Module docs should cover:
+
+- What the module contains (one-line summary)
+- When and how to use it
+- Code examples showing typical usage
+- Any important caveats or prerequisites
+
+
+
+## Public Items Have Documentation Comments (G-CANONICAL-DOCS) { #G-CANONICAL-DOCS }
+
+<why>To follow established Gleam best practices and enable generated documentation.</why>
+<version>1.0</version>
+
+All public types and functions must have `///` documentation comments. The first line should be a concise
+summary sentence, ideally under 15 words.
+
+```gleam
+/// Connect to an FTP server at the given host and port.
+///
+/// Returns an `FtpClient` handle for issuing commands. The client starts
+/// in passive mode by default.
+///
+/// ## Examples
+///
+/// ```gleam
+/// let assert Ok(client) = gftp.connect("ftp.example.com", 21)
+/// ```
+pub fn connect(host: String, port: Int) -> Result(FtpClient, FtpError) { ... }
+```
+
+### Documentation Sections
+
+Use markdown headers within doc comments for structure:
+
+- **`## Examples`** — One or more usage examples (strongly encouraged)
+- **`## Errors`** — If the function returns `Result`, describe error conditions
+- **`## Panics`** — If using `let assert` or `panic`, document when this may happen
+
+### Parameter Documentation
+
+Explain parameters in prose, not as a parameter table:
+
+```gleam
+/// Copy bytes from `source` to `destination`, reading up to `limit` bytes.
+pub fn copy(source: Stream, destination: Stream, limit: Int) -> Result(Int, Error) { ... }
+```
+
+Do **not** write:
+
+```gleam
+/// Copy bytes.
+///
+/// ## Parameters
+/// - source: The source stream
+/// - destination: The destination stream
+/// - limit: Maximum bytes to copy
+pub fn copy(source: Stream, destination: Stream, limit: Int) -> Result(Int, Error) { ... }
+```
+
+
+
+## Document Type Variants (G-DOCUMENT-VARIANTS) { #G-DOCUMENT-VARIANTS }
+
+<why>To make custom type variants self-documenting.</why>
+<version>1.0</version>
+
+Each variant of a public custom type should have a `///` doc comment explaining what it represents:
+
+```gleam
+pub type FtpError {
+  /// Connection error from the underlying TCP layer.
+  ConnectionError(mug.ConnectError)
+  /// The server returned an unexpected response to the issued command.
+  UnexpectedResponse(Response)
+  /// The response from the server could not be parsed.
+  BadResponse
+  /// A TLS/SSL error occurred during the handshake or data transfer.
+  Tls(kafein.Error)
+  /// A TCP socket error occurred.
+  Socket(mug.Error)
+  /// A data transfer is in progress; close the data channel first.
+  DataTransferInProgress
+}
+```
+
+
+
+## Comment Liberally (G-COMMENT-LIBERALLY) { #G-COMMENT-LIBERALLY }
+
+<why>To make code easier to understand and maintain.</why>
+<version>2.0</version>
+
+Comments are a very effective way to make code easier to understand, and they take little time to write.
+Comments can explain both _what_ the code does and _why_ the code does what it does.
+
+Often the reader could determine _what_ without the aid of the comment, but that may not be the case
+for unfamiliar readers, or if the code is later determined to have a bug (so what it does and what the
+writer intended it to do do not match).
+
+```gleam
+pub fn classify_file_content(content: String) -> FileOrigin {
+  let likely_generated =
+    // In newer versions of squirrel this is always at the beginning of the
+    // file and it would be enough to check for this comment to establish if
+    // a file is generated or not...
+    string.contains(
+      content,
+      "> This module was generated automatically using",
+    )
+    // ...but in older versions that module comment is not present! So we
+    // need to check if there's any function generated by squirrel.
+    || string.contains(
+      content,
+      "> This function was generated automatically using",
+    )
+
+  case likely_generated {
+    True -> LikelyGenerated
+    False -> NotGenerated
+  }
+}
+```
+
+Adding comments does not mean the code itself can be written in an unclear way, and having well
+written code doesn't mean that comments are not a valuable addition.
+
+
+---
+
+
+# Error Handling
+
+
+
+## Define Situation-Specific Error Types (G-ERROR-TYPES) { #G-ERROR-TYPES }
+
+<why>To provide meaningful, actionable error information to callers.</why>
+<version>2.0</version>
+
+Libraries should define their own error types rather than using generic strings or `Nil` errors.
+Design error variants to describe what went wrong in terms of your business domain, and include
+contextual information for debugging.
+
+```gleam
+// Good: descriptive business-domain error type
+pub type NotesError {
+  NoteAlreadyExists(path: String)
+  NoteCouldNotBeCreated(path: String, reason: simplifile.FileError)
+  NoteCouldNotBeRead(path: String, reason: simplifile.FileError)
+  NoteInvalidFrontmatter(path: String, reason: tom.ParseError)
+}
+
+// Bad: not enough detail
+pub type NotesError {
+  NoteAlreadyExists
+  NoteCouldNotBeCreated
+  NoteCouldNotBeRead
+  NoteInvalidFrontmatter
+}
+
+// Bad: designed around dependencies, not business domain
+pub type NotesError {
+  FileError(path: String, reason: simplifile.FileError)
+  TomlError(path: String, reason: tom.ParseError)
+}
+```
+
+### Single vs. Multiple Error Types
+
+Both a single unified error type and multiple focused error types are valid approaches.
+Choose based on what makes the most sense for your API:
+
+```gleam
+// Valid: single error type covering the module's API
+pub type FtpError {
+  ConnectionError(mug.ConnectError)
+  UnexpectedResponse(Response)
+  BadResponse
+}
+
+pub fn connect(host: String) -> Result(Client, FtpError) { ... }
+pub fn login(client: Client, user: String, pass: String) -> Result(Nil, FtpError) { ... }
+```
+
+```gleam
+// Also valid: separate error types per operation
+pub fn connect(host: String) -> Result(Client, ConnectionError) { ... }
+pub fn parse_response(data: BitArray) -> Result(Response, ParseError) { ... }
+```
+
+### Human-Readable Error Descriptions
+
+Providing a human-readable `to_string` or `describe` function for error types is only necessary
+when you plan to display errors to end users. It is not a universal requirement for every error type.
+
+
+
+## Use `use` for Result Chaining (G-USE-RESULT-CHAIN) { #G-USE-RESULT-CHAIN }
+
+<why>To reduce nesting and improve readability of sequential fallible operations.</why>
+<version>2.0</version>
+
+The `use` expression is Gleam's way to chain operations that return `Result`, avoiding deeply nested `case` expressions:
+
+```gleam
+// Flat and readable with `use`
+pub fn setup_connection(host: String, user: String, pass: String) -> Result(Client, FtpError) {
+  use client <- result.try(connect(host, 21))
+  use _ <- result.try(login(client, user, pass))
+  use _ <- result.try(set_binary_mode(client))
+  Ok(client)
+}
+```
+
+Use `result.try` for `Result` and `option.map` for `Option` chaining.
+
+### Alternatives to `use`
+
+Nested `case` expressions are **not** an anti-pattern. They can be preferable in some situations,
+such as tight loops where performance matters, or when you need to handle specific error variants
+differently at each step:
+
+```gleam
+// Nested case: valid when you need fine-grained error handling
+pub fn setup_connection(host: String, user: String, pass: String) -> Result(Client, FtpError) {
+  case connect(host, 21) {
+    Error(e) -> Error(e)
+    Ok(client) ->
+      case login(client, user, pass) {
+        Error(e) -> Error(e)
+        Ok(_) ->
+          case set_binary_mode(client) {
+            Error(e) -> Error(e)
+            Ok(_) -> Ok(client)
+          }
+      }
+  }
+}
+```
+
+Another approach is to extract each step into a helper function, which can improve readability
+without requiring `use`:
+
+```gleam
+// Extract to helper functions
+pub fn setup_connection(host: String, user: String, pass: String) -> Result(Client, FtpError) {
+  case connect(host, 21) {
+    Error(e) -> Error(e)
+    Ok(client) -> authenticate_and_configure(client, user, pass)
+  }
+}
+
+fn authenticate_and_configure(client: Client, user: String, pass: String) -> Result(Client, FtpError) {
+  case login(client, user, pass) {
+    Error(e) -> Error(e)
+    Ok(_) -> configure_binary_mode(client)
+  }
+}
+
+fn configure_binary_mode(client: Client) -> Result(Client, FtpError) {
+  case set_binary_mode(client) {
+    Error(e) -> Error(e)
+    Ok(_) -> Ok(client)
+  }
+}
+```
+
+Choose the approach that makes your code clearest for the specific situation.
+
+
+
+## Assertions are for Application Code Only (G-ASSERT-FOR-BUGS) { #G-ASSERT-FOR-BUGS }
+
+<why>To ensure panics only occur where they can be properly handled.</why>
+<version>2.0</version>
+
+**Libraries must not panic.** They should not use `panic` or `let assert`. Panicking instead of
+returning a `Result` takes control away from the users of the library, preventing them from being
+able to handle errors. A library does not know the context in which it is used, so it is impossible
+for the author of a library to know if it is acceptable to panic.
+
+`let assert` may be used in:
+
+- **Application code** (top-level programs) where panicking is a deliberate choice
+- **Test code** where assertion failures indicate test failure
+- **Example/script code** (in `dev/`) for brevity
+
+```gleam
+// Ok: in application's main entry point
+pub fn main() {
+  let assert Ok(config) = load_config()
+  start_server(config)
+}
+
+// Ok: in test code
+pub fn login_test() {
+  let assert Ok(client) = connect("localhost", 21)
+  let assert Ok(_) = login(client, "test", "test")
+}
+
+// Bad: in library code — NEVER
+pub fn parse_config(input: String) -> Config {
+  let assert Ok(parsed) = json.decode(input)  // Will panic on invalid JSON!
+  parsed
+}
+
+// Good: library code returns Result
+pub fn parse_config(input: String) -> Result(Config, ConfigError) {
+  case json.decode(input) {
+    Ok(parsed) -> Ok(parsed)
+    Error(_) -> Error(InvalidJson)
+  }
+}
+```
+
+The one exception is for libraries _about_ OTP, where the BEAM's supervision trees provide
+non-local error handling. Even then, the library author should have a strong understanding of
+OTP to identify when panicking is appropriate.
+
+
+---
+
+
+# Type Design
+
+
+
+## Use Opaque Types for Encapsulation (G-OPAQUE-TYPES) { #G-OPAQUE-TYPES }
+
+<why>To enforce invariants and allow internal changes without breaking consumers.</why>
+<version>1.0</version>
+
+Use `pub opaque type` when:
+
+- The type has invariants that must be maintained (e.g., a port number must be 1-65535)
+- You want to hide the internal representation from consumers
+- You need to evolve the internal structure without breaking the public API
+
+```gleam
+/// A valid TCP port number between 1 and 65535.
+pub opaque type Port {
+  Port(value: Int)
+}
+
+/// Create a new port from an integer, validating the range.
+pub fn new(value: Int) -> Result(Port, Nil) {
+  case value >= 1 && value <= 65_535 {
+    True -> Ok(Port(value))
+    False -> Error(Nil)
+  }
+}
+
+/// Get the port number as an integer.
+pub fn to_int(port: Port) -> Int {
+  port.value
+}
+```
+
+Since opaque type constructors are hidden, consumers cannot pattern match on them. Provide accessor
+functions (`to_int`, `to_string`, etc.) and constructor functions (`new`, `from_*`) as needed.
+
+**When not to use opaque types**: Simple data records with no invariants that consumers need to
+pattern match on should be regular `pub type`.
+
+
+
+## Use Custom Types Idiomatically (G-CUSTOM-TYPES) { #G-CUSTOM-TYPES }
+
+<why>To leverage Gleam's type system for correctness and clarity.</why>
+<version>1.0</version>
+
+### Enumerations
+
+Use multi-variant types without fields for fixed sets of values:
+
+```gleam
+pub type Direction {
+  North
+  South
+  East
+  West
+}
+```
+
+### Records
+
+Use single-variant types with labelled fields for structured data:
+
+```gleam
+pub type User {
+  User(name: String, email: String, age: Int)
+}
+```
+
+### Tagged Unions
+
+Use multi-variant types with fields for sum types:
+
+```gleam
+pub type Shape {
+  Circle(radius: Float)
+  Rectangle(width: Float, height: Float)
+  Triangle(base: Float, height: Float)
+}
+```
+
+### Labelled Fields
+
+Always use labelled fields when a type has more than one field of the same type, or when
+the meaning of a field is not obvious from its type:
+
+```gleam
+// Good: labels clarify meaning
+pub type Range {
+  Range(start: Int, end: Int)
+}
+
+// Bad: which Int is which?
+pub type Range {
+  Range(Int, Int)
+}
+```
+
+### Make Invalid States Impossible
+
+Leverage the type system to make invalid states unrepresentable:
+
+```gleam
+// Good: invalid states are impossible
+pub type Visitor {
+  LoggedInUser(id: Int, email: String)
+  Guest
+}
+
+// Bad: can construct invalid state (id without email, or email without id)
+pub type Visitor {
+  Visitor(id: Option(Int), email: Option(String))
+}
+```
+
+
+
+## Use Labelled Arguments for Clarity (G-LABELLED-ARGS) { #G-LABELLED-ARGS }
+
+<why>To make function calls self-documenting and reduce parameter confusion.</why>
+<version>1.0</version>
+
+Use labelled arguments when:
+
+- A function has multiple parameters of the same type
+- The purpose of a parameter is not obvious from its type
+- The function has more than 2-3 parameters
+
+```gleam
+// Good: labels make the call site readable
+pub fn connect(host: String, port: Int, timeout timeout: Int) -> Result(Client, Error) { ... }
+
+// Call site is clear
+connect("ftp.example.com", 21, timeout: 5000)
+```
+
+Unlabelled arguments should come before labelled ones:
+
+```gleam
+// Good: subject first (unlabelled), options labelled
+pub fn send(stream: DataStream, data: BitArray, timeout timeout: Int) -> Result(Nil, Error) { ... }
+```
+
+Use label shorthand when the variable name matches the label:
+
+```gleam
+let timeout = 5000
+connect("localhost", 21, timeout:)
+```
+
+
+---
+
+
+# Pattern Matching
+
+
+
+## Exhaustive Pattern Matching (G-EXHAUSTIVE-MATCH) { #G-EXHAUSTIVE-MATCH }
+
+<why>To leverage compile-time safety and prevent runtime crashes.</why>
+<version>1.0</version>
+
+Always handle all variants in `case` expressions. The Gleam compiler enforces exhaustive matching,
+which prevents entire classes of bugs. Never use a catch-all `_` pattern when you can enumerate
+the variants:
+
+```gleam
+// Good: all variants handled explicitly
+case direction {
+  North -> move_up(state)
+  South -> move_down(state)
+  East -> move_right(state)
+  West -> move_left(state)
+}
+
+// Acceptable: catch-all when the specific variants don't matter
+case response.status {
+  status if status >= 200 && status < 300 -> Ok(response.body)
+  _ -> Error(UnexpectedStatus(response.status))
+}
+```
+
+This ensures that adding a new variant to a type will cause a compile error at every `case` site,
+forcing you to handle the new case.
+
+
+
+## Use Pattern Matching over Conditionals (G-PATTERN-OVER-IF) { #G-PATTERN-OVER-IF }
+
+<why>To write more idiomatic and readable Gleam code.</why>
+<version>1.0</version>
+
+Prefer `case` with pattern matching over chains of `bool.guard` or nested `case True`/`case False`:
+
+```gleam
+// Good: pattern matching
+fn describe(shape: Shape) -> String {
+  case shape {
+    Circle(radius) -> "Circle with radius " <> float.to_string(radius)
+    Rectangle(w, h) -> "Rectangle " <> float.to_string(w) <> "x" <> float.to_string(h)
+    Triangle(b, h) -> "Triangle with base " <> float.to_string(b)
+  }
+}
+```
+
+Use guards when you need additional conditions on matched values:
+
+```gleam
+case value {
+  x if x > 0 -> "positive"
+  x if x < 0 -> "negative"
+  _ -> "zero"
+}
+```
+
+
+---
+
+
+# Pipe Operator
+
+
+
+## Design Functions for Piping (G-PIPE-FRIENDLY) { #G-PIPE-FRIENDLY }
+
+<why>To enable clean, readable function chains.</why>
+<version>2.0</version>
+
+The pipe operator `|>` passes the result of the left expression as the **first** argument of the
+right function. Design your functions accordingly:
+
+```gleam
+// Good: subject is first argument, enables piping
+pub fn validate(user: User) -> Result(User, ValidationError) { ... }
+pub fn normalize_email(user: User) -> User { ... }
+
+// Usage
+user
+|> normalize_email
+|> validate
+```
+
+When the subject is not the first argument, use a function capture:
+
+```gleam
+"hello"
+|> string.append("world", _)
+```
+
+But prefer designing your API so captures are not needed for common operations.
+
+### Pipe Chain Guidelines
+
+- Each step in a pipe chain should be on its own line for readability
+- Keep pipe chains focused; if they get too long (more than 7-8 steps), consider extracting
+  intermediate results into named bindings
+- Pipe chains should read like a sequence of transformations, not a program
+
+
+---
+
+
+# Testing
+
+
+
+## Test Files Mirror Source Structure (G-TEST-STRUCTURE) { #G-TEST-STRUCTURE }
+
+<why>To make test files easy to find and maintain.</why>
+<version>1.0</version>
+
+Test files live under `test/` and mirror the `src/` directory structure with a `_test` suffix:
+
+```text
+src/                              test/
+  my_package.gleam                  my_package_test.gleam
+  my_package/                       my_package/
+    client.gleam                      client_test.gleam
+    config.gleam                      config_test.gleam
+    internal/                         internal/
+      parser.gleam                      parser_test.gleam
+```
+
+Test functions must end with `_test` (gleeunit convention):
+
+```gleam
+import gleeunit/should
+
+pub fn parse_valid_port_test() {
+  parse_port("8080")
+  |> should.be_ok()
+  |> should.equal(8080)
+}
+
+pub fn parse_invalid_port_test() {
+  parse_port("not_a_number")
+  |> should.be_error()
+}
+```
+
+
+
+## Test Names Describe Behavior (G-TEST-NAMES) { #G-TEST-NAMES }
+
+<why>To make test output readable and failures self-explanatory.</why>
+<version>1.0</version>
+
+Test function names should describe the behavior being tested, not just the function name:
+
+```gleam
+// Good: describes expected behavior
+pub fn connect_returns_error_for_invalid_host_test() { ... }
+pub fn login_succeeds_with_valid_credentials_test() { ... }
+pub fn parse_handles_empty_input_test() { ... }
+
+// Bad: too vague
+pub fn connect_test() { ... }
+pub fn login_test() { ... }
+pub fn parse_test() { ... }
+```
+
+
+---
+
+
+# Examples
+
+
+
+## Examples Live in the dev/ Directory (G-DEV-EXAMPLES) { #G-DEV-EXAMPLES }
+
+<why>To provide runnable examples using Gleam's built-in dev/ directory support.</why>
+<version>2.0</version>
+
+Examples should be placed in the `dev/` directory at the repository root, using the
+naming convention `example_<name>.gleam`. The `dev/` directory is one of Gleam's three
+standard source directories and can import from any dependency (including dev-dependencies).
+
+```text
+dev/
+  example_simple_client.gleam
+  example_actor_client.gleam
+  example_directory_listing.gleam
+```
+
+Each example should be a fully executable Gleam program with a `pub fn main()` function:
+
+```gleam
+//// Example: simple FTP client connecting and listing files.
+
+import gleam/io
+import my_library
+
+pub fn main() {
+  let assert Ok(client) = my_library.connect("ftp.example.com", 21)
+  let assert Ok(files) = my_library.list(client, "/")
+  io.println("Files: " <> string.inspect(files))
+}
+```
+
+Examples should:
+
+- [ ] Be self-contained and demonstrate a single concept or use case
+- [ ] Include comments explaining what is happening
+- [ ] Use `io.println` (qualified) to show output so users can see what the program does
+- [ ] Follow the `example_*` naming convention for discoverability
+
+Note: Using `let assert` in example code is acceptable since examples are application
+code, not library code.
+
+
+---
+
+
+# OTP and Actor Patterns (Erlang Target)
+
+
+
+## Use the Actor Model for Concurrent Protocols (G-ACTOR-MODEL) { #G-ACTOR-MODEL }
+
+<why>To ensure safe concurrent access to stateful protocols on the Erlang VM.</why>
+<version>2.0</version>
+
+When targeting the Erlang VM, use OTP actors (via `gleam_otp`) for stateful services that
+may be accessed concurrently. Actors serialize all state mutations, preventing data races.
+
+```gleam
+import gleam/erlang/process.{type Subject}
+import gleam/otp/actor
+
+/// Internal actor state.
+type State {
+  State(count: Int, name: String)
+}
+
+/// Messages the actor can handle.
+pub opaque type Message {
+  Increment(reply: Subject(Int))
+  GetCount(reply: Subject(Int))
+}
+```
+
+### When to Use Actors
+
+- Wrapping stateful protocols (FTP, WebSocket, database connections)
+- Rate limiting or throttling
+- Background tasks with state
+- Managing concurrent access to a resource
+
+### When Not to Use Actors
+
+- Pure data transformations (use regular functions)
+- One-shot operations without shared state
+- Simple request-response without persistent state
+- **As simple state stores** — actors should not be used as glorified mutable variables.
+  If you just need to hold a value, consider passing state through function arguments
+  or using immutable data transformations instead.
+
+
+
+## Actor Message Types are Opaque (G-ACTOR-MESSAGES-OPAQUE) { #G-ACTOR-MESSAGES-OPAQUE }
+
+<why>To prevent consumers from constructing messages directly and to allow internal evolution.</why>
+<version>1.0</version>
+
+The `Message` type for an actor should be `pub opaque type`. Consumers interact through public
+functions that construct and send messages, not by building messages directly:
+
+```gleam
+/// The opaque message type prevents direct construction.
+pub opaque type Message {
+  Login(username: String, password: String, reply: Subject(Result(Nil, FtpError)))
+  Pwd(reply: Subject(Result(String, FtpError)))
+  Quit(reply: Subject(Result(Nil, FtpError)))
+}
+
+/// Public function that hides message construction.
+pub fn login(handle: Subject(Message), username: String, password: String) -> Result(Nil, FtpError) {
+  actor.call(handle, Login(username, password, _), default_call_timeout)
+}
+
+/// Get the current working directory.
+pub fn pwd(handle: Subject(Message)) -> Result(String, FtpError) {
+  actor.call(handle, Pwd, default_call_timeout)
+}
+```
+
+This pattern:
+
+- Hides the message protocol from consumers
+- Allows adding, removing, or changing messages without breaking the public API
+- Makes the API discoverable through public functions rather than message constructors
+- Enables documentation on the public functions
+
+
+
+## Actors Serialize Operations with State Guards (G-ACTOR-STATE-GUARDS) { #G-ACTOR-STATE-GUARDS }
+
+<why>To prevent protocol state corruption in stateful services.</why>
+<version>1.0</version>
+
+When an actor manages a stateful protocol (e.g., FTP, database connection), use state guards
+to reject operations that would corrupt the protocol state:
+
+```gleam
+type State {
+  State(client: FtpClient, data_transfer_in_progress: Bool)
+}
+
+fn handle_message(message: Message, state: State) -> actor.Next(Message, State) {
+  case message {
+    // Configuration messages are always allowed
+    WithMode(mode, reply) -> {
+      process.send(reply, Nil)
+      actor.continue(State(..state, client: set_mode(state.client, mode)))
+    }
+    // Control commands are rejected during data transfer
+    Login(user, pass, reply) -> {
+      case state.data_transfer_in_progress {
+        True -> {
+          process.send(reply, Error(DataTransferInProgress))
+          actor.continue(state)
+        }
+        False -> {
+          let result = do_login(state.client, user, pass)
+          process.send(reply, result)
+          actor.continue(state)
+        }
+      }
+    }
+    // ...
+  }
+}
+```
+
+
+
+## Use Subjects for Request-Reply (G-ACTOR-REQUEST-REPLY) { #G-ACTOR-REQUEST-REPLY }
+
+<why>To implement synchronous communication with actors.</why>
+<version>1.0</version>
+
+For operations where the caller needs a response, include a `reply: Subject(ResponseType)` field
+in the message variant and use `actor.call`:
+
+```gleam
+pub opaque type Message {
+  GetValue(reply: Subject(Result(Int, Error)))
+}
+
+pub fn get_value(handle: Subject(Message)) -> Result(Int, Error) {
+  actor.call(handle, GetValue, timeout: 5000)
+}
+```
+
+For fire-and-forget operations, use `process.send` directly:
+
+```gleam
+pub opaque type Message {
+  LogEvent(event: String)
+}
+
+pub fn log_event(handle: Subject(Message), event: String) -> Nil {
+  process.send(handle, LogEvent(event))
+}
+```
+
+
+---
+
+
+# Project Configuration
+
+
+
+## gleam.toml Conventions (G-GLEAM-TOML) { #G-GLEAM-TOML }
+
+<why>To maintain consistent project metadata.</why>
+<version>1.0</version>
+
+A well-configured `gleam.toml` should include:
+
+```toml
+name = "my_package"
+version = "1.0.0"
+licenses = ["MIT"]
+description = "A short description of the package"
+target = "erlang"  # or "javascript", omit for cross-platform
+repository = { type = "github", user = "username", repo = "my_package" }
+
+[dependencies]
+gleam_stdlib = ">= 0.44.0 and < 2.0.0"
+
+[dev-dependencies]
+gleeunit = ">= 1.0.0 and < 2.0.0"
+```
+
+### Target Declaration
+
+- Set `target = "erlang"` if the package uses Erlang-specific features (OTP, processes, FFI)
+- Set `target = "javascript"` if the package uses JavaScript-specific features
+- Omit `target` if the package works on both targets
+
+### Version Ranges
+
+Use inclusive-exclusive ranges for dependencies: `">= 1.0.0 and < 2.0.0"`. This maximizes
+compatibility while protecting against breaking changes.
+
+
+
+## Format Code Before Committing (G-FORMAT-CODE) { #G-FORMAT-CODE }
+
+<why>To ensure consistent code style across the project.</why>
+<version>1.0</version>
+
+Always run `gleam format` before committing. The Gleam formatter is opinionated and produces
+consistent output. CI should verify formatting with:
+
+```bash
+gleam format --check src test
+```
+
+Do not fight the formatter. If you disagree with a formatting choice, that is the Gleam style.
+
+
+
+## Use Conventional Commits (G-CONVENTIONAL-COMMITS) { #G-CONVENTIONAL-COMMITS }
+
+<why>To maintain a clear and parseable commit history.</why>
+<version>1.0</version>
+
+Commit messages should follow the [Conventional Commits](https://www.conventionalcommits.org/) specification:
+
+```text
+feat: add FTPS support via explicit TLS upgrade
+fix: correct passive mode address parsing behind NAT
+docs: add actor-based streaming example
+test: add integration tests for active mode
+refactor: extract data channel logic to internal module
+chore: update gleam_stdlib to 0.44
+```
+
+
+---
+
+
+# Library Design
+
+
+
+## Wrap External Dependencies (G-WRAP-EXTERNALS) { #G-WRAP-EXTERNALS }
+
+<why>To prevent leaking third-party types into the public API.</why>
+<version>1.0</version>
+
+Avoid exposing types from dependencies in your public API. Instead, wrap them in your own types:
+
+```gleam
+// Bad: leaking mug types
+pub fn connect(host: String) -> Result(mug.Socket, mug.Error) { ... }
+
+// Good: wrapped in library types
+pub fn connect(host: String) -> Result(Client, ConnectionError) { ... }
+```
+
+When wrapping errors from dependencies, include the original error as a variant field for debugging:
+
+```gleam
+pub type ConnectionError {
+  TcpError(mug.Error)
+  TlsError(kafein.Error)
+  Timeout
+}
+```
+
+This allows you to change or replace dependencies without breaking your public API.
+
+
+
+## Use Callbacks for Resource-Scoped Operations (G-CALLBACK-RESOURCES) { #G-CALLBACK-RESOURCES }
+
+<why>To ensure resources are properly acquired and released.</why>
+<version>1.0</version>
+
+For operations that acquire a temporary resource (data streams, file handles, connections),
+use a callback pattern that ensures cleanup:
+
+```gleam
+/// Retrieve a file from the server.
+///
+/// The `handler` callback receives the data stream and must return before
+/// the stream is closed. This ensures the data channel is always properly
+/// closed after the transfer, regardless of success or failure.
+pub fn retr(
+  client: FtpClient,
+  path: String,
+  handler: fn(DataStream) -> Result(a, FtpError),
+) -> Result(a, FtpError) { ... }
+```
+
+Usage:
+
+```gleam
+gftp.retr(client, "file.txt", fn(stream) {
+  use data <- result.try(
+    stream.receive(stream, 5000)
+    |> result.map_error(ftp_result.Socket)
+  )
+  Ok(data)
+})
+```
+
+This pattern prevents resource leaks by ensuring the resource is always released, even if the
+callback returns an error.
+
+
+---
+
+
+# FFI Guidelines (Erlang / JavaScript)
+
+
+
+## Isolate FFI in Dedicated Files (G-FFI-ISOLATION) { #G-FFI-ISOLATION }
+
+<why>To keep Gleam code clean and make FFI boundaries explicit.</why>
+<version>1.0</version>
+
+FFI (Foreign Function Interface) code should be isolated in dedicated files alongside the Gleam
+module that uses it:
+
+```text
+src/
+  my_package/
+    stream.gleam           -- Gleam module with @external declarations
+    stream_ffi.erl         -- Erlang FFI implementation
+    stream_ffi.mjs         -- JavaScript FFI implementation (if cross-platform)
+```
+
+In the Gleam module, declare external functions:
+
+```gleam
+@external(erlang, "stream_ffi", "receive_packet")
+fn do_receive(socket: Dynamic, timeout: Int) -> Dynamic
+```
+
+The FFI file name convention is `<module_name>_ffi.erl` or `<module_name>_ffi.mjs`.
+
+### FFI Best Practices
+
+- [ ] Keep FFI surface area minimal; prefer pure Gleam solutions
+- [ ] Wrap FFI calls in type-safe Gleam functions
+- [ ] Document any assumptions about the FFI implementation
+- [ ] Test FFI code thoroughly, as the compiler cannot verify it
+- [ ] Do not use `gleam/dynamic`'s `Dynamic` type for FFI arguments/returns
+      when a more precise type can represent the expected data (see [G-NO-DYNAMIC-FFI])
+
+[G-NO-DYNAMIC-FFI]: #G-NO-DYNAMIC-FFI
+
+
+---
+
+
+# Gleam Idioms
+
+
+
+## Prefer Immutable Data Transformations (G-IMMUTABLE-DATA) { #G-IMMUTABLE-DATA }
+
+<why>To leverage Gleam's immutability guarantees and write correct concurrent code.</why>
+<version>2.0</version>
+
+Gleam values are immutable. Record updates create new instances:
+
+```gleam
+let updated_user = User(..user, name: "Alice", email: "alice@example.com")
+```
+
+Design your APIs around data transformations rather than mutations:
+
+```gleam
+// Good: transformation (this is the only way in Gleam — there is no mutation)
+pub fn normalize_email(user: User) -> User {
+  User(..user, email: string.lowercase(user.email))
+}
+```
+
+
+
+## Use Option for Optional Values (G-OPTION-NOT-NIL) { #G-OPTION-NOT-NIL }
+
+<why>To make optionality explicit in the type system.</why>
+<version>1.0</version>
+
+Use `Option(a)` from `gleam/option` for values that may or may not be present. Do not use
+sentinel values or `Nil` to represent absence:
+
+```gleam
+import gleam/option.{type Option, None, Some}
+
+pub type User {
+  User(
+    name: String,
+    email: Option(String),  // Explicitly optional
+  )
+}
+```
+
+Use `option.unwrap` with a default value, or pattern match to handle both cases:
+
+```gleam
+let display_email = option.unwrap(user.email, "no email provided")
+```
+
+
+
+## Use `todo` and `panic` Appropriately (G-TODO-PANIC) { #G-TODO-PANIC }
+
+<why>To clearly communicate intent and prevent misuse.</why>
+<version>1.0</version>
+
+- **`todo`** — marks unfinished code. The compiler will warn about `todo` expressions, making them
+  easy to find. Use during development to stub out functions:
+
+```gleam
+pub fn complex_algorithm(data: List(Int)) -> Result(Int, Error) {
+  todo as "implement complex algorithm"
+}
+```
+
+- **`panic`** — indicates unreachable code or invariant violations. Should never be hit in
+  correct code:
+
+```gleam
+pub fn from_validated_string(s: String) -> Direction {
+  case s {
+    "north" -> North
+    "south" -> South
+    "east" -> East
+    "west" -> West
+    _ -> panic as "from_validated_string called with invalid input"
+  }
+}
+```
+
+Neither `todo` nor `panic` should appear in published library code. Remove all `todo` expressions
+before publishing. Libraries must not panic — see [G-ASSERT-FOR-BUGS].
+
+[G-ASSERT-FOR-BUGS]: #G-ASSERT-FOR-BUGS
+
+
+---
+
+
+# Anti-patterns
+
+This section consolidates practices that should be avoided in Gleam code.
+
+
+
+## Do Not Create Utils Modules (G-NO-UTILS) { #G-NO-UTILS }
+
+<why>Utils modules are unfocused grab-bags that grow without bound.</why>
+<version>2.0</version>
+
+Do not create modules named `utils`, `helpers`, `common`, or similar catch-all names.
+These modules have no clear scope and inevitably become dumping grounds for unrelated functions.
+
+Instead, place functions in the module where they are most relevant, or create a focused
+module with a descriptive name:
+
+```text
+// Bad
+src/my_package/internal/utils.gleam   -- grabs bag of unrelated functions
+
+// Good
+src/my_package/internal/parser.gleam  -- parsing helpers
+src/my_package/internal/format.gleam  -- formatting helpers
+```
+
+
+
+## Do Not Fragment Modules Prematurely (G-NO-FRAGMENTED-MODULES) { #G-NO-FRAGMENTED-MODULES }
+
+<why>To avoid complex APIs split across too many small modules.</why>
+<version>2.0</version>
+
+Do not prematurely split up modules into multiple smaller modules, and do not view large modules
+as a problem. Instead focus on the business domain and making the best API for users of the code.
+
+An API split over many modules is harder to understand and requires more boilerplate to use than
+one well-designed module. It also becomes more challenging to hide internal implementation details
+when they have to be exposed for other modules to use.
+
+If you are having trouble with import cycles, or if multiple modules need to be imported to perform
+a simple task, it may be a sign that you have split up code that should be a single module.
+
+
+
+## Do Not Check-Then-Assert (G-NO-CHECK-THEN-ASSERT) { #G-NO-CHECK-THEN-ASSERT }
+
+<why>To avoid a false sense of safety that masks real bugs.</why>
+<version>2.0</version>
+
+Using `let assert` after previous code "proves" it is safe to do so is an anti-pattern.
+The supposed guarantee from prior checks is fragile — refactoring can break the invariant
+silently, and the `let assert` will panic at runtime instead of being caught at compile time.
+
+```gleam
+// Bad: check-then-assert
+pub fn get_first(items: List(a)) -> a {
+  case list.is_empty(items) {
+    True -> panic as "empty list"
+    False -> {
+      // "Safe" because we checked above — but this is fragile
+      let assert [first, ..] = items
+      first
+    }
+  }
+}
+
+// Good: return Result, no assertion needed
+pub fn get_first(items: List(a)) -> Result(a, Nil) {
+  case items {
+    [first, ..] -> Ok(first)
+    [] -> Error(Nil)
+  }
+}
+```
+
+In library code, always return `Result` instead. In application code, if you truly need to
+crash on an impossible state, use `let assert` directly without the redundant check — but
+prefer `Result` whenever possible.
+
+
+
+## Do Not Provide Type Aliases for Common Types (G-NO-TYPE-ALIASES) { #G-NO-TYPE-ALIASES }
+
+<why>Type aliases obscure the actual types and make code harder to understand.</why>
+<version>2.0</version>
+
+Avoid creating type aliases that simply rename well-known types like `Result` or `Subject`.
+These aliases force readers to look up the definition to understand what they are actually
+working with.
+
+```gleam
+// Bad: hides that this is a Result
+pub type FtpResult(a) =
+  Result(a, FtpError)
+
+// Bad: hides that this is a Subject
+pub type Handle =
+  Subject(Message)
+
+// Good: use the actual types directly in signatures
+pub fn login(client: Subject(Message), user: String, pass: String) -> Result(Nil, FtpError) { ... }
+```
+
+
+
+## Do Not Trespass in Other Package Namespaces (G-NO-NAMESPACE-TRESPASS) { #G-NO-NAMESPACE-TRESPASS }
+
+<why>To avoid module collisions and confusing code origins.</why>
+<version>2.0</version>
+
+Other packages should not place their modules within a top-level directory that belongs to a
+different package. Trespassing in someone else's module namespace can result in compilation
+errors and confusing code where it is unclear where modules come from.
+
+```text
+// Bad: placing my modules in lustre's namespace
+src/lustre/my_component.gleam
+
+// Good: use your own package namespace
+src/my_package/lustre_component.gleam
+```
+
+
+
+## Do Not Use Dynamic for FFI Types (G-NO-DYNAMIC-FFI) { #G-NO-DYNAMIC-FFI }
+
+<why>To prevent type safety holes at FFI boundaries.</why>
+<version>2.0</version>
+
+Never use `gleam/dynamic`'s `Dynamic` type to represent FFI arguments or return values.
+The `Dynamic` type represents _any_ type of data, meaning it is valid to pass any value at all,
+which will cause runtime errors. Instead, create a new type that represents exactly the expected type.
+
+```gleam
+// Good: precise type
+pub type Buffer
+
+pub fn byte_size(data: Buffer) -> Int
+
+// Bad: Dynamic accepts anything
+import gleam/dynamic.{type Dynamic}
+
+pub fn byte_size(data: Dynamic) -> Int
+```
+
+
+
+## Do Not Overuse Category Theory Abstractions (G-NO-CATEGORY-THEORY) { #G-NO-CATEGORY-THEORY }
+
+<why>To keep code simple and approachable.</why>
+<version>2.0</version>
+
+Avoid creation of complex category theory based abstractions.
+
+Gleam does not have the ergonomics to make these abstractions easy to work with, nor the compiler
+and runtime optimizations required to erase the significant runtime overhead they introduce.
+Complex abstractions typically introduce a high cognitive overhead to the code, running contrary
+to Gleam's simple, concrete, and approachable programming style.
+
+Solve specific problems with specific solutions.
+
+
+
+## Do Not Use Processes as Simple State Stores (G-NO-PROCESS-STATE) { #G-NO-PROCESS-STATE }
+
+<why>Processes have overhead and complexity that simple state doesn't need.</why>
+<version>2.0</version>
+
+Actors and processes should not be used as glorified mutable variables or key-value stores.
+If you just need to hold some state, pass it through function arguments or use immutable
+data transformations.
+
+Processes are appropriate for managing _concurrent access_ to stateful _protocols_, not
+for storing values that could be passed as function arguments.
+
+```gleam
+// Bad: process just to hold a counter
+pub fn new_counter() -> Subject(CounterMessage) { ... }
+pub fn increment(counter: Subject(CounterMessage)) -> Int { ... }
+pub fn get(counter: Subject(CounterMessage)) -> Int { ... }
+
+// Good: just pass the value around
+pub fn increment(counter: Int) -> Int {
+  counter + 1
+}
+```

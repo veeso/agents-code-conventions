@@ -1,0 +1,260 @@
+# Custom Rust Guidelines (X- prefix)
+
+Custom extensions to the Microsoft Rust guidelines.
+These conventions use the `X-` prefix to distinguish them from upstream `M-` conventions.
+
+This file is NOT modified by the fetch-conventions script.
+
+---
+
+
+## Use `module_name.rs` Instead of `mod.rs` (X-NO-MOD-RS) { #X-NO-MOD-RS }
+
+<why>To improve file navigation and avoid ambiguous tab names in editors.</why>
+<version>1.0</version>
+
+When organizing modules as directories, prefer the modern `module_name.rs` style over the legacy `module_name/mod.rs` style.
+
+**Do:**
+
+```
+src/
+├── lib.rs
+├── network.rs          # Contains `mod connection;`
+└── network/
+    └── connection.rs
+```
+
+**Don't:**
+
+```
+src/
+├── lib.rs
+└── network/
+    ├── mod.rs           # Avoid this pattern
+    └── connection.rs
+```
+
+The `module_name.rs` style was stabilized in Rust 2018 edition. It provides better editor tab clarity
+(seeing `network.rs` vs multiple `mod.rs` tabs) and is the recommended modern Rust convention.
+
+---
+
+## Prefer Let Chains Over Nested `if let` (X-LET-CHAINS) { #X-LET-CHAINS }
+
+<why>Nested `if let` blocks increase indentation depth and obscure the logical relationship between conditions. Let chains express compound conditions flatly.</why>
+<version>1.0</version>
+
+When multiple conditions must hold simultaneously — especially combinations of boolean checks and pattern matches — prefer `let` chains (stabilized in Rust 1.87.0) over nested `if let` / `if` blocks.
+
+**Do:**
+
+```rust
+if let Some(user) = get_user(id)
+    && user.is_active()
+    && let Some(email) = user.email()
+{
+    send_notification(email);
+}
+```
+
+**Don't:**
+
+```rust
+if let Some(user) = get_user(id) {
+    if user.is_active() {
+        if let Some(email) = user.email() {
+            send_notification(email);
+        }
+    }
+}
+```
+
+When only one condition is checked, a plain `if let` is fine — this convention targets chains of two or more conditions that would otherwise nest.
+
+For fallible chains where you need to propagate errors or return early, also consider the `?` operator or combinators like `.and_then()` instead of nesting.
+
+---
+
+## Prefer Iterator Combinators Over Nested Loops (X-ITER-COMBINATORS) { #X-ITER-COMBINATORS }
+
+<why>Nested imperative loops with inner conditionals are harder to follow and more error-prone. Iterator combinators express data transformations declaratively and compose naturally.</why>
+<version>1.0</version>
+
+When processing collections, prefer iterator combinators (`.filter()`, `.map()`, `.filter_map()`, `.flat_map()`, `.fold()`, etc.) over imperative `for` loops that contain nested conditions or inner loops.
+
+**Do:**
+
+```rust
+let active_emails: Vec<_> = users
+    .iter()
+    .filter(|u| u.is_active())
+    .filter_map(|u| u.email())
+    .collect();
+```
+
+**Don't:**
+
+```rust
+let mut active_emails = Vec::new();
+for user in &users {
+    if user.is_active() {
+        if let Some(email) = user.email() {
+            active_emails.push(email);
+        }
+    }
+}
+```
+
+**Do** (flattening nested collections):
+
+```rust
+let all_tags: Vec<_> = articles
+    .iter()
+    .flat_map(|a| a.tags())
+    .collect();
+```
+
+**Don't:**
+
+```rust
+let mut all_tags = Vec::new();
+for article in &articles {
+    for tag in article.tags() {
+        all_tags.push(tag);
+    }
+}
+```
+
+A plain `for` loop is still appropriate when:
+
+- The loop body has complex control flow (`break`, `continue` with labels, early `return` with `?`).
+- Side effects make the imperative form significantly clearer.
+- Performance-critical code where the optimizer handles the loop form better (measure first).
+
+---
+
+## Flatten Nested `match` Arms (X-FLAT-MATCH) { #X-FLAT-MATCH }
+
+<why>Deeply nested `match` expressions are hard to read and maintain. Flattening them with tuple patterns or guard clauses keeps the logic at one level of indentation.</why>
+<version>1.0</version>
+
+When matching on multiple values that would otherwise require nested `match` blocks, prefer matching on a tuple or using guard clauses to keep the arms flat.
+
+**Do** (tuple match):
+
+```rust
+match (config.mode(), config.level()) {
+    (Mode::Fast, Level::High) => run_optimized(),
+    (Mode::Fast, _) => run_fast(),
+    (Mode::Safe, Level::Low) => run_minimal(),
+    (_, _) => run_default(),
+}
+```
+
+**Don't:**
+
+```rust
+match config.mode() {
+    Mode::Fast => match config.level() {
+        Level::High => run_optimized(),
+        _ => run_fast(),
+    },
+    Mode::Safe => match config.level() {
+        Level::Low => run_minimal(),
+        _ => run_default(),
+    },
+    _ => run_default(),
+}
+```
+
+**Do** (guard clause):
+
+```rust
+match event {
+    Event::Click(pos) if pos.is_in_bounds(area) => handle_click(pos),
+    Event::Click(_) => ignore(),
+    Event::Key(k) if k.is_modifier() => update_modifiers(k),
+    Event::Key(k) => handle_key(k),
+}
+```
+
+**Don't:**
+
+```rust
+match event {
+    Event::Click(pos) => {
+        if pos.is_in_bounds(area) {
+            handle_click(pos)
+        } else {
+            ignore()
+        }
+    }
+    Event::Key(k) => {
+        if k.is_modifier() {
+            update_modifiers(k)
+        } else {
+            handle_key(k)
+        }
+    }
+}
+```
+
+Nested `match` is acceptable when the inner match depends on bindings from the outer match that make tuple construction awkward, or when the inner arms are numerous enough that inlining them would bloat the outer match.
+
+## Prefer `where` Clauses for Generic Bounds (X-WHERE-CLAUSE) { #X-WHERE-CLAUSE }
+
+<why>Placing trait bounds in a `where` clause keeps function signatures readable, separates the parameter list from the constraints, and scales better as bounds grow.</why>
+<version>1.0</version>
+
+When a function, method, struct, enum, trait, or type alias accepts generic parameters with trait bounds, prefer expressing those bounds in a `where` clause rather than inline on the type parameter.
+
+**Do:**
+
+```rust
+fn process<T>(items: &[T]) -> String
+where
+    T: Display + Debug,
+{
+    // ...
+}
+
+struct Cache<K, V>
+where
+    K: Eq + Hash,
+    V: Clone,
+{
+    map: HashMap<K, V>,
+}
+
+impl<T> MyTrait for Wrapper<T>
+where
+    T: Send + Sync + 'static,
+{
+    // ...
+}
+```
+
+**Don't:**
+
+```rust
+fn process<T: Display + Debug>(items: &[T]) -> String {
+    // ...
+}
+
+struct Cache<K: Eq + Hash, V: Clone> {
+    map: HashMap<K, V>,
+}
+
+impl<T: Send + Sync + 'static> MyTrait for Wrapper<T> {
+    // ...
+}
+```
+
+A single, simple bound on a single type parameter (e.g., `<T: Clone>`) is acceptable inline when it keeps the signature short and readable. Once any of these conditions hold, move bounds to a `where` clause:
+
+- More than one trait bound on a type parameter.
+- More than one bounded type parameter.
+- Bounds include lifetimes, associated types, or complex paths (e.g., `T: Iterator<Item = u32>`).
+
+<!-- Add more custom X- conventions below -->
