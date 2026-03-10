@@ -13,6 +13,8 @@ This is a monorepo of **Claude Code skills** that enforce language-specific codi
 | `rust-conventions/` | `rust-conventions`, `fetch-rust-conventions` | Rust `.rs` files |
 | `gleam-conventions/` | `gleam-conventions` | Gleam `.gleam` files |
 | `cargo-toml-conventions/` | `cargo-toml-conventions` | `Cargo.toml` files |
+| `js-conventions/` | `js-conventions` | JavaScript `.js`, `.mjs`, `.cjs`, `.jsx` files |
+| `ts-conventions/` | `ts-conventions` | TypeScript `.ts`, `.tsx` files |
 
 ## How Skills Work
 
@@ -23,17 +25,27 @@ Each skill lives in a `<name>/<name>/SKILL.md` directory structure. The `SKILL.m
 - **`rust-conventions/rust-conventions/rust-guidelines.txt`** — ~2500-line generated file from Microsoft's upstream mdBook. **Never hand-edit.** Updated via `bash rust-conventions/scripts/fetch-guidelines.sh`.
 - **`rust-conventions/rust-conventions/custom-guidelines.txt`** — User-maintained `X-` prefix conventions. Never overwritten by the fetch script.
 - **`gleam-conventions/gleam-conventions/gleam-guidelines.txt`** — Gleam convention rules with `G-` prefixed IDs.
+- **`js-conventions/js-conventions/js-guidelines.txt`** — Auto-fetched Airbnb JavaScript Style Guide. **Never hand-edit.** Updated via `bash js-conventions/scripts/fetch-guidelines.sh`.
+- **`ts-conventions/ts-conventions/ts-guidelines.txt`** — Auto-fetched Google TypeScript Style Guide (HTML→Markdown). **Never hand-edit.** Updated via `bash ts-conventions/scripts/fetch-guidelines.sh`.
 
 ## Guideline Prefix Systems
 
 - **Rust**: `M-` = Microsoft upstream (auto-generated), `X-` = custom extensions (manually maintained)
 - **Gleam**: `G-` = all Gleam guidelines
+- **JavaScript**: `AIRBNB-` = Airbnb Style Guide (auto-fetched), rules identified by section number (e.g., `AIRBNB-2.1`)
+- **TypeScript**: `GOOGLE-` = Google Style Guide (auto-fetched), rules identified by section anchor (e.g., `GOOGLE-IDENTIFIERS`)
 
 ## Commands
 
 ```bash
 # Update Microsoft Rust guidelines from upstream
 bash rust-conventions/scripts/fetch-guidelines.sh
+
+# Update Airbnb JavaScript guidelines from upstream
+bash js-conventions/scripts/fetch-guidelines.sh
+
+# Update Google TypeScript guidelines from upstream
+bash ts-conventions/scripts/fetch-guidelines.sh
 ```
 
 ## Adding New Conventions
