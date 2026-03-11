@@ -2,23 +2,30 @@
 
 This file contains all guidelines concatenated for easy reference.
 
-The guidelines in this document are organized from most authoritative to supplementary.
-The "Official Gleam Conventions" section contains rules from the official Gleam website
-and takes **maximum priority** — they are mandatory rules that must be adhered to always.
-Subsequent sections provide additional guidance that complements the official conventions.
+The guidelines in this document are organized into three tiers:
+1. **Conventions** — Mandatory rules that must always be followed.
+2. **Patterns** — Recommended approaches for common tasks.
+3. **Anti-patterns** — Known pitfalls to avoid.
+
+Subsequent sections provide additional AI-specific guidance that complements these.
 
 ---
 
 
-# Official Gleam Conventions (Maximum Priority)
+# Official Gleam Conventions, Patterns, and Anti-patterns
 
-These conventions come directly from the official Gleam project
+These come directly from the official Gleam project
 (gleam-lang/website conventions-patterns-anti-patterns.djot).
-They are **mandatory rules** that must be adhered to always.
+
+- **Conventions** are mandatory rules that must be adhered to always.
+- **Patterns** are recommended approaches for solving common problems idiomatically.
+- **Anti-patterns** are known pitfalls that should be avoided.
 
 
+## Conventions (Mandatory)
 
-## Avoid Unqualified Importing of Functions and Constants (G-QUALIFIED-ONLY) { #G-QUALIFIED-ONLY }
+
+### Avoid Unqualified Importing of Functions and Constants (G-QUALIFIED-ONLY) { #G-QUALIFIED-ONLY }
 
 <why>To make the origin of each function call explicit and improve readability.</why>
 <version>2.0</version>
@@ -50,22 +57,11 @@ pub fn reverse(input: String) -> String {
 ```
 
 Types and record constructors may be used with the unqualified syntax,
-providing it does not make the code more difficult to read:
-
-```gleam
-// Acceptable: importing types and constructors unqualified
-import gleam/option.{type Option, None, Some}
-
-// Bad: importing functions unqualified
-import gleam/io.{println}
-```
-
-**Important**: Even commonly used functions like `io.println` must be imported qualified.
-Only type names (with `type` keyword) and record constructors may be unqualified.
+providing you think it does not make the code more difficult to read.
 
 
 
-## Annotate All Module Functions (G-ANNOTATE-FN) { #G-ANNOTATE-FN }
+### Annotate All Module Functions (G-ANNOTATE-FN) { #G-ANNOTATE-FN }
 
 <why>To improve readability and enable better tooling support.</why>
 <version>2.0</version>
@@ -75,23 +71,23 @@ All module functions should have annotations for their argument types and for th
 ```gleam
 // Good
 fn calculate_total(amounts: List(Float), service_charge: Float) -> Float {
-  list.fold(amounts, 0.0, float.add) *. service_charge
+  list.fold(amounts, 0, int.add) * service_charge
 }
 
-// Bad: missing argument annotations
+// Bad
 fn calculate_total(amounts, service_charge) {
-  list.fold(amounts, 0.0, float.add) *. service_charge
+  list.fold(amounts, 0, int.add) * service_charge
 }
 
 // Bad: missing return annotation
 fn calculate_total(amounts: List(Float), service_charge: Float) {
-  list.fold(amounts, 0.0, float.add) *. service_charge
+  list.fold(amounts, 0, int.add) * service_charge
 }
 ```
 
 
 
-## Use Result for Fallible Functions (G-RESULT-ERRORS) { #G-RESULT-ERRORS }
+### Use Result for Fallible Functions (G-RESULT-ERRORS) { #G-RESULT-ERRORS }
 
 <why>To leverage Gleam's type system for explicit error handling.</why>
 <version>2.0</version>
@@ -133,7 +129,7 @@ pub fn first(list: List(a)) -> a {
 
 
 
-## Use Singular Module Names (G-SINGULAR-MODULES) { #G-SINGULAR-MODULES }
+### Use Singular Module Names (G-SINGULAR-MODULES) { #G-SINGULAR-MODULES }
 
 <why>To follow the universal Gleam naming convention.</why>
 <version>2.0</version>
@@ -152,7 +148,7 @@ import app/payments/invoice
 
 
 
-## Treat Acronyms as Single Words (G-ACRONYMS) { #G-ACRONYMS }
+### Treat Acronyms as Single Words (G-ACRONYMS) { #G-ACRONYMS }
 
 <why>To produce clean BEAM identifiers and follow Gleam conventions.</why>
 <version>2.0</version>
@@ -162,16 +158,17 @@ Acronyms are always written as if they were a single word.
 ```gleam
 // Good
 let json: Json = build_json()
-pub type HttpRequest { ... }
 
-// Bad — produces j_s_o_n / h_t_t_p in generated BEAM code
+// Bad — produces j_s_o_n in generated BEAM code
 let j_s_o_n: JSON = build_j_s_o_n()
-pub type HTTPRequest { ... }
 ```
 
+Note: when compiling to BEAM, uppercase letters in names get an underscore prefix
+in the generated Erlang, so `JSON` becomes `j_s_o_n` rather than the intended `json`.
 
 
-## Name Conversion Functions as Prescribed (G-CONVERSION-NAMES) { #G-CONVERSION-NAMES }
+
+### Name Conversion Functions as Prescribed (G-CONVERSION-NAMES) { #G-CONVERSION-NAMES }
 
 <why>To provide consistent naming for type conversions across the ecosystem.</why>
 <version>2.0</version>
@@ -222,14 +219,22 @@ pub fn float_to_int(data: Float) -> Int
 
 
 
-## Name Short-Circuiting Result Functions with try_ (G-TRY-PREFIX) { #G-TRY-PREFIX }
+### Name Short-Circuiting Result Functions with try_ (G-TRY-PREFIX) { #G-TRY-PREFIX }
 
 <why>To distinguish result-handling versions of existing functions.</why>
 <version>2.0</version>
 
-Functions that return results should be given a name appropriate for the domain.
+Functions that return results should be given a name that is appropriate for
+the domain and the operation they perform.
+
+```gleam
+// Good
+pub fn parse_json(input: String) -> Result(Json, ParseError)
+pub fn enqueue(job: BackgroundJob) -> Result(Nil, EnqueueError)
+```
+
 If the function is a special result-handling version of an existing function that
-short-circuits on error, use the `try_` prefix (unless a more appropriate domain name exists).
+short-circuits on error, use the `try_` prefix.
 
 ```gleam
 pub fn map(list: List(a), f: fn(a) -> b) -> List(b)
@@ -239,7 +244,11 @@ pub fn try_map(
   list: List(a),
   f: fn(a) -> Result(b, e),
 ) -> Result(List(b), e)
+```
 
+Names based on design patterns or abstract concepts should be avoided.
+
+```gleam
 // Bad: abstract concepts
 pub fn monadic_bind(
   list: List(a),
@@ -249,7 +258,7 @@ pub fn monadic_bind(
 
 
 
-## Use the Core Libraries (G-CORE-LIBS) { #G-CORE-LIBS }
+### Use the Core Libraries (G-CORE-LIBS) { #G-CORE-LIBS }
 
 <why>To build on the shared foundation of the Gleam ecosystem.</why>
 <version>2.0</version>
@@ -268,7 +277,7 @@ a new time type instead of using `gleam_time`'s `Timestamp`.
 
 
 
-## Keep Tool Config in gleam.toml (G-TOOL-CONFIG) { #G-TOOL-CONFIG }
+### Keep Tool Config in gleam.toml (G-TOOL-CONFIG) { #G-TOOL-CONFIG }
 
 <why>To avoid config file proliferation in Gleam projects.</why>
 <version>2.0</version>
@@ -296,7 +305,7 @@ Dynamic configuration can be read from environment variables or provided as CLI 
 
 
 
-## Use the Correct Source Code Directory (G-SOURCE-DIRS) { #G-SOURCE-DIRS }
+### Use the Correct Source Code Directory (G-SOURCE-DIRS) { #G-SOURCE-DIRS }
 
 <why>To leverage Gleam's build tool directory semantics correctly.</why>
 <version>2.0</version>
@@ -306,11 +315,11 @@ Gleam's build tool offers 3 directories for source code, each with a different p
 - **`src/`** — Code included in the application or library itself. Can import modules from
   `dependencies` and `src/`, but NOT `dev_dependencies`, `dev/`, or `test/`.
 
-- **`test/`** — Code that tests the package (automated unit and integration tests).
-  Can import modules from any dependencies and any directory.
+- **`test/`** — Code that tests the package. Can import modules from any dependencies
+  and any directory.
 
-- **`dev/`** — Any additional code used in development, such as code generators,
-  helper scripts, and examples. Can import modules from any dependencies and any directory.
+- **`dev/`** — Any additional code used in development, such as code generators
+  and helper scripts. Can import modules from any dependencies and any directory.
 
 
 ---
