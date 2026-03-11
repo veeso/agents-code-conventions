@@ -630,6 +630,235 @@ pub fn large(button: Button) -> Button {
 ```
 
 
+## Anti-patterns (Avoid)
+
+
+### Do Not Use Abbreviations (G-NO-ABBREVIATIONS) { #G-NO-ABBREVIATIONS }
+
+<why>To improve code readability and prevent ambiguity.</why>
+<version>2.0</version>
+
+Using shortened names can save a few keystrokes when typing, but they greatly
+hinder code reading and understanding. Abbreviations are ambiguous, so the
+reader has to guess what they are short for, and often they will get it wrong.
+This is especially likely if you are working with people with different
+backgrounds or from different cultures.
+
+Always write names in full.
+
+
+### Do Not Fragment Modules Prematurely (G-NO-FRAGMENTED-MODULES) { #G-NO-FRAGMENTED-MODULES }
+
+<why>To avoid complex APIs split across too many small modules.</why>
+<version>2.0</version>
+
+Do not prematurely split up modules into multiple smaller modules, and do not
+view large modules as a problem. Instead focus on the business domain and
+making the best API for the users of the code.
+
+An API that is split over many modules is harder to understand and requires
+more boilerplate to use than one well designed module, and it becomes more
+challenging to hide internal implementation details when they have to be
+exposed for other modules to use.
+
+If you are having trouble with import cycles, or if multiple modules need to be
+imported to perform a simple task with your code, then it may be a sign that
+you have split up code that should be a single module.
+
+Evan Czaplicki's talk ["The life of a file"](https://www.youtube.com/watch?v=XpDsk374LDE)
+has a wealth of information on this topic.
+
+
+### Do Not Panic in Libraries (G-NO-PANIC-IN-LIBS) { #G-NO-PANIC-IN-LIBS }
+
+<why>To ensure library consumers can handle all errors.</why>
+<version>2.0</version>
+
+Libraries must not panic, so they should not use `panic` or `let assert`.
+
+Panicking instead of returning a result takes control away from the users of
+the library, preventing them from being able to handle errors. A library does
+not know the context in which it is used, so it is impossible for the author of
+a library to know if it acceptable to panic, so they never can.
+
+The one exception to this rule is for libraries _about_ OTP, the BEAM
+application framework. OTP has non-local handling through supervision trees, so
+there may be some circumstances in which it is appropriate to panic, providing
+they have a suitably designed supervision tree. The library author would
+benefit from having a strong understanding of OTP system to identify when this
+is a good option.
+
+
+### Do Not Pollute the Global Namespace (G-NO-NAMESPACE-POLLUTION) { #G-NO-NAMESPACE-POLLUTION }
+
+<why>To prevent module name collisions across packages.</why>
+<version>2.0</version>
+
+Gleam has a global module namespace, a property inherited from the BEAM
+ecosystem. If two packages each define a module with the same name then a
+project adding both packages as dependencies will fail to compile.
+
+To avoid this problem packages should define their own namespace by placing
+their modules within a uniquely named directory. This name should match the
+name of the package. For example, the package `lustre` places its modules in
+`src/lustre/`.
+
+```
+# Good
+src/
+├── my_package.gleam
+└── my_package/
+    ├── distribution.gleam
+    └── inventory.gleam
+
+# Bad
+src/
+├── distribution.gleam
+├── inventory.gleam
+└── my_package.gleam
+```
+
+
+### Do Not Trespass in Other Package Namespaces (G-NO-NAMESPACE-TRESPASS) { #G-NO-NAMESPACE-TRESPASS }
+
+<why>To avoid module collisions and confusing code origins.</why>
+<version>2.0</version>
+
+Other packages should not place their modules within a top-level directory that
+belongs to a different package. Trespassing in someone else's module
+namespace can result in compilation errors due to module collisions, and
+confusing code where it is unclear where modules come from.
+
+For example, I must not place my modules within `src/lustre/`, even if I am
+making a package intended to be used with the `lustre` package.
+
+The maintainers of the `lustre` package may choose to reuse the `src/lustre/`
+directory in other Lustre-related packages that they also own.
+
+
+### Do Not Group by Design Pattern (G-NO-DESIGN-PATTERN-GROUPING) { #G-NO-DESIGN-PATTERN-GROUPING }
+
+<why>To ensure module boundaries reflect business domain, not code structure.</why>
+<version>2.0</version>
+
+When splitting your code into modules always design the boundaries in your
+system around your business domain and what would be the best API for the users
+of the code. This means never using design patterns or abstract code constructs
+as the basis for boundaries within the project.
+
+```gleam
+// Bad: kind grouping
+import app/constants
+import app/functions
+import app/types
+import app/utilities
+
+// Bad: category theory grouping
+import app/functors
+import app/monads
+import app/monoids
+import app/semigroups
+
+// Bad: design pattern grouping
+import app/controllers/user_controller
+import app/decorator/user_decorator
+import app/model/user_mode
+import app/services/user_service
+import app/views/user_view
+
+// Good: business domain grouping
+import app/accounts
+import app/billing
+```
+
+
+### Do Not Check Then Assert (G-NO-CHECK-THEN-ASSERT) { #G-NO-CHECK-THEN-ASSERT }
+
+<why>To avoid fragile runtime assertions that should be compile-time checks.</why>
+<version>2.0</version>
+
+Check-then-assert is a pattern common in procedural languages where one
+performs a check that a value is in some desired state, and then performs
+some action afterwards with the knowledge that it is in the desired state. This
+is an anti-pattern in functional languages like Gleam, and it should never be done.
+
+Instead use pattern matching, combinators, or other functional patterns to
+handle data that could be in some other state.
+
+```gleam
+// Bad: check then assert
+case result.is_ok(data) {
+  True -> {
+    let assert Ok(value) = data
+    process(value)
+  }
+  False -> data
+}
+
+// Bad: check then assert with `use`
+use <- bool.guard(when: result.is_error(data), return: data)
+let assert Ok(value) = data
+process(data)
+
+// Good: pattern matching
+case data {
+  Ok(value) -> process(value)
+  Error(e) -> Error(e)
+}
+
+// Good: combinators
+data |> result.try(process)
+
+// Good: combinators with `use`
+use value <- result.try(value)
+process(value)
+```
+
+
+### Do Not Use Dynamic for FFI (G-NO-DYNAMIC-FFI) { #G-NO-DYNAMIC-FFI }
+
+<why>To prevent type safety holes at FFI boundaries.</why>
+<version>2.0</version>
+
+When using code written in other languages there will be some arguments and
+return values that cannot be represented with the Gleam type system. For
+example, an Erlang function could take an int or a float as its argument.
+
+Never use the `gleam/dynamic` module's `Dynamic` type to represent these types.
+
+The dynamic type represents _any_ type of data, meaning it is valid to pass any
+value at all to that function, which is not correct and will cause runtime
+errors. Instead create a new type that represents exactly the expected type.
+
+```gleam
+// Good
+pub type Buffer
+
+pub fn byte_size(data: Buffer) -> Int
+
+// Bad
+import gleam/dynamic.{type Dynamic}
+
+pub fn byte_size(data: Dynamic) -> Int
+```
+
+
+### Do Not Overuse Category Theory (G-NO-CATEGORY-THEORY) { #G-NO-CATEGORY-THEORY }
+
+<why>To keep code simple and approachable.</why>
+<version>2.0</version>
+
+Avoid creation of complex category theory based abstractions.
+
+Gleam does not have the ergonomics to make these abstractions easy to work
+with, nor the compiler and runtime optimisations required to erase the
+significant runtime overhead they introduce. Complex abstractions typically
+introduce a high cognitive overhead to the code, running contrary to Gleam's
+simple, concrete, and approachable programming style.
+
+Solve specific problems with specific solutions.
+
+
 ---
 
 
