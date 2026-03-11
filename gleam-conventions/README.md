@@ -3,13 +3,7 @@
 ![claude](https://img.shields.io/badge/Claude-D97757?style=for-the-badge&logo=claude&logoColor=white)
 ![gleam](https://img.shields.io/badge/Gleam-ffaff3?style=for-the-badge&logo=gleam&logoColor=white)
 
-> [!WARNING]
-> Official Gleam conventions are still being defined and are not yet finalized.
-> As a result, this skill may still contain guidelines that turn out to be anti-patterns
-> or that conflict with the official conventions once they are published.
-> Use your own judgement and check the [official Gleam documentation](https://gleam.run/) for the latest guidance.
-
-A [Claude Code](https://claude.ai/code) skill that enforces idiomatic Gleam coding conventions when writing or modifying `.gleam` files. The skill is based on patterns observed across major Gleam projects (stdlib, gleam_otp, gleam_erlang, Lustre, mug, gftp) and the official Gleam documentation.
+A [Claude Code](https://claude.ai/code) skill that enforces idiomatic Gleam coding conventions when writing or modifying `.gleam` files. The skill is based on the official Gleam conventions document and patterns observed across major Gleam projects (stdlib, gleam_otp, gleam_erlang, Lustre, mug, gftp).
 
 ## What it does
 
@@ -19,10 +13,10 @@ When activated, the skill instructs Claude Code to follow the **Pragmatic Gleam 
 - **Naming conventions** - `snake_case` for functions/variables, `PascalCase` for types/constructors, stdlib naming patterns
 - **Module organization** - package structure, `internal/` for private APIs, focused modules
 - **Documentation** - module docs (`////`), item docs (`///`), canonical sections, variant docs, liberal comments
-- **Error handling** - `Result` types, specific error types, `use` chaining, no panicking in libraries
+- **Error handling** - `Result` types, specific error types, `use` chaining, no panic in libraries
 - **Type design** - opaque types, custom types, labelled arguments, make invalid states impossible
 - **Import conventions** - qualified imports only for functions/constants, type-only imports
-- **Pattern matching** - exhaustive matching, pattern-over-conditionals
+- **Patterns** - sans-io pattern, builder pattern, exhaustive matching, pattern-over-conditionals
 - **Pipe operator** - subject-first parameter design for clean pipe chains
 - **Testing** - mirror source structure, descriptive test names, `_test` suffix
 - **Examples** - `dev/` directory with `example_*` naming convention
@@ -30,7 +24,7 @@ When activated, the skill instructs Claude Code to follow the **Pragmatic Gleam 
 - **Project config** - `gleam.toml`, `gleam format`, conventional commits, tool config
 - **Library design** - wrap externals, callback resources
 - **FFI** - isolate in `_ffi.erl` / `_ffi.mjs` files, no Dynamic for FFI types
-- **Anti-patterns** - utils modules, check-then-assert, type aliases, fragmented modules, namespace trespassing, category theory overuse, processes as state stores
+- **Anti-patterns** - abbreviations, namespace pollution, design pattern grouping, utils modules, check-then-assert, type aliases, fragmented modules, namespace trespassing, category theory overuse, processes as state stores
 
 ## Install
 
@@ -65,7 +59,7 @@ After installing, start Claude Code and the skill should be listed when you run 
 
 The full guidelines are in [`gleam-conventions/gleam-guidelines.txt`](./gleam-conventions/gleam-guidelines.txt). Each guideline has a unique ID (e.g., `G-CANONICAL-DOCS`) for easy reference. Here's the complete list:
 
-### Official Gleam Conventions (Maximum Priority)
+### Official Conventions (Mandatory)
 
 | ID | Guideline |
 | --- | --- |
@@ -79,6 +73,32 @@ The full guidelines are in [`gleam-conventions/gleam-guidelines.txt`](./gleam-co
 | G-CORE-LIBS | Use the core libraries |
 | G-TOOL-CONFIG | Keep tool config in `gleam.toml` |
 | G-SOURCE-DIRS | Use the correct source code directory (`src`, `dev`, `test`) |
+
+### Official Patterns (Recommended)
+
+| ID | Pattern |
+| --- | --- |
+| G-DESCRIPTIVE-ERRORS | Design descriptive errors |
+| G-COMMENT-LIBERALLY | Comment liberally |
+| G-INVALID-STATES | Make invalid states impossible |
+| G-REPLACE-BOOLS | Replace bools with custom types |
+| G-MATCH-ALL-VARIANTS | Match all variants |
+| G-SANS-IO | The sans-io pattern |
+| G-BUILDER-PATTERN | The builder pattern |
+
+### Official Anti-patterns (Avoid)
+
+| ID | Anti-pattern |
+| --- | --- |
+| G-NO-ABBREVIATIONS | Do not use abbreviations |
+| G-NO-FRAGMENTED-MODULES | Do not fragment modules prematurely |
+| G-NO-PANIC-IN-LIBS | Do not panic in libraries |
+| G-NO-NAMESPACE-POLLUTION | Do not pollute the global namespace |
+| G-NO-NAMESPACE-TRESPASS | Do not trespass in other package namespaces |
+| G-NO-DESIGN-PATTERN-GROUPING | Do not group by design pattern |
+| G-NO-CHECK-THEN-ASSERT | Do not check-then-assert |
+| G-NO-DYNAMIC-FFI | Do not use Dynamic for FFI |
+| G-NO-CATEGORY-THEORY | Do not overuse category theory |
 
 ### Guidelines
 
@@ -95,14 +115,11 @@ The full guidelines are in [`gleam-conventions/gleam-guidelines.txt`](./gleam-co
 | G-MODULE-DOCS | Module documentation is mandatory |
 | G-CANONICAL-DOCS | Public items have documentation comments |
 | G-DOCUMENT-VARIANTS | Document type variants |
-| G-COMMENT-LIBERALLY | Comment liberally |
-| G-ERROR-TYPES | Define situation-specific error types |
 | G-USE-RESULT-CHAIN | Use `use` for Result chaining |
-| G-ASSERT-FOR-BUGS | Assertions are for application code only |
+| G-ASSERT-APPLICATION-ONLY | Assertions are for application code only |
 | G-OPAQUE-TYPES | Use opaque types for encapsulation |
 | G-CUSTOM-TYPES | Use custom types idiomatically |
 | G-LABELLED-ARGS | Use labelled arguments for clarity |
-| G-EXHAUSTIVE-MATCH | Exhaustive pattern matching |
 | G-PATTERN-OVER-IF | Use pattern matching over conditionals |
 | G-PIPE-FRIENDLY | Design functions for piping |
 | G-TEST-STRUCTURE | Test files mirror source structure |
@@ -127,12 +144,7 @@ The full guidelines are in [`gleam-conventions/gleam-guidelines.txt`](./gleam-co
 | ID | Anti-pattern |
 | --- | --- |
 | G-NO-UTILS | Do not create utils modules |
-| G-NO-FRAGMENTED-MODULES | Do not fragment modules prematurely |
-| G-NO-CHECK-THEN-ASSERT | Do not check-then-assert |
 | G-NO-TYPE-ALIASES | Do not provide type aliases for common types |
-| G-NO-NAMESPACE-TRESPASS | Do not trespass in other package namespaces |
-| G-NO-DYNAMIC-FFI | Do not use Dynamic for FFI types |
-| G-NO-CATEGORY-THEORY | Do not overuse category theory abstractions |
 | G-NO-PROCESS-STATE | Do not use processes as simple state stores |
 
 ## License
