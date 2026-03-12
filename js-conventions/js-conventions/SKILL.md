@@ -35,3 +35,14 @@ Rules are identified by their section number and semantic anchor from the upstre
 9. Comments must ALWAYS be written in American English, unless the user explicitly requests a different language
 
 **No exceptions**: Even for trivial code, guidelines must be followed.
+
+## ESLint & Prettier Configs
+
+This skill includes reference configurations aligned with the Airbnb JavaScript Style Guide:
+
+- **[.prettierrc.json](./.prettierrc.json)** — Prettier config derived from Airbnb conventions (2-space indent, single quotes, trailing commas, 100-char print width, semicolons).
+- **[eslint.config.js](./eslint.config.js)** — ESLint 9 flat config using [`eslint-config-airbnb-extended`](https://github.com/NishargShah/eslint-config-airbnb-extended), the actively maintained community package for Airbnb rules on ESLint 9+.
+
+> **Note**: The official `eslint-config-airbnb` package does not support ESLint 9 flat config. `eslint-config-airbnb-extended` is the recommended drop-in replacement.
+
+**When to provide these configs**: If the user asks for ESLint configuration, Prettier configuration, or project setup for a JavaScript project, read and copy these files into their project. Adapt the ESLint config if the user needs React support (uncomment/add React plugins).

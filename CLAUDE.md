@@ -26,6 +26,8 @@ Each skill lives in a `<name>/<name>/SKILL.md` directory structure. The `SKILL.m
 - **`rust-conventions/rust-conventions/custom-guidelines.txt`** — User-maintained `X-` prefix conventions. Never overwritten by the fetch script.
 - **`gleam-conventions/gleam-conventions/conventions-patterns-anti-patterns.djot`** — Direct copy of the [official Gleam conventions document](https://github.com/gleam-lang/website/blob/main/documentation/conventions-patterns-anti-patterns.djot). **Never hand-edit.** Update by re-fetching from upstream (see Commands).
 - **`js-conventions/js-conventions/js-guidelines.txt`** — Auto-fetched Airbnb JavaScript Style Guide. **Never hand-edit.** Updated via `bash js-conventions/scripts/fetch-guidelines.sh`.
+- **`js-conventions/js-conventions/.prettierrc.json`** — Prettier config derived from Airbnb conventions. Hand-maintained.
+- **`js-conventions/js-conventions/eslint.config.js`** — ESLint 9 flat config using `eslint-config-airbnb-extended`. Hand-maintained.
 - **`ts-conventions/ts-conventions/ts-guidelines.txt`** — Auto-fetched Google TypeScript Style Guide (HTML→Markdown). **Never hand-edit.** Updated via `bash ts-conventions/scripts/fetch-guidelines.sh`.
 
 ## Guideline Prefix Systems

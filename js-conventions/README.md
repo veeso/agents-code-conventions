@@ -43,6 +43,19 @@ The skill covers the full Airbnb JavaScript Style Guide:
 - **Type Casting & Coercion** - explicit coercion
 - **Naming Conventions** - camelCase, PascalCase, UPPER_SNAKE_CASE
 
+## ESLint & Prettier Configs
+
+The skill includes ready-to-use configuration files aligned with the Airbnb style guide:
+
+| File | Description | Install command |
+|------|-------------|-----------------|
+| `.prettierrc.json` | Prettier config (2-space indent, single quotes, trailing commas, 100-char width) | `npm install --save-dev prettier` |
+| `eslint.config.js` | ESLint 9 flat config | `npm install --save-dev eslint eslint-config-airbnb-extended` |
+
+> **Note**: The official `eslint-config-airbnb` package does not support ESLint 9 flat config. The config uses [`eslint-config-airbnb-extended`](https://github.com/NishargShah/eslint-config-airbnb-extended), the actively maintained community replacement.
+
+When you ask Claude to set up ESLint or Prettier for your JavaScript project, it will provide these configs automatically.
+
 ## Install
 
 ### Global install (all projects)
