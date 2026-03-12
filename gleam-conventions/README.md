@@ -3,28 +3,65 @@
 ![claude](https://img.shields.io/badge/Claude-D97757?style=for-the-badge&logo=claude&logoColor=white)
 ![gleam](https://img.shields.io/badge/Gleam-ffaff3?style=for-the-badge&logo=gleam&logoColor=white)
 
-A [Claude Code](https://claude.ai/code) skill that enforces idiomatic Gleam coding conventions when writing or modifying `.gleam` files. The skill is based on the official Gleam conventions document and patterns observed across major Gleam projects (stdlib, gleam_otp, gleam_erlang, Lustre, mug, gftp).
+A [Claude Code](https://claude.ai/code) skill that enforces idiomatic Gleam coding conventions when writing or modifying `.gleam` files. The skill uses the [official Gleam conventions, patterns, and anti-patterns document](https://github.com/gleam-lang/website/blob/main/documentation/conventions-patterns-anti-patterns.djot) directly from the Gleam project.
 
 ## What it does
 
-When activated, the skill instructs Claude Code to follow the **Pragmatic Gleam Guidelines** (`gleam-guidelines.txt`) before writing or modifying any Gleam code. The guidelines cover:
+When activated, the skill instructs Claude Code to follow the official Gleam conventions document (`conventions-patterns-anti-patterns.djot`) before writing or modifying any Gleam code. The document is organized into three tiers:
 
-- **Official Gleam conventions** - qualified imports, function annotations, Result for fallibility, singular modules, acronyms, conversion naming, core libraries, source directories
-- **Naming conventions** - `snake_case` for functions/variables, `PascalCase` for types/constructors, stdlib naming patterns
-- **Module organization** - package structure, `internal/` for private APIs, focused modules
-- **Documentation** - module docs (`////`), item docs (`///`), canonical sections, variant docs, liberal comments
-- **Error handling** - `Result` types, specific error types, `use` chaining, no panic in libraries
-- **Type design** - opaque types, custom types, labelled arguments, make invalid states impossible
-- **Import conventions** - qualified imports only for functions/constants, type-only imports
-- **Patterns** - sans-io pattern, builder pattern, exhaustive matching, pattern-over-conditionals
-- **Pipe operator** - subject-first parameter design for clean pipe chains
-- **Testing** - mirror source structure, descriptive test names, `_test` suffix
-- **Examples** - `dev/` directory with `example_*` naming convention
-- **OTP actors** - actor model, opaque messages, state guards, request-reply, no process-as-state
-- **Project config** - `gleam.toml`, `gleam format`, conventional commits, tool config
-- **Library design** - wrap externals, callback resources
-- **FFI** - isolate in `_ffi.erl` / `_ffi.mjs` files, no Dynamic for FFI types
-- **Anti-patterns** - abbreviations, namespace pollution, design pattern grouping, utils modules, check-then-assert, type aliases, fragmented modules, namespace trespassing, category theory overuse, processes as state stores
+- **Conventions** (Mandatory) — Rules that must be adhered to always
+- **Patterns** (Recommended) — Idiomatic approaches to apply when beneficial
+- **Anti-patterns** (Avoid) — Known pitfalls that should never be introduced
+
+### Conventions
+
+| Rule |
+| --- |
+| Avoid unqualified importing of functions and constants |
+| Annotate all module functions |
+| Use result for fallible functions |
+| Use singular for module names |
+| Treat acronyms as single words |
+| Conventional conversion function naming (`x_to_y`) |
+| Conventional fallible function naming (`try_` prefix) |
+| Use the core libraries |
+| Keep development tool config in `gleam.toml` |
+| Use the correct source code directory (`src`, `dev`, `test`) |
+
+### Patterns
+
+| Pattern |
+| --- |
+| Design descriptive errors |
+| Comment liberally |
+| Make invalid states impossible |
+| Replace bools with custom types |
+| The sans-io pattern |
+| The builder pattern |
+
+### Anti-patterns
+
+| Anti-pattern |
+| --- |
+| Abbreviations |
+| Fragmented modules |
+| Panicking in libraries |
+| Global namespace pollution |
+| Namespace trespassing |
+| Grouping by design pattern |
+| Check-then-assert |
+| Using dynamic with FFI |
+| Match all variants |
+| Category theory overuse |
+
+## Updating the guidelines
+
+The guidelines file is a direct copy of the upstream djot file from the Gleam website repository. To update it:
+
+```bash
+curl -sL https://raw.githubusercontent.com/gleam-lang/website/main/documentation/conventions-patterns-anti-patterns.djot \
+  -o gleam-conventions/conventions-patterns-anti-patterns.djot
+```
 
 ## Install
 
@@ -54,98 +91,6 @@ This makes the skill available only within that specific project.
 ### Verify installation
 
 After installing, start Claude Code and the skill should be listed when you run `/skills`. You can verify it's working by asking Claude to write a simple Gleam function - it should follow the guidelines automatically.
-
-## Guidelines reference
-
-The full guidelines are in [`gleam-conventions/gleam-guidelines.txt`](./gleam-conventions/gleam-guidelines.txt). Each guideline has a unique ID (e.g., `G-CANONICAL-DOCS`) for easy reference. Here's the complete list:
-
-### Official Conventions (Mandatory)
-
-| ID | Guideline |
-| --- | --- |
-| G-QUALIFIED-ONLY | Avoid unqualified importing of functions and constants |
-| G-ANNOTATE-FN | Annotate all module functions |
-| G-RESULT-ERRORS | Use Result for fallible functions |
-| G-SINGULAR-MODULES | Use singular module names |
-| G-ACRONYMS | Treat acronyms as single words |
-| G-CONVERSION-NAMES | Name conversion functions as prescribed (`x_to_y`) |
-| G-TRY-PREFIX | Name short-circuiting result functions with `try_` |
-| G-CORE-LIBS | Use the core libraries |
-| G-TOOL-CONFIG | Keep tool config in `gleam.toml` |
-| G-SOURCE-DIRS | Use the correct source code directory (`src`, `dev`, `test`) |
-
-### Official Patterns (Recommended)
-
-| ID | Pattern |
-| --- | --- |
-| G-DESCRIPTIVE-ERRORS | Design descriptive errors |
-| G-COMMENT-LIBERALLY | Comment liberally |
-| G-INVALID-STATES | Make invalid states impossible |
-| G-REPLACE-BOOLS | Replace bools with custom types |
-| G-MATCH-ALL-VARIANTS | Match all variants |
-| G-SANS-IO | The sans-io pattern |
-| G-BUILDER-PATTERN | The builder pattern |
-
-### Official Anti-patterns (Avoid)
-
-| ID | Anti-pattern |
-| --- | --- |
-| G-NO-ABBREVIATIONS | Do not use abbreviations |
-| G-NO-FRAGMENTED-MODULES | Do not fragment modules prematurely |
-| G-NO-PANIC-IN-LIBS | Do not panic in libraries |
-| G-NO-NAMESPACE-POLLUTION | Do not pollute the global namespace |
-| G-NO-NAMESPACE-TRESPASS | Do not trespass in other package namespaces |
-| G-NO-DESIGN-PATTERN-GROUPING | Do not group by design pattern |
-| G-NO-CHECK-THEN-ASSERT | Do not check-then-assert |
-| G-NO-DYNAMIC-FFI | Do not use Dynamic for FFI |
-| G-NO-CATEGORY-THEORY | Do not overuse category theory |
-
-### Guidelines
-
-| ID | Guideline |
-| --- | --- |
-| G-DESIGN-FOR-AI | Design with AI use in mind |
-| G-SNAKE-CASE-FN | Use snake_case for functions and variables |
-| G-PASCAL-CASE-TYPES | Use PascalCase for types and constructors |
-| G-CONST-NAMES | Constants use lowercase snake_case |
-| G-STDLIB-NAMES | Follow standard library naming patterns |
-| G-MODULE-STRUCTURE | Modules mirror the package name |
-| G-INTERNAL-MODULES | Internal modules are private implementation |
-| G-FOCUSED-MODULES | Keep modules focused |
-| G-MODULE-DOCS | Module documentation is mandatory |
-| G-CANONICAL-DOCS | Public items have documentation comments |
-| G-DOCUMENT-VARIANTS | Document type variants |
-| G-USE-RESULT-CHAIN | Use `use` for Result chaining |
-| G-ASSERT-APPLICATION-ONLY | Assertions are for application code only |
-| G-OPAQUE-TYPES | Use opaque types for encapsulation |
-| G-CUSTOM-TYPES | Use custom types idiomatically |
-| G-LABELLED-ARGS | Use labelled arguments for clarity |
-| G-PATTERN-OVER-IF | Use pattern matching over conditionals |
-| G-PIPE-FRIENDLY | Design functions for piping |
-| G-TEST-STRUCTURE | Test files mirror source structure |
-| G-TEST-NAMES | Test names describe behavior |
-| G-DEV-EXAMPLES | Examples live in the `dev/` directory |
-| G-ACTOR-MODEL | Use the actor model for concurrent protocols |
-| G-ACTOR-MESSAGES-OPAQUE | Actor message types are opaque |
-| G-ACTOR-STATE-GUARDS | Actors serialize operations with state guards |
-| G-ACTOR-REQUEST-REPLY | Use subjects for request-reply |
-| G-GLEAM-TOML | gleam.toml conventions |
-| G-FORMAT-CODE | Format code before committing |
-| G-CONVENTIONAL-COMMITS | Use conventional commits |
-| G-WRAP-EXTERNALS | Wrap external dependencies |
-| G-CALLBACK-RESOURCES | Use callbacks for resource-scoped operations |
-| G-FFI-ISOLATION | Isolate FFI in dedicated files |
-| G-IMMUTABLE-DATA | Prefer immutable data transformations |
-| G-OPTION-NOT-NIL | Use Option for optional values |
-| G-TODO-PANIC | Use todo and panic appropriately |
-
-### Anti-patterns
-
-| ID | Anti-pattern |
-| --- | --- |
-| G-NO-UTILS | Do not create utils modules |
-| G-NO-TYPE-ALIASES | Do not provide type aliases for common types |
-| G-NO-PROCESS-STATE | Do not use processes as simple state stores |
 
 ## License
 

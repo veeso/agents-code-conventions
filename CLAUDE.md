@@ -24,14 +24,14 @@ Each skill lives in a `<name>/<name>/SKILL.md` directory structure. The `SKILL.m
 
 - **`rust-conventions/rust-conventions/rust-guidelines.txt`** — ~2500-line generated file from Microsoft's upstream mdBook. **Never hand-edit.** Updated via `bash rust-conventions/scripts/fetch-guidelines.sh`.
 - **`rust-conventions/rust-conventions/custom-guidelines.txt`** — User-maintained `X-` prefix conventions. Never overwritten by the fetch script.
-- **`gleam-conventions/gleam-conventions/gleam-guidelines.txt`** — Gleam convention rules with `G-` prefixed IDs.
+- **`gleam-conventions/gleam-conventions/conventions-patterns-anti-patterns.djot`** — Direct copy of the [official Gleam conventions document](https://github.com/gleam-lang/website/blob/main/documentation/conventions-patterns-anti-patterns.djot). **Never hand-edit.** Update by re-fetching from upstream (see Commands).
 - **`js-conventions/js-conventions/js-guidelines.txt`** — Auto-fetched Airbnb JavaScript Style Guide. **Never hand-edit.** Updated via `bash js-conventions/scripts/fetch-guidelines.sh`.
 - **`ts-conventions/ts-conventions/ts-guidelines.txt`** — Auto-fetched Google TypeScript Style Guide (HTML→Markdown). **Never hand-edit.** Updated via `bash ts-conventions/scripts/fetch-guidelines.sh`.
 
 ## Guideline Prefix Systems
 
 - **Rust**: `M-` = Microsoft upstream (auto-generated), `X-` = custom extensions (manually maintained)
-- **Gleam**: `G-` = all Gleam guidelines
+- **Gleam**: Uses the official Gleam conventions djot document directly (no prefix system — rules are organized by tier: Conventions, Patterns, Anti-patterns)
 - **JavaScript**: `AIRBNB-` = Airbnb Style Guide (auto-fetched), rules identified by section number (e.g., `AIRBNB-2.1`)
 - **TypeScript**: `GOOGLE-` = Google Style Guide (auto-fetched), rules identified by section anchor (e.g., `GOOGLE-IDENTIFIERS`)
 
@@ -46,6 +46,10 @@ bash js-conventions/scripts/fetch-guidelines.sh
 
 # Update Google TypeScript guidelines from upstream
 bash ts-conventions/scripts/fetch-guidelines.sh
+
+# Update Gleam conventions from upstream
+curl -sL https://raw.githubusercontent.com/gleam-lang/website/main/documentation/conventions-patterns-anti-patterns.djot \
+  -o gleam-conventions/gleam-conventions/conventions-patterns-anti-patterns.djot
 ```
 
 ## Adding New Conventions
