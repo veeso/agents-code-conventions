@@ -1,6 +1,14 @@
 ---
 name: cargo-toml-conventions
 description: Use when creating or modifying any Cargo.toml file. Enforces dependency sorting, section ordering, workspace dependency usage, and version format conventions. MANDATORY for all Cargo.toml edits.
+license: MIT
+metadata:
+  author: veeso
+  version: "1.0.0"
+  tags:
+    - rust
+    - cargo
+    - conventions
 ---
 
 # Cargo.toml Conventions

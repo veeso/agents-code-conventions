@@ -19,31 +19,17 @@ A [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skill that enfor
 
 ## Installation
 
-### 1. Clone the repository
+Install with [`npx skills`](https://github.com/vercel-labs/skills):
 
 ```bash
-git clone https://github.com/veeso/cargo-toml-conventions.git
+# Install for current project
+npx skills add veeso/agents-code-conventions@cargo-toml-conventions
+
+# Or install globally (all projects)
+npx skills add veeso/agents-code-conventions@cargo-toml-conventions -g
 ```
 
-### 2. Install the skill
-
-Add the skill to your Claude Code configuration by adding the skill path to your project's `.claude/settings.json` (project-wide) or `~/.claude/settings.json` (global):
-
-```json
-{
-  "skills": [
-    "/absolute/path/to/cargo-toml-conventions/cargo-toml-conventions"
-  ]
-}
-```
-
-Or install for a single project by running from your project root:
-
-```bash
-claude mcp add-skill /absolute/path/to/cargo-toml-conventions/cargo-toml-conventions
-```
-
-### 3. Verify installation
+### Verify installation
 
 Start a Claude Code session and ask it to edit a Cargo.toml file. The skill should activate automatically and enforce the conventions.
 

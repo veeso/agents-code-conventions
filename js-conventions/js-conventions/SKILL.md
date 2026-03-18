@@ -1,6 +1,15 @@
 ---
 name: js-conventions
 description: ALWAYS use this skill BEFORE writing or modifying ANY JavaScript code (.js, .mjs, .cjs, .jsx files), even for simple scripts. Enforces Airbnb JavaScript Style Guide conventions (AIRBNB- prefix), validates naming conventions, module organization, ES6+ patterns, and more against js-guidelines.txt. This skill is MANDATORY for all JavaScript development.
+license: MIT
+metadata:
+  author: veeso
+  version: "1.0.0"
+  tags:
+    - javascript
+    - conventions
+    - linting
+    - airbnb
 ---
 
 # JavaScript Development
@@ -40,7 +49,7 @@ Rules are identified by their section number and semantic anchor from the upstre
 
 This skill includes reference configurations aligned with the Airbnb JavaScript Style Guide:
 
-- **[.prettierrc.json](./.prettierrc.json)** — Prettier config derived from Airbnb conventions (2-space indent, single quotes, trailing commas, 100-char print width, semicolons).
+- **[prettierrc.json](./prettierrc.json)** — Prettier config derived from Airbnb conventions (2-space indent, single quotes, trailing commas, 100-char print width, semicolons).
 - **[eslint.config.js](./eslint.config.js)** — ESLint 9 flat config using [`eslint-config-airbnb-extended`](https://github.com/NishargShah/eslint-config-airbnb-extended), the actively maintained community package for Airbnb rules on ESLint 9+.
 
 > **Note**: The official `eslint-config-airbnb` package does not support ESLint 9 flat config. `eslint-config-airbnb-extended` is the recommended drop-in replacement.

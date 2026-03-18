@@ -1,6 +1,15 @@
 ---
 name: ts-conventions
 description: ALWAYS use this skill BEFORE writing or modifying ANY TypeScript code (.ts, .tsx files), even for simple scripts. Enforces Google TypeScript Style Guide conventions (GOOGLE- prefix), validates naming, type system usage, module organization, and more against ts-guidelines.txt. This skill is MANDATORY for all TypeScript development.
+license: CC-BY-3.0
+metadata:
+  author: veeso
+  version: "1.0.0"
+  tags:
+    - typescript
+    - conventions
+    - linting
+    - google
 ---
 
 # TypeScript Development

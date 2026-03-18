@@ -65,28 +65,15 @@ curl -sL https://raw.githubusercontent.com/gleam-lang/website/main/documentation
 
 ## Install
 
-### Global install (all projects)
-
-Clone the repository and copy the `gleam-conventions` directory into your global Claude Code skills directory:
+Install with [`npx skills`](https://github.com/vercel-labs/skills):
 
 ```bash
-git clone https://github.com/veeso/gleam-conventions.git
-cp -r gleam-conventions/gleam-conventions ~/.claude/skills/gleam-conventions
+# Install for current project
+npx skills add veeso/agents-code-conventions@gleam-conventions
+
+# Or install globally (all projects)
+npx skills add veeso/agents-code-conventions@gleam-conventions -g
 ```
-
-This makes the skill available in every project you work on with Claude Code.
-
-### Per-project install
-
-Clone the repository and copy the `gleam-conventions` directory into your project's `.claude/skills/` directory:
-
-```bash
-git clone https://github.com/veeso/gleam-conventions.git
-mkdir -p /path/to/your/project/.claude/skills
-cp -r gleam-conventions/gleam-conventions /path/to/your/project/.claude/skills/gleam-conventions
-```
-
-This makes the skill available only within that specific project.
 
 ### Verify installation
 
