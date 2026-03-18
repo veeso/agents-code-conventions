@@ -1,6 +1,6 @@
-# Cargo.toml Conventions for Claude Code
+# Cargo.toml Conventions
 
-A [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skill that enforces consistent Cargo.toml formatting and structure across all Rust projects.
+A coding agent skill that enforces consistent Cargo.toml formatting and structure across all Rust projects.
 
 ## What it enforces
 
@@ -31,7 +31,7 @@ npx skills add veeso/agents-code-conventions@cargo-toml-conventions -g
 
 ### Verify installation
 
-Start a Claude Code session and ask it to edit a Cargo.toml file. The skill should activate automatically and enforce the conventions.
+Start a coding agent session and ask it to edit a Cargo.toml file. The skill should activate automatically and enforce the conventions.
 
 ## License
 

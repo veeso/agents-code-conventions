@@ -1,6 +1,6 @@
-# Rust Conventions for Claude Code
+# Rust Conventions
 
-A [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skill that enforces Rust coding guidelines when writing or modifying Rust code. It combines [Microsoft's Pragmatic Rust Guidelines](https://github.com/microsoft/rust-guidelines) with custom extensions.
+A coding agent skill that enforces Rust coding guidelines when writing or modifying Rust code. It combines [Microsoft's Pragmatic Rust Guidelines](https://github.com/microsoft/rust-guidelines) with custom extensions.
 
 ## Convention prefixes
 
@@ -32,7 +32,7 @@ npx skills add veeso/agents-code-conventions@rust-conventions -g
 
 ### Verify installation
 
-Start a Claude Code session and ask it to write some Rust code. The skill should activate automatically and enforce the guidelines.
+Start a coding agent session and ask it to write some Rust code. The skill should activate automatically and enforce the guidelines.
 
 ## Updating Microsoft guidelines
 
@@ -42,7 +42,7 @@ To fetch the latest `M-` conventions from Microsoft's upstream repository:
 bash scripts/fetch-guidelines.sh
 ```
 
-Or invoke the `fetch-rust-conventions` skill inside a Claude Code session.
+Or invoke the `fetch-rust-conventions` skill inside a coding agent session.
 
 This only updates `rust-conventions/rust-guidelines.txt`. Your custom `X-` conventions in `rust-conventions/custom-guidelines.txt` are never modified.
 

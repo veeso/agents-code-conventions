@@ -1,13 +1,12 @@
 # Gleam Conventions
 
-![claude](https://img.shields.io/badge/Claude-D97757?style=for-the-badge&logo=claude&logoColor=white)
 ![gleam](https://img.shields.io/badge/Gleam-ffaff3?style=for-the-badge&logo=gleam&logoColor=white)
 
-A [Claude Code](https://claude.ai/code) skill that enforces idiomatic Gleam coding conventions when writing or modifying `.gleam` files. The skill uses the [official Gleam conventions, patterns, and anti-patterns document](https://github.com/gleam-lang/website/blob/main/documentation/conventions-patterns-anti-patterns.djot) directly from the Gleam project.
+A coding agent skill that enforces idiomatic Gleam coding conventions when writing or modifying `.gleam` files. The skill uses the [official Gleam conventions, patterns, and anti-patterns document](https://github.com/gleam-lang/website/blob/main/documentation/conventions-patterns-anti-patterns.djot) directly from the Gleam project.
 
 ## What it does
 
-When activated, the skill instructs Claude Code to follow the official Gleam conventions document (`conventions-patterns-anti-patterns.djot`) before writing or modifying any Gleam code. The document is organized into three tiers:
+When activated, the skill instructs the agent to follow the official Gleam conventions document (`conventions-patterns-anti-patterns.djot`) before writing or modifying any Gleam code. The document is organized into three tiers:
 
 - **Conventions** (Mandatory) — Rules that must be adhered to always
 - **Patterns** (Recommended) — Idiomatic approaches to apply when beneficial
@@ -77,7 +76,7 @@ npx skills add veeso/agents-code-conventions@gleam-conventions -g
 
 ### Verify installation
 
-After installing, start Claude Code and the skill should be listed when you run `/skills`. You can verify it's working by asking Claude to write a simple Gleam function - it should follow the guidelines automatically.
+After installing, start a coding agent session and verify the skill is loaded. You can verify it's working by asking the agent to write a simple Gleam function — it should follow the guidelines automatically.
 
 ## License
 

@@ -1,9 +1,8 @@
 # JavaScript Conventions
 
-![claude](https://img.shields.io/badge/Claude-D97757?style=for-the-badge&logo=claude&logoColor=white)
 ![javascript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 
-A [Claude Code](https://claude.ai/code) skill that enforces the [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript) when writing or modifying JavaScript files.
+A coding agent skill that enforces the [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript) when writing or modifying JavaScript files.
 
 ## Convention prefix
 
@@ -54,7 +53,7 @@ The skill includes ready-to-use configuration files aligned with the Airbnb styl
 
 > **Note**: The official `eslint-config-airbnb` package does not support ESLint 9 flat config. The config uses [`eslint-config-airbnb-extended`](https://github.com/NishargShah/eslint-config-airbnb-extended), the actively maintained community replacement.
 
-When you ask Claude to set up ESLint or Prettier for your JavaScript project, it will provide these configs automatically.
+When you ask the agent to set up ESLint or Prettier for your JavaScript project, it will provide these configs automatically.
 
 ## Install
 
@@ -70,7 +69,7 @@ npx skills add veeso/agents-code-conventions@js-conventions -g
 
 ### Verify installation
 
-After installing, start Claude Code and the skill should be listed when you run `/skills`. You can verify it's working by asking Claude to write a simple JavaScript function.
+After installing, start a coding agent session and verify the skill is loaded. You can verify it's working by asking the agent to write a simple JavaScript function.
 
 ## Updating guidelines
 

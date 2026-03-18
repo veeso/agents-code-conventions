@@ -1,9 +1,8 @@
 # TypeScript Conventions
 
-![claude](https://img.shields.io/badge/Claude-D97757?style=for-the-badge&logo=claude&logoColor=white)
 ![typescript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 
-A [Claude Code](https://claude.ai/code) skill that enforces the [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html) when writing or modifying TypeScript files.
+A coding agent skill that enforces the [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html) when writing or modifying TypeScript files.
 
 ## Convention prefix
 
@@ -47,7 +46,7 @@ npx skills add veeso/agents-code-conventions@ts-conventions -g
 
 ### Verify installation
 
-After installing, start Claude Code and the skill should be listed when you run `/skills`. You can verify it's working by asking Claude to write a simple TypeScript function.
+After installing, start a coding agent session and verify the skill is loaded. You can verify it's working by asking the agent to write a simple TypeScript function.
 
 ## Updating guidelines
 
