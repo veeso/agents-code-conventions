@@ -17,33 +17,20 @@ The repo ships with `X-NO-MOD-RS`, which enforces using `module_name.rs` instead
 
 ## Installation
 
-### 1. Clone the repository
+Install with [`npx skills`](https://github.com/vercel-labs/skills):
 
 ```bash
-git clone https://github.com/veeso/rust-conventions.git
+# Install the rust-conventions skill
+npx skills add veeso/agents-code-conventions@rust-conventions
+
+# Install the fetch helper too (optional)
+npx skills add veeso/agents-code-conventions@fetch-rust-conventions
+
+# Or install globally (all projects)
+npx skills add veeso/agents-code-conventions@rust-conventions -g
 ```
 
-### 2. Install the skills
-
-Add the skills to your Claude Code project by adding the skill paths to your project's `.claude/settings.json` (project-wide) or `~/.claude/settings.json` (global):
-
-```json
-{
-  "skills": [
-    "/absolute/path/to/rust-conventions/rust-conventions",
-    "/absolute/path/to/rust-conventions/fetch-conventions"
-  ]
-}
-```
-
-Or install for a single project by running from your project root:
-
-```bash
-claude mcp add-skill /absolute/path/to/rust-conventions/rust-conventions
-claude mcp add-skill /absolute/path/to/rust-conventions/fetch-conventions
-```
-
-### 3. Verify installation
+### Verify installation
 
 Start a Claude Code session and ask it to write some Rust code. The skill should activate automatically and enforce the guidelines.
 

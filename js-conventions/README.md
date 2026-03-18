@@ -49,7 +49,7 @@ The skill includes ready-to-use configuration files aligned with the Airbnb styl
 
 | File | Description | Install command |
 |------|-------------|-----------------|
-| `.prettierrc.json` | Prettier config (2-space indent, single quotes, trailing commas, 100-char width) | `npm install --save-dev prettier` |
+| `prettierrc.json` | Prettier config (2-space indent, single quotes, trailing commas, 100-char width) | `npm install --save-dev prettier` |
 | `eslint.config.js` | ESLint 9 flat config | `npm install --save-dev eslint eslint-config-airbnb-extended` |
 
 > **Note**: The official `eslint-config-airbnb` package does not support ESLint 9 flat config. The config uses [`eslint-config-airbnb-extended`](https://github.com/NishargShah/eslint-config-airbnb-extended), the actively maintained community replacement.
@@ -58,23 +58,14 @@ When you ask Claude to set up ESLint or Prettier for your JavaScript project, it
 
 ## Install
 
-### Global install (all projects)
-
-Clone the repository and copy the `js-conventions` directory into your global Claude Code skills directory:
+Install with [`npx skills`](https://github.com/vercel-labs/skills):
 
 ```bash
-git clone https://github.com/veeso/agents-code-conventions.git
-cp -r agents-code-conventions/js-conventions/js-conventions ~/.claude/skills/js-conventions
-```
+# Install for current project
+npx skills add veeso/agents-code-conventions@js-conventions
 
-### Per-project install
-
-Clone the repository and copy the `js-conventions` directory into your project's `.claude/skills/` directory:
-
-```bash
-git clone https://github.com/veeso/agents-code-conventions.git
-mkdir -p /path/to/your/project/.claude/skills
-cp -r agents-code-conventions/js-conventions/js-conventions /path/to/your/project/.claude/skills/js-conventions
+# Or install globally (all projects)
+npx skills add veeso/agents-code-conventions@js-conventions -g
 ```
 
 ### Verify installation

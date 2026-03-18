@@ -1,0 +1,97 @@
+name: Test Skills Installation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test-install:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - skill: rust-conventions
+            expected_files: "rust-guidelines.txt custom-guidelines.txt"
+          - skill: fetch-rust-conventions
+            expected_files: ""
+          - skill: gleam-conventions
+            expected_files: "conventions-patterns-anti-patterns.djot"
+          - skill: cargo-toml-conventions
+            expected_files: ""
+          - skill: js-conventions
+            expected_files: "js-guidelines.txt prettierrc.json eslint.config.js"
+          - skill: ts-conventions
+            expected_files: "ts-guidelines.txt"
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Init claude directory
+        run: mkdir -p $HOME/.claude
+
+      - name: Install skill '${{ matrix.skill }}'
+        run: npx -y skills add . --skill ${{ matrix.skill }} -y -g
+
+      - name: Verify SKILL.md is discoverable
+        run: |
+          ls -l $HOME/.agents/skills
+          ls -l $HOME/.claude/skills
+          # Check that the skill was installed to .claude/skills/
+          found=$(find -L $HOME/.claude/skills/ -name "SKILL.md" 2>/dev/null | head -1)
+          if [ -z "$found" ]; then
+            echo "::error::SKILL.md not found in $HOME/.claude/skills/ after installing ${{ matrix.skill }}"
+            exit 1
+          fi
+          echo "Found: $found"
+
+      - name: Verify companion files are accessible
+        if: ${{ matrix.expected_files != '' }}
+        run: |
+          skill_dir=$(find -L $HOME/.claude/skills/ -name "SKILL.md" -printf '%h\n' 2>/dev/null | head -1)
+          if [ -z "$skill_dir" ]; then
+            skill_dir=$(find -L $HOME/.agents/skills/ -name "SKILL.md" -printf '%h\n' 2>/dev/null | head -1)
+          fi
+          echo "Skill directory: $skill_dir"
+          exit_code=0
+          for file in ${{ matrix.expected_files }}; do
+            if [ ! -f "$skill_dir/$file" ]; then
+              echo "::error::Expected file '$file' not found in $skill_dir"
+              exit_code=1
+            else
+              echo "OK: $file"
+            fi
+          done
+          exit $exit_code
+
+  validate-frontmatter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate SKILL.md frontmatter
+        run: |
+          exit_code=0
+          for skill_file in $(find . -name "SKILL.md" -not -path "./.claude/*"); do
+            echo "Checking $skill_file..."
+
+            # Check required fields
+            if ! head -20 "$skill_file" | grep -q "^name:"; then
+              echo "::error file=$skill_file::Missing 'name' field in frontmatter"
+              exit_code=1
+            fi
+            if ! head -20 "$skill_file" | grep -q "^description:"; then
+              echo "::error file=$skill_file::Missing 'description' field in frontmatter"
+              exit_code=1
+            fi
+            if ! head -20 "$skill_file" | grep -q "^license:"; then
+              echo "::error file=$skill_file::Missing 'license' field in frontmatter"
+              exit_code=1
+            fi
+
+            echo "  OK"
+          done
+          exit $exit_code

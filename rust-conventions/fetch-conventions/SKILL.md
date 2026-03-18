@@ -1,6 +1,14 @@
 ---
 name: fetch-rust-conventions
 description: Fetches the latest Microsoft Rust coding guidelines from the upstream repository and updates rust-guidelines.txt. Does NOT modify custom-guidelines.txt (X- prefix conventions). Use when you need to sync with the latest upstream guidelines.
+license: MIT
+metadata:
+  author: veeso
+  version: "1.0.0"
+  tags:
+    - rust
+    - conventions
+    - fetch
 ---
 
 # Fetch Rust Conventions

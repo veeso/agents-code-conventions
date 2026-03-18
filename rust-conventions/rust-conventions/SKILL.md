@@ -1,6 +1,14 @@
 ---
 name: rust-conventions
 description: ALWAYS use this skill BEFORE writing or modifying ANY Rust code (.rs files), even for simple Hello World programs. Enforces Microsoft Rust coding guidelines (M- prefix) and custom extensions (X- prefix), applies M-CANONICAL-DOCS documentation, adds compliance comments, and validates against guidelines. This skill is MANDATORY for all Rust development.
+license: MIT
+metadata:
+  author: veeso
+  version: "1.0.0"
+  tags:
+    - rust
+    - conventions
+    - linting
 ---
 
 # Rust Development

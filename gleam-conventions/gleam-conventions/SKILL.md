@@ -1,6 +1,14 @@
 ---
 name: gleam-conventions
 description: ALWAYS use this skill BEFORE writing or modifying ANY Gleam code (.gleam files), even for simple Hello World programs. Enforces idiomatic Gleam coding guidelines from the official Gleam conventions (conventions, patterns, and anti-patterns). This skill is MANDATORY for all Gleam development.
+license: MIT
+metadata:
+  author: veeso
+  version: "1.0.0"
+  tags:
+    - gleam
+    - conventions
+    - linting
 ---
 
 # Gleam Development

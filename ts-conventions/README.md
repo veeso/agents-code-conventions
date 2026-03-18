@@ -35,23 +35,14 @@ The skill covers the full Google TypeScript Style Guide:
 
 ## Install
 
-### Global install (all projects)
-
-Clone the repository and copy the `ts-conventions` directory into your global Claude Code skills directory:
+Install with [`npx skills`](https://github.com/vercel-labs/skills):
 
 ```bash
-git clone https://github.com/veeso/agents-code-conventions.git
-cp -r agents-code-conventions/ts-conventions/ts-conventions ~/.claude/skills/ts-conventions
-```
+# Install for current project
+npx skills add veeso/agents-code-conventions@ts-conventions
 
-### Per-project install
-
-Clone the repository and copy the `ts-conventions` directory into your project's `.claude/skills/` directory:
-
-```bash
-git clone https://github.com/veeso/agents-code-conventions.git
-mkdir -p /path/to/your/project/.claude/skills
-cp -r agents-code-conventions/ts-conventions/ts-conventions /path/to/your/project/.claude/skills/ts-conventions
+# Or install globally (all projects)
+npx skills add veeso/agents-code-conventions@ts-conventions -g
 ```
 
 ### Verify installation
