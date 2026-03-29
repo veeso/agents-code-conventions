@@ -33,6 +33,13 @@ HEADER
 cat "$OUTPUT_FILE.tmp" >> "$OUTPUT_FILE"
 rm -f "$OUTPUT_FILE.tmp"
 
+# Normalize rule references from MD001 to MD-001 format
+if [[ "$(uname)" == "Darwin" ]]; then
+    sed -i '' -E 's/MD([0-9]{3})/MD-\1/g' "$OUTPUT_FILE"
+else
+    sed -i -E 's/MD([0-9]{3})/MD-\1/g' "$OUTPUT_FILE"
+fi
+
 # Remove BOM characters if present
 if command -v sed &>/dev/null; then
     if [[ "$(uname)" == "Darwin" ]]; then
