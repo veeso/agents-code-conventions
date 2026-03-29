@@ -15,6 +15,7 @@ This is a monorepo of **Claude Code skills** that enforce language-specific codi
 | `cargo-toml-conventions/` | `cargo-toml-conventions` | `Cargo.toml` files |
 | `js-conventions/` | `js-conventions` | JavaScript `.js`, `.mjs`, `.cjs`, `.jsx` files |
 | `ts-conventions/` | `ts-conventions` | TypeScript `.ts`, `.tsx` files |
+| `md-conventions/` | `md-conventions` | Markdown `.md` files |
 
 ## How Skills Work
 
@@ -29,6 +30,7 @@ Each skill lives in a `<name>/<name>/SKILL.md` directory structure. The `SKILL.m
 - **`js-conventions/js-conventions/prettierrc.json`** — Prettier config derived from Airbnb conventions. Hand-maintained.
 - **`js-conventions/js-conventions/eslint.config.js`** — ESLint 9 flat config using `eslint-config-airbnb-extended`. Hand-maintained.
 - **`ts-conventions/ts-conventions/ts-guidelines.txt`** — Auto-fetched Google TypeScript Style Guide (HTML→Markdown). **Never hand-edit.** Updated via `bash ts-conventions/scripts/fetch-guidelines.sh`.
+- **`md-conventions/md-conventions/md-guidelines.txt`** — Auto-fetched markdownlint rules documentation. **Never hand-edit.** Updated via `bash md-conventions/scripts/fetch-guidelines.sh`.
 
 ## Guideline Prefix Systems
 
@@ -36,6 +38,7 @@ Each skill lives in a `<name>/<name>/SKILL.md` directory structure. The `SKILL.m
 - **Gleam**: Uses the official Gleam conventions djot document directly (no prefix system — rules are organized by tier: Conventions, Patterns, Anti-patterns)
 - **JavaScript**: `AIRBNB-` = Airbnb Style Guide (auto-fetched), rules identified by section number (e.g., `AIRBNB-2.1`)
 - **TypeScript**: `GOOGLE-` = Google Style Guide (auto-fetched), rules identified by section anchor (e.g., `GOOGLE-IDENTIFIERS`)
+- **Markdown**: `MD-` = markdownlint rules (auto-fetched), rules identified by rule number (e.g., `MD-001`)
 
 ## Commands
 
@@ -52,6 +55,9 @@ bash ts-conventions/scripts/fetch-guidelines.sh
 # Update Gleam conventions from upstream
 curl -sL https://raw.githubusercontent.com/gleam-lang/website/main/documentation/conventions-patterns-anti-patterns.djot \
   -o gleam-conventions/gleam-conventions/conventions-patterns-anti-patterns.djot
+
+# Update markdownlint rules from upstream
+bash md-conventions/scripts/fetch-guidelines.sh
 ```
 
 ## Adding New Conventions

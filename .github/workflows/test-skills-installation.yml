@@ -23,6 +23,8 @@ jobs:
             expected_files: "js-guidelines.txt prettierrc.json eslint.config.js"
           - skill: ts-conventions
             expected_files: "ts-guidelines.txt"
+          - skill: md-conventions
+            expected_files: "md-guidelines.txt"
     steps:
       - uses: actions/checkout@v6
 

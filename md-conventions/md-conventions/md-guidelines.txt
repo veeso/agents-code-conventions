@@ -16,7 +16,7 @@ versions of the examples.
 
 <a name="md001"></a>
 
-## `MD001` - Heading levels should only increment by one level at a time
+## `MD-001` - Heading levels should only increment by one level at a time
 
 Tags: `headings`
 
@@ -70,7 +70,7 @@ when skipped - especially for accessibility scenarios. More information:
 
 <a name="md003"></a>
 
-## `MD003` - Heading style
+## `MD-003` - Heading style
 
 Tags: `headings`
 
@@ -132,7 +132,7 @@ Rationale: Consistent formatting makes it easier to understand a document.
 
 <a name="md004"></a>
 
-## `MD004` - Unordered list style
+## `MD-004` - Unordered list style
 
 Tags: `bullet`, `ul`
 
@@ -185,7 +185,7 @@ Rationale: Consistent formatting makes it easier to understand a document.
 
 <a name="md005"></a>
 
-## `MD005` - Inconsistent indentation for list items at the same level
+## `MD-005` - Inconsistent indentation for list items at the same level
 
 Tags: `bullet`, `indentation`, `ul`
 
@@ -241,7 +241,7 @@ Rationale: Violations of this rule can lead to improperly rendered content.
 
 <a name="md007"></a>
 
-## `MD007` - Unordered list indentation
+## `MD-007` - Unordered list indentation
 
 Tags: `bullet`, `indentation`, `ul`
 
@@ -296,7 +296,7 @@ Note: See [Prettier.md](Prettier.md) for compatibility information.
 
 <a name="md009"></a>
 
-## `MD009` - Trailing spaces
+## `MD-009` - Trailing spaces
 
 Tags: `whitespace`
 
@@ -349,7 +349,7 @@ has no purpose and does not affect the rendering of content.
 
 <a name="md010"></a>
 
-## `MD010` - Hard tabs
+## `MD-010` - Hard tabs
 
 Tags: `hard_tab`, `whitespace`
 
@@ -414,7 +414,7 @@ More information:
 
 <a name="md011"></a>
 
-## `MD011` - Reversed link syntax
+## `MD-011` - Reversed link syntax
 
 Tags: `links`
 
@@ -447,7 +447,7 @@ Rationale: Reversed links are not rendered as usable links.
 
 <a name="md012"></a>
 
-## `MD012` - Multiple consecutive blank lines
+## `MD-012` - Multiple consecutive blank lines
 
 Tags: `blank_lines`, `whitespace`
 
@@ -488,7 +488,7 @@ affect the rendering of content.
 
 <a name="md013"></a>
 
-## `MD013` - Line length
+## `MD-013` - Line length
 
 Tags: `line_length`
 
@@ -549,7 +549,7 @@ More information: <https://cirosantilli.com/markdown-style-guide#line-wrapping>.
 
 <a name="md014"></a>
 
-## `MD014` - Dollar signs used before commands without showing output
+## `MD-014` - Dollar signs used before commands without showing output
 
 Tags: `code`
 
@@ -606,7 +606,7 @@ for more information.
 
 <a name="md018"></a>
 
-## `MD018` - No space after hash on atx style heading
+## `MD-018` - No space after hash on atx style heading
 
 Tags: `atx`, `headings`, `spaces`
 
@@ -636,7 +636,7 @@ Rationale: Violations of this rule can lead to improperly rendered content.
 
 <a name="md019"></a>
 
-## `MD019` - Multiple spaces after hash on atx style heading
+## `MD-019` - Multiple spaces after hash on atx style heading
 
 Tags: `atx`, `headings`, `spaces`
 
@@ -667,7 +667,7 @@ content.
 
 <a name="md020"></a>
 
-## `MD020` - No space inside hashes on closed atx style heading
+## `MD-020` - No space inside hashes on closed atx style heading
 
 Tags: `atx_closed`, `headings`, `spaces`
 
@@ -699,7 +699,7 @@ Rationale: Violations of this rule can lead to improperly rendered content.
 
 <a name="md021"></a>
 
-## `MD021` - Multiple spaces inside hashes on closed atx style heading
+## `MD-021` - Multiple spaces inside hashes on closed atx style heading
 
 Tags: `atx_closed`, `headings`, `spaces`
 
@@ -733,7 +733,7 @@ content.
 
 <a name="md022"></a>
 
-## `MD022` - Headings should be surrounded by blank lines
+## `MD-022` - Headings should be surrounded by blank lines
 
 Tags: `blank_lines`, `headings`
 
@@ -778,7 +778,7 @@ individually, specify a `number[]` where values correspond to heading levels
 1-6 (in order).
 
 Notes: If `lines_above` or `lines_below` are configured to require more than one
-blank line, [MD012/no-multiple-blanks](md012.md) should also be customized. This
+blank line, [MD-012/no-multiple-blanks](md012.md) should also be customized. This
 rule checks for *at least* as many blank lines as specified; any extra blank
 lines are ignored.
 
@@ -788,7 +788,7 @@ as regular text.
 
 <a name="md023"></a>
 
-## `MD023` - Headings must start at the beginning of the line
+## `MD-023` - Headings must start at the beginning of the line
 
 Tags: `headings`, `spaces`
 
@@ -824,7 +824,7 @@ parsed as headings, and will instead appear as regular text.
 
 <a name="md024"></a>
 
-## `MD024` - Multiple headings with the same content
+## `MD-024` - Multiple headings with the same content
 
 Tags: `headings`
 
@@ -871,7 +871,7 @@ heading name; headings with the same content can cause problems with that.
 
 <a name="md025"></a>
 
-## `MD025` - Multiple top-level headings in the same document
+## `MD-025` - Multiple top-level headings in the same document
 
 Tags: `headings`
 
@@ -923,7 +923,7 @@ be contained within this heading.
 
 <a name="md026"></a>
 
-## `MD026` - Trailing punctuation in heading
+## `MD-026` - Trailing punctuation in heading
 
 Tags: `headings`
 
@@ -966,7 +966,7 @@ Rationale: Headings are not meant to be full sentences. More information:
 
 <a name="md027"></a>
 
-## `MD027` - Multiple spaces after blockquote symbol
+## `MD-027` - Multiple spaces after blockquote symbol
 
 Tags: `blockquote`, `indentation`, `whitespace`
 
@@ -1001,7 +1001,7 @@ Rationale: Consistent formatting makes it easier to understand a document.
 
 <a name="md028"></a>
 
-## `MD028` - Blank line inside blockquote
+## `MD-028` - Blank line inside blockquote
 
 Tags: `blockquote`, `whitespace`
 
@@ -1044,7 +1044,7 @@ separate blockquotes.
 
 <a name="md029"></a>
 
-## `MD029` - Ordered list item prefix
+## `MD-029` - Ordered list item prefix
 
 Tags: `ol`
 
@@ -1147,7 +1147,7 @@ Rationale: Consistent formatting makes it easier to understand a document.
 
 <a name="md030"></a>
 
-## `MD030` - Spaces after list markers
+## `MD-030` - Spaces after list markers
 
 Tags: `ol`, `ul`, `whitespace`
 
@@ -1232,7 +1232,7 @@ Note: See [Prettier.md](Prettier.md) for compatibility information.
 
 <a name="md031"></a>
 
-## `MD031` - Fenced code blocks should be surrounded by blank lines
+## `MD-031` - Fenced code blocks should be surrounded by blank lines
 
 Tags: `blank_lines`, `code`
 
@@ -1285,7 +1285,7 @@ not parse fenced code blocks that don't have blank lines before and after them.
 
 <a name="md032"></a>
 
-## `MD032` - Lists should be surrounded by blank lines
+## `MD-032` - Lists should be surrounded by blank lines
 
 Tags: `blank_lines`, `bullet`, `ol`, `ul`
 
@@ -1343,7 +1343,7 @@ will not parse lists that don't have blank lines before and after them.
 
 <a name="md033"></a>
 
-## `MD033` - Inline HTML
+## `MD-033` - Inline HTML
 
 Tags: `html`
 
@@ -1379,7 +1379,7 @@ who are rendering Markdown documents into something other than HTML.
 
 <a name="md034"></a>
 
-## `MD034` - Bare URL used
+## `MD-034` - Bare URL used
 
 Tags: `links`, `url`
 
@@ -1437,7 +1437,7 @@ link by some Markdown parsers.
 
 <a name="md035"></a>
 
-## `MD035` - Horizontal rule style
+## `MD-035` - Horizontal rule style
 
 Tags: `hr`
 
@@ -1477,7 +1477,7 @@ Rationale: Consistent formatting makes it easier to understand a document.
 
 <a name="md036"></a>
 
-## `MD036` - Emphasis used instead of a heading
+## `MD-036` - Emphasis used instead of a heading
 
 Tags: `emphasis`, `headings`
 
@@ -1516,7 +1516,7 @@ Consectetur adipiscing elit, sed do eiusmod.
 Note: This rule looks for single-line paragraphs that consist entirely
 of emphasized text. It won't fire on emphasis used within regular text,
 multi-line emphasized paragraphs, or paragraphs ending in punctuation
-(normal or full-width). Similarly to rule MD026, you can configure what
+(normal or full-width). Similarly to rule MD-026, you can configure what
 characters are recognized as punctuation.
 
 Rationale: Using emphasis instead of a heading prevents tools from inferring
@@ -1525,7 +1525,7 @@ the structure of a document. More information:
 
 <a name="md037"></a>
 
-## `MD037` - Spaces inside emphasis markers
+## `MD-037` - Spaces inside emphasis markers
 
 Tags: `emphasis`, `whitespace`
 
@@ -1565,7 +1565,7 @@ intended by the author.
 
 <a name="md038"></a>
 
-## `MD038` - Spaces inside code span elements
+## `MD-038` - Spaces inside code span elements
 
 Tags: `code`, `whitespace`
 
@@ -1620,7 +1620,7 @@ improperly-rendered content.
 
 <a name="md039"></a>
 
-## `MD039` - Spaces inside link text
+## `MD-039` - Spaces inside link text
 
 Tags: `links`, `whitespace`
 
@@ -1644,7 +1644,7 @@ Rationale: Consistent formatting makes it easier to understand a document.
 
 <a name="md040"></a>
 
-## `MD040` - Fenced code blocks should have a language specified
+## `MD-040` - Fenced code blocks should have a language specified
 
 Tags: `code`, `language`
 
@@ -1699,7 +1699,7 @@ correct syntax highlighting for code. More information:
 
 <a name="md041"></a>
 
-## `MD041` - First line in a file should be a top-level heading
+## `MD-041` - First line in a file should be a top-level heading
 
 Tags: `headings`
 
@@ -1766,7 +1766,7 @@ information: <https://cirosantilli.com/markdown-style-guide#top-level-header>.
 
 <a name="md042"></a>
 
-## `MD042` - No empty links
+## `MD-042` - No empty links
 
 Tags: `links`
 
@@ -1801,7 +1801,7 @@ links.
 
 <a name="md043"></a>
 
-## `MD043` - Required heading structure
+## `MD-043` - Required heading structure
 
 Tags: `headings`
 
@@ -1891,7 +1891,7 @@ a set of similar content.
 
 <a name="md044"></a>
 
-## `MD044` - Proper names should have the correct capitalization
+## `MD-044` - Proper names should have the correct capitalization
 
 Tags: `spelling`
 
@@ -1939,7 +1939,7 @@ Rationale: Incorrect capitalization of proper names is usually a mistake.
 
 <a name="md045"></a>
 
-## `MD045` - Images should have alternate text (alt text)
+## `MD-045` - Images should have alternate text (alt text)
 
 Tags: `accessibility`, `images`
 
@@ -1990,7 +1990,7 @@ content of an image for people who may not be able to see it.
 
 <a name="md046"></a>
 
-## `MD046` - Code block style
+## `MD-046` - Code block style
 
 Tags: `code`
 
@@ -2033,7 +2033,7 @@ Rationale: Consistent formatting makes it easier to understand a document.
 
 <a name="md047"></a>
 
-## `MD047` - Files should end with a single newline character
+## `MD-047` - Files should end with a single newline character
 
 Tags: `blank_lines`
 
@@ -2070,7 +2070,7 @@ file?][stack-exchange]
 
 <a name="md048"></a>
 
-## `MD048` - Code fence style
+## `MD-048` - Code fence style
 
 Tags: `code`
 
@@ -2115,7 +2115,7 @@ Rationale: Consistent formatting makes it easier to understand a document.
 
 <a name="md049"></a>
 
-## `MD049` - Emphasis style
+## `MD-049` - Emphasis style
 
 Tags: `emphasis`
 
@@ -2154,7 +2154,7 @@ Rationale: Consistent formatting makes it easier to understand a document.
 
 <a name="md050"></a>
 
-## `MD050` - Strong style
+## `MD-050` - Strong style
 
 Tags: `emphasis`
 
@@ -2192,7 +2192,7 @@ Rationale: Consistent formatting makes it easier to understand a document.
 
 <a name="md051"></a>
 
-## `MD051` - Link fragments should be valid
+## `MD-051` - Link fragments should be valid
 
 Tags: `links`
 
@@ -2312,7 +2312,7 @@ enforces the [GitHub heading algorithm][github-heading-algorithm]:
 
 <a name="md052"></a>
 
-## `MD052` - Reference links and images should use a label that is defined
+## `MD-052` - Reference links and images should use a label that is defined
 
 Tags: `images`, `links`
 
@@ -2367,7 +2367,7 @@ default value of this parameter ignores the checkbox syntax used by
 
 <a name="md053"></a>
 
-## `MD053` - Link and image reference definitions should be needed
+## `MD-053` - Link and image reference definitions should be needed
 
 Tags: `images`, `links`
 
@@ -2408,7 +2408,7 @@ for adding non-HTML comments to Markdown:
 
 <a name="md054"></a>
 
-## `MD054` - Link and image style
+## `MD-054` - Link and image style
 
 Tags: `images`, `links`
 
@@ -2511,7 +2511,7 @@ in Markdown form, but require a separate link reference definition.
 
 <a name="md055"></a>
 
-## `MD055` - Table pipe style
+## `MD-055` - Table pipe style
 
 Tags: `table`
 
@@ -2569,7 +2569,7 @@ help provide visual clarity.
 
 <a name="md056"></a>
 
-## `MD056` - Table column count
+## `MD-056` - Table column count
 
 Tags: `table`
 
@@ -2609,7 +2609,7 @@ Missing cells in a row create holes in the table and suggest an omission.
 
 <a name="md058"></a>
 
-## `MD058` - Tables should be surrounded by blank lines
+## `MD-058` - Tables should be surrounded by blank lines
 
 Tags: `table`
 
@@ -2660,7 +2660,7 @@ tables that don't have blank lines before and after them.
 
 <a name="md059"></a>
 
-## `MD059` - Link text should be descriptive
+## `MD-059` - Link text should be descriptive
 
 Tags: `accessibility`, `links`
 
@@ -2696,7 +2696,7 @@ More information:
 
 <a name="md060"></a>
 
-## `MD060` - Table column style
+## `MD-060` - Table column style
 
 Tags: `table`
 
