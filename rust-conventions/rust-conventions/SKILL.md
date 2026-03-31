@@ -39,6 +39,5 @@ Both sets of guidelines MUST be followed.
 4. Apply proper M-CANONICAL-DOCS documentation format
 5. Add compliance comments
 6. Comments must ALWAYS be written in American English, unless the user explicitly requests a different comment language
-7. If the file is fully compliant, add a comment: `// Rust guideline compliant {date}` where {date} is the guideline date/version
 
 **No exceptions**: Even for trivial code like "Hello World", guidelines must be followed.
