@@ -44,5 +44,6 @@ Rules are identified by their rule number from the upstream documentation (e.g.,
 9. Files must end with a single newline character (MD-047)
 10. No bare URLs — use angle brackets or proper link syntax (MD-034)
 11. Use consistent emphasis style throughout the document (MD-049, MD-050)
+12. Tables must use the `aligned` style — all pipe characters vertically aligned and cells padded so every row has the same visual width per column (MD-060, style: `aligned`)
 
 **No exceptions**: Even for trivial Markdown files, guidelines must be followed.
