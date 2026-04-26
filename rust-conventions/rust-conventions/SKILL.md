@@ -1,6 +1,6 @@
 ---
 name: rust-conventions
-description: ALWAYS use this skill BEFORE writing or modifying ANY Rust code (.rs files), even for simple Hello World programs. Enforces Microsoft Rust coding guidelines (M- prefix) and custom extensions (X- prefix), applies M-CANONICAL-DOCS documentation, adds compliance comments, and validates against guidelines. This skill is MANDATORY for all Rust development.
+description: ALWAYS use this skill BEFORE writing or modifying ANY Rust code (.rs files), even for simple Hello World programs. Enforces Microsoft Rust coding guidelines (M- prefix) and custom extensions (X- prefix), applies M-CANONICAL-DOCS documentation, and validates against guidelines. This skill is MANDATORY for all Rust development.
 license: MIT
 metadata:
   author: veeso
@@ -37,7 +37,6 @@ Both sets of guidelines MUST be followed.
 2. Read [custom-guidelines.txt](./custom-guidelines.txt) to understand all `X-` compliance requirements
 3. Before writing/modifying ANY Rust code, ensure edits conform to both guideline sets
 4. Apply proper M-CANONICAL-DOCS documentation format
-5. Add compliance comments
-6. Comments must ALWAYS be written in American English, unless the user explicitly requests a different comment language
+5. Comments must ALWAYS be written in American English, unless the user explicitly requests a different comment language
 
 **No exceptions**: Even for trivial code like "Hello World", guidelines must be followed.

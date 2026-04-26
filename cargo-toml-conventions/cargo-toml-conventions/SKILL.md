@@ -118,6 +118,29 @@ If a member crate needs extra features beyond the workspace declaration, add the
 tokio = { workspace = true, features = ["test-util"] }
 ```
 
+**Path dependencies to other workspace crates** MUST also go through `[workspace.dependencies]`. Never use `path = "..."` directly in a member crate's dependency table.
+
+```toml
+# WRONG — member crate Cargo.toml
+[dependencies]
+my-utils = { path = "../my-utils" }
+
+# CORRECT — workspace root Cargo.toml
+[workspace.dependencies]
+my-utils = { path = "my-utils" }
+
+# CORRECT — member crate Cargo.toml
+[dependencies]
+my-utils = { workspace = true }
+```
+
+If a member crate needs extra features from a workspace path dependency, add them locally:
+
+```toml
+[dependencies]
+my-utils = { workspace = true, features = ["serde"] }
+```
+
 ### 6. Version Format
 
 Use **bare versions** (no prefix symbol). Do NOT use `^`, `~`, or `=` prefixes.
@@ -215,7 +238,7 @@ native-tls = { version = "0.2", optional = true }
 | `[package]` fields | name > version > edition > authors > description > license > repository > rest |
 | Section order | package > features > deps > dev-deps > build-deps > bin/lib > workspace |
 | Features sorted | Feature names and their item lists are alphabetical |
-| Workspace deps | Member crates use `workspace = true`, not inline versions |
+| Workspace deps | Member crates use `workspace = true`, not inline versions or `path` |
 | Bare versions | No `^` / `~` / `=` prefix; use shortest specifier (`"1"` not `"1.0.0"`) |
 | Short form | `crate = "1"` not `crate = { version = "1" }` when only version is needed |
 | Key order | version > workspace > default-features > features > optional |
@@ -226,6 +249,7 @@ native-tls = { version = "0.2", optional = true }
 
 - Appending new dependencies at the end instead of inserting in sorted position
 - Duplicating a workspace dependency version in a member crate instead of using `workspace = true`
+- Using `path = "../sibling-crate"` directly in a member crate instead of declaring the path dependency in `[workspace.dependencies]` and referencing it with `workspace = true`
 - Using `^` prefix out of habit (it's the default and redundant)
 - Omitting `edition` from `[package]`
 - Using `{ version = "1" }` inline table when the short form `"1"` suffices
