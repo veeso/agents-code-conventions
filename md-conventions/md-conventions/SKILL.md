@@ -45,5 +45,12 @@ Rules are identified by their rule number from the upstream documentation (e.g.,
 10. No bare URLs — use angle brackets or proper link syntax (MD-034)
 11. Use consistent emphasis style throughout the document (MD-049, MD-050)
 12. Tables must use the `aligned` style — all pipe characters vertically aligned and cells padded so every row has the same visual width per column (MD-060, style: `aligned`)
+13. After modifying any Markdown file containing tables, run [`fmt-md-tables`](https://github.com/veeso/fmt-md-tables) in-place to enforce table alignment (MD-060):
+
+    ```bash
+    fmt-md-tables -i <FILE>
+    ```
+
+    Install via `uv tool install fmt-md-tables` or run ad-hoc with `uvx fmt-md-tables -i <FILE>`. Skip only if file has no tables.
 
 **No exceptions**: Even for trivial Markdown files, guidelines must be followed.
