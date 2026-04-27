@@ -6,10 +6,10 @@ A coding agent skill that enforces Rust coding guidelines when writing or modify
 
 Guidelines use two prefixes to distinguish their origin:
 
-| Prefix | Source | File | Example |
-|--------|--------|------|---------|
-| `M-` | [Microsoft Rust Guidelines](https://github.com/microsoft/rust-guidelines) | `rust-conventions/rust-guidelines.txt` | `M-CANONICAL-DOCS`, `M-PUBLIC-DEBUG` |
-| `X-` | Custom extensions | `rust-conventions/custom-guidelines.txt` | `X-NO-MOD-RS` |
+| Prefix | Source                                                                    | File                                     | Example                              |
+| ------ | ------------------------------------------------------------------------- | ---------------------------------------- | ------------------------------------ |
+| `M-`   | [Microsoft Rust Guidelines](https://github.com/microsoft/rust-guidelines) | `rust-conventions/rust-guidelines.txt`   | `M-CANONICAL-DOCS`, `M-PUBLIC-DEBUG` |
+| `X-`   | Custom extensions                                                         | `rust-conventions/custom-guidelines.txt` | `X-NO-MOD-RS`                        |
 
 The `M-` conventions are synced from the upstream Microsoft repository. The `X-` conventions are maintained independently and are never overwritten by the fetch script.
 
@@ -61,10 +61,10 @@ Description of the convention and how to follow it.
 
 ## Skills included
 
-| Skill | Name | Description |
-|-------|------|-------------|
-| `rust-conventions` | `rust-conventions` | Enforces Rust guidelines when writing/modifying `.rs` files |
-| `fetch-conventions` | `fetch-rust-conventions` | Fetches and updates Microsoft guidelines from upstream |
+| Skill               | Name                     | Description                                                 |
+| ------------------- | ------------------------ | ----------------------------------------------------------- |
+| `rust-conventions`  | `rust-conventions`       | Enforces Rust guidelines when writing/modifying `.rs` files |
+| `fetch-conventions` | `fetch-rust-conventions` | Fetches and updates Microsoft guidelines from upstream      |
 
 ## License
 

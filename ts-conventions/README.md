@@ -8,8 +8,8 @@ A coding agent skill that enforces the [Google TypeScript Style Guide](https://g
 
 Guidelines use the **`GOOGLE-`** prefix followed by the section anchor in UPPER_SNAKE_CASE:
 
-| Prefix | Source | File | Example |
-|--------|--------|------|---------|
+| Prefix    | Source                                                                            | File                               | Example                                        |
+| --------- | --------------------------------------------------------------------------------- | ---------------------------------- | ---------------------------------------------- |
 | `GOOGLE-` | [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html) | `ts-conventions/ts-guidelines.txt` | `GOOGLE-IDENTIFIERS`, `GOOGLE-TYPE-ASSERTIONS` |
 
 Section anchors are derived from the heading `id` attributes in the upstream HTML guide and uppercased with hyphens (e.g., `id="interfaces-vs-type-aliases"` becomes `GOOGLE-INTERFACES-VS-TYPE-ALIASES`).

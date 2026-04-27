@@ -10,14 +10,14 @@ A collection of coding agent skills that enforce language-specific coding conven
 
 ## Available Skills
 
-| Skill | Target | Description |
-|-------|--------|-------------|
-| [rust-conventions](./rust-conventions/) | `.rs` files | Enforces [Microsoft Rust Guidelines](https://github.com/microsoft/rust-guidelines) (`M-` prefix) and custom extensions (`X-` prefix) |
-| [gleam-conventions](./gleam-conventions/) | `.gleam` files | Enforces idiomatic Gleam conventions from the official Gleam conventions document |
-| [cargo-toml-conventions](./cargo-toml-conventions/) | `Cargo.toml` | Enforces consistent formatting, dependency sorting, section ordering, and version conventions |
-| [js-conventions](./js-conventions/) | `.js`, `.mjs`, `.cjs`, `.jsx` files | Enforces [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript) (`AIRBNB-` prefix) |
-| [ts-conventions](./ts-conventions/) | `.ts`, `.tsx` files | Enforces [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html) (`GOOGLE-` prefix) |
-| [md-conventions](./md-conventions/) | `.md` files | Enforces [markdownlint](https://github.com/DavidAnson/markdownlint) rules (`MD-` prefix) |
+| Skill                                               | Target                              | Description                                                                                                                          |
+| --------------------------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| [rust-conventions](./rust-conventions/)             | `.rs` files                         | Enforces [Microsoft Rust Guidelines](https://github.com/microsoft/rust-guidelines) (`M-` prefix) and custom extensions (`X-` prefix) |
+| [gleam-conventions](./gleam-conventions/)           | `.gleam` files                      | Enforces idiomatic Gleam conventions from the official Gleam conventions document                                                    |
+| [cargo-toml-conventions](./cargo-toml-conventions/) | `Cargo.toml`                        | Enforces consistent formatting, dependency sorting, section ordering, and version conventions                                        |
+| [js-conventions](./js-conventions/)                 | `.js`, `.mjs`, `.cjs`, `.jsx` files | Enforces [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript) (`AIRBNB-` prefix)                                    |
+| [ts-conventions](./ts-conventions/)                 | `.ts`, `.tsx` files                 | Enforces [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html) (`GOOGLE-` prefix)                        |
+| [md-conventions](./md-conventions/)                 | `.md` files                         | Enforces [markdownlint](https://github.com/DavidAnson/markdownlint) rules (`MD-` prefix)                                             |
 
 ## Installation
 
@@ -69,14 +69,14 @@ Each skill consists of a `SKILL.md` file (which tells the agent when to activate
 
 Each skill uses prefixed IDs so individual rules can be referenced unambiguously:
 
-| Skill | Prefix | Source |
-|-------|--------|--------|
-| rust-conventions | `M-` | Auto-synced from [microsoft/rust-guidelines](https://github.com/microsoft/rust-guidelines) |
-| rust-conventions | `X-` | Custom extensions, manually maintained |
-| gleam-conventions | — | [Official Gleam conventions document](https://github.com/gleam-lang/website/blob/main/documentation/conventions-patterns-anti-patterns.djot) |
-| js-conventions | `AIRBNB-` | Auto-fetched from [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript) |
-| ts-conventions | `GOOGLE-` | Auto-fetched from [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html) |
-| md-conventions | `MD-` | Auto-fetched from [markdownlint](https://github.com/DavidAnson/markdownlint) |
+| Skill             | Prefix    | Source                                                                                                                                       |
+| ----------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| rust-conventions  | `M-`      | Auto-synced from [microsoft/rust-guidelines](https://github.com/microsoft/rust-guidelines)                                                   |
+| rust-conventions  | `X-`      | Custom extensions, manually maintained                                                                                                       |
+| gleam-conventions | —         | [Official Gleam conventions document](https://github.com/gleam-lang/website/blob/main/documentation/conventions-patterns-anti-patterns.djot) |
+| js-conventions    | `AIRBNB-` | Auto-fetched from [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript)                                                      |
+| ts-conventions    | `GOOGLE-` | Auto-fetched from [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html)                                          |
+| md-conventions    | `MD-`     | Auto-fetched from [markdownlint](https://github.com/DavidAnson/markdownlint)                                                                 |
 
 ### Updating Rust `M-` guidelines
 

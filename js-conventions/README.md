@@ -8,8 +8,8 @@ A coding agent skill that enforces the [Airbnb JavaScript Style Guide](https://g
 
 Guidelines use the **`AIRBNB-`** prefix followed by the rule's section number from the upstream guide:
 
-| Prefix | Source | File | Example |
-|--------|--------|------|---------|
+| Prefix    | Source                                                                | File                               | Example                     |
+| --------- | --------------------------------------------------------------------- | ---------------------------------- | --------------------------- |
 | `AIRBNB-` | [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript) | `js-conventions/js-guidelines.txt` | `AIRBNB-2.1`, `AIRBNB-15.1` |
 
 Rules are numbered by section (e.g., 2.1 = References, rule 1 = "prefer const"). Reference them as `AIRBNB-2.1` in code comments.
@@ -46,10 +46,10 @@ The skill covers the full Airbnb JavaScript Style Guide:
 
 The skill includes ready-to-use configuration files aligned with the Airbnb style guide:
 
-| File | Description | Install command |
-|------|-------------|-----------------|
-| `prettierrc.json` | Prettier config (2-space indent, single quotes, trailing commas, 100-char width) | `npm install --save-dev prettier` |
-| `eslint.config.js` | ESLint 9 flat config | `npm install --save-dev eslint eslint-config-airbnb-extended` |
+| File               | Description                                                                      | Install command                                               |
+| ------------------ | -------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `prettierrc.json`  | Prettier config (2-space indent, single quotes, trailing commas, 100-char width) | `npm install --save-dev prettier`                             |
+| `eslint.config.js` | ESLint 9 flat config                                                             | `npm install --save-dev eslint eslint-config-airbnb-extended` |
 
 > **Note**: The official `eslint-config-airbnb` package does not support ESLint 9 flat config. The config uses [`eslint-config-airbnb-extended`](https://github.com/NishargShah/eslint-config-airbnb-extended), the actively maintained community replacement.
 

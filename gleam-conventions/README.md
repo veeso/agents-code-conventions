@@ -14,44 +14,44 @@ When activated, the skill instructs the agent to follow the official Gleam conve
 
 ### Conventions
 
-| Rule |
-| --- |
-| Avoid unqualified importing of functions and constants |
-| Annotate all module functions |
-| Use result for fallible functions |
-| Use singular for module names |
-| Treat acronyms as single words |
-| Conventional conversion function naming (`x_to_y`) |
-| Conventional fallible function naming (`try_` prefix) |
-| Use the core libraries |
-| Keep development tool config in `gleam.toml` |
+| Rule                                                         |
+| ------------------------------------------------------------ |
+| Avoid unqualified importing of functions and constants       |
+| Annotate all module functions                                |
+| Use result for fallible functions                            |
+| Use singular for module names                                |
+| Treat acronyms as single words                               |
+| Conventional conversion function naming (`x_to_y`)           |
+| Conventional fallible function naming (`try_` prefix)        |
+| Use the core libraries                                       |
+| Keep development tool config in `gleam.toml`                 |
 | Use the correct source code directory (`src`, `dev`, `test`) |
 
 ### Patterns
 
-| Pattern |
-| --- |
-| Design descriptive errors |
-| Comment liberally |
-| Make invalid states impossible |
+| Pattern                         |
+| ------------------------------- |
+| Design descriptive errors       |
+| Comment liberally               |
+| Make invalid states impossible  |
 | Replace bools with custom types |
-| The sans-io pattern |
-| The builder pattern |
+| The sans-io pattern             |
+| The builder pattern             |
 
 ### Anti-patterns
 
-| Anti-pattern |
-| --- |
-| Abbreviations |
-| Fragmented modules |
-| Panicking in libraries |
+| Anti-pattern               |
+| -------------------------- |
+| Abbreviations              |
+| Fragmented modules         |
+| Panicking in libraries     |
 | Global namespace pollution |
-| Namespace trespassing |
+| Namespace trespassing      |
 | Grouping by design pattern |
-| Check-then-assert |
-| Using dynamic with FFI |
-| Match all variants |
-| Category theory overuse |
+| Check-then-assert          |
+| Using dynamic with FFI     |
+| Match all variants         |
+| Category theory overuse    |
 
 ## Updating the guidelines
 

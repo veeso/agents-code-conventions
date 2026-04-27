@@ -232,18 +232,18 @@ native-tls = { version = "0.2", optional = true }
 
 ## Quick Reference
 
-| Rule | Check |
-|------|-------|
-| Deps sorted | Each `[*dependencies]` section is alphabetical |
+| Rule               | Check                                                                          |
+| ------------------ | ------------------------------------------------------------------------------ |
+| Deps sorted        | Each `[*dependencies]` section is alphabetical                                 |
 | `[package]` fields | name > version > edition > authors > description > license > repository > rest |
-| Section order | package > features > deps > dev-deps > build-deps > bin/lib > workspace |
-| Features sorted | Feature names and their item lists are alphabetical |
-| Workspace deps | Member crates use `workspace = true`, not inline versions or `path` |
-| Bare versions | No `^` / `~` / `=` prefix; use shortest specifier (`"1"` not `"1.0.0"`) |
-| Short form | `crate = "1"` not `crate = { version = "1" }` when only version is needed |
-| Key order | version > workspace > default-features > features > optional |
-| `default-features` | Set `false` only when specifying `features` and defaults aren't needed |
-| `dep:` syntax | Features enabling optional deps use `dep:crate_name` |
+| Section order      | package > features > deps > dev-deps > build-deps > bin/lib > workspace        |
+| Features sorted    | Feature names and their item lists are alphabetical                            |
+| Workspace deps     | Member crates use `workspace = true`, not inline versions or `path`            |
+| Bare versions      | No `^` / `~` / `=` prefix; use shortest specifier (`"1"` not `"1.0.0"`)        |
+| Short form         | `crate = "1"` not `crate = { version = "1" }` when only version is needed      |
+| Key order          | version > workspace > default-features > features > optional                   |
+| `default-features` | Set `false` only when specifying `features` and defaults aren't needed         |
+| `dep:` syntax      | Features enabling optional deps use `dep:crate_name`                           |
 
 ## Common Mistakes
 

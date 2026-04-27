@@ -8,9 +8,9 @@ A coding agent skill that enforces [markdownlint](https://github.com/DavidAnson/
 
 Guidelines use the **`MD-`** prefix followed by the rule number:
 
-| Prefix | Source | File | Example |
-|--------|--------|------|---------|
-| `MD-` | [markdownlint](https://github.com/DavidAnson/markdownlint) | `md-conventions/md-guidelines.txt` | `MD-001`, `MD-032`, `MD-047` |
+| Prefix | Source                                                     | File                               | Example                      |
+| ------ | ---------------------------------------------------------- | ---------------------------------- | ---------------------------- |
+| `MD-`  | [markdownlint](https://github.com/DavidAnson/markdownlint) | `md-conventions/md-guidelines.txt` | `MD-001`, `MD-032`, `MD-047` |
 
 Rule numbers come directly from the upstream markdownlint documentation (e.g., `MD001` is referenced as `MD-001`).
 

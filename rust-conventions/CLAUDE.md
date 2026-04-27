@@ -22,10 +22,10 @@ bash scripts/fetch-guidelines.sh
 
 ### Two-Skill System
 
-| Directory | Skill Name | Purpose |
-|-----------|-----------|---------|
-| `rust-conventions/` | `rust-conventions` | Reads guideline files and enforces them during Rust code operations |
-| `fetch-conventions/` | `fetch-rust-conventions` | Runs the fetch script to update upstream guidelines |
+| Directory            | Skill Name               | Purpose                                                             |
+| -------------------- | ------------------------ | ------------------------------------------------------------------- |
+| `rust-conventions/`  | `rust-conventions`       | Reads guideline files and enforces them during Rust code operations |
+| `fetch-conventions/` | `fetch-rust-conventions` | Runs the fetch script to update upstream guidelines                 |
 
 ### Guideline Prefix System
 

@@ -8,14 +8,14 @@ This is a monorepo of **Claude Code skills** that enforce language-specific codi
 
 ## Repository Structure
 
-| Directory | Skill(s) | Language/Target |
-|-----------|----------|-----------------|
-| `rust-conventions/` | `rust-conventions`, `fetch-rust-conventions` | Rust `.rs` files |
-| `gleam-conventions/` | `gleam-conventions` | Gleam `.gleam` files |
-| `cargo-toml-conventions/` | `cargo-toml-conventions` | `Cargo.toml` files |
-| `js-conventions/` | `js-conventions` | JavaScript `.js`, `.mjs`, `.cjs`, `.jsx` files |
-| `ts-conventions/` | `ts-conventions` | TypeScript `.ts`, `.tsx` files |
-| `md-conventions/` | `md-conventions` | Markdown `.md` files |
+| Directory                 | Skill(s)                                     | Language/Target                                |
+| ------------------------- | -------------------------------------------- | ---------------------------------------------- |
+| `rust-conventions/`       | `rust-conventions`, `fetch-rust-conventions` | Rust `.rs` files                               |
+| `gleam-conventions/`      | `gleam-conventions`                          | Gleam `.gleam` files                           |
+| `cargo-toml-conventions/` | `cargo-toml-conventions`                     | `Cargo.toml` files                             |
+| `js-conventions/`         | `js-conventions`                             | JavaScript `.js`, `.mjs`, `.cjs`, `.jsx` files |
+| `ts-conventions/`         | `ts-conventions`                             | TypeScript `.ts`, `.tsx` files                 |
+| `md-conventions/`         | `md-conventions`                             | Markdown `.md` files                           |
 
 ## How Skills Work
 
