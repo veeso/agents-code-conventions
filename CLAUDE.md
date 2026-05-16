@@ -16,6 +16,7 @@ This is a monorepo of **Claude Code skills** that enforce language-specific codi
 | `js-conventions/`         | `js-conventions`                             | JavaScript `.js`, `.mjs`, `.cjs`, `.jsx` files |
 | `ts-conventions/`         | `ts-conventions`                             | TypeScript `.ts`, `.tsx` files                 |
 | `md-conventions/`         | `md-conventions`                             | Markdown `.md` files                           |
+| `zizmor-conventions/`     | `zizmor-conventions`                         | GitHub Actions workflows / `action.yml`        |
 
 ## How Skills Work
 
@@ -39,6 +40,7 @@ Each skill lives in a `<name>/<name>/SKILL.md` directory structure. The `SKILL.m
 - **JavaScript**: `AIRBNB-` = Airbnb Style Guide (auto-fetched), rules identified by section number (e.g., `AIRBNB-2.1`)
 - **TypeScript**: `GOOGLE-` = Google Style Guide (auto-fetched), rules identified by section anchor (e.g., `GOOGLE-IDENTIFIERS`)
 - **Markdown**: `MD-` = markdownlint rules (auto-fetched), rules identified by rule number (e.g., `MD-001`)
+- **GitHub Actions**: `ZIZMOR-` = zizmor audits (manually maintained), rules identified by audit name (e.g., `ZIZMOR-TEMPLATE-INJECTION`); skill mandates running `zizmor` until zero findings
 
 ## Commands
 
