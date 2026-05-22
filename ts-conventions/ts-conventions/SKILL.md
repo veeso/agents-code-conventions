@@ -20,7 +20,9 @@ This skill automatically enforces TypeScript coding standards and best practices
 
 Conventions use the **`GOOGLE-`** prefix, derived from the [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html). The full guidelines are in [ts-guidelines.txt](./ts-guidelines.txt).
 
-Rules are identified by their section anchor from the upstream guide (e.g., section with anchor `identifiers` becomes `GOOGLE-IDENTIFIERS`). When referencing a rule in comments, use the uppercased anchor form: `// GOOGLE-IDENTIFIERS`.
+Rules are identified by their section anchor from the upstream guide (e.g., section with anchor `identifiers` becomes `GOOGLE-IDENTIFIERS`). These identifiers are for referencing rules in discussion only.
+
+**NEVER write convention identifiers as code comments** (e.g., `// GOOGLE-IDENTIFIERS ...`). Apply the conventions silently; do not annotate code with the rule that motivated it.
 
 ## Instructions
 

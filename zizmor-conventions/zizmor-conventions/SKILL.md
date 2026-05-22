@@ -28,8 +28,10 @@ with [zizmor](https://docs.zizmor.sh), a static analysis tool for GitHub Actions
 ## Guidelines
 
 Conventions use the **`ZIZMOR-`** prefix, derived from zizmor's audit set.
-Reference a rule in comments with the hyphenated form: `# ZIZMOR-TEMPLATE-INJECTION`.
+These identifiers are for referencing rules in discussion only.
 Full audit docs: <https://docs.zizmor.sh/audits/>.
+
+**NEVER write convention identifiers as code comments** (e.g., `# ZIZMOR-TEMPLATE-INJECTION ...`). Apply the conventions silently; do not annotate workflows with the rule that motivated it. (The `# v4.2.2` version comment on a pinned SHA and a justified `# zizmor: ignore[<audit>]` directive are not convention comments and remain allowed.)
 
 ### 1. Pin actions by full commit SHA (ZIZMOR-UNPINNED-USES)
 

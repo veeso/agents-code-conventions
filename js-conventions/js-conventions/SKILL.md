@@ -20,7 +20,9 @@ This skill automatically enforces JavaScript coding standards and best practices
 
 Conventions use the **`AIRBNB-`** prefix, derived from the [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript). The full guidelines are in [js-guidelines.txt](./js-guidelines.txt).
 
-Rules are identified by their section number and semantic anchor from the upstream guide (e.g., rule 2.1 with anchor `references--prefer-const` becomes `AIRBNB-2.1`). When referencing a rule in comments, use the numeric form: `// AIRBNB-2.1`.
+Rules are identified by their section number and semantic anchor from the upstream guide (e.g., rule 2.1 with anchor `references--prefer-const` becomes `AIRBNB-2.1`). These identifiers are for referencing rules in discussion only.
+
+**NEVER write convention identifiers as code comments** (e.g., `// AIRBNB-2.1 ...`). Apply the conventions silently; do not annotate code with the rule that motivated it.
 
 ## Instructions
 
