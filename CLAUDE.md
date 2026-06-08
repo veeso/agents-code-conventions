@@ -17,6 +17,7 @@ This is a monorepo of **Claude Code skills** that enforce language-specific codi
 | `ts-conventions/`         | `ts-conventions`                             | TypeScript `.ts`, `.tsx` files                 |
 | `md-conventions/`         | `md-conventions`                             | Markdown `.md` files                           |
 | `zizmor-conventions/`     | `zizmor-conventions`                         | GitHub Actions workflows / `action.yml`        |
+| `pr-conventions/`         | `pr-conventions`                             | Pull requests (`gh pr create`)                 |
 
 ## How Skills Work
 
@@ -41,6 +42,7 @@ Each skill lives in a `<name>/<name>/SKILL.md` directory structure. The `SKILL.m
 - **TypeScript**: `GOOGLE-` = Google Style Guide (auto-fetched), rules identified by section anchor (e.g., `GOOGLE-IDENTIFIERS`)
 - **Markdown**: `MD-` = markdownlint rules (auto-fetched), rules identified by rule number (e.g., `MD-001`)
 - **GitHub Actions**: `ZIZMOR-` = zizmor audits (manually maintained), rules identified by audit name (e.g., `ZIZMOR-TEMPLATE-INJECTION`); skill mandates running `zizmor` until zero findings
+- **Pull Requests**: no prefix system — `pr-conventions` governs how PRs are opened (`gh pr create`) and how the body is written (plain language, no AI dashes or arrows, never write test cases)
 
 ## Commands
 

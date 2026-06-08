@@ -18,6 +18,7 @@ A collection of coding agent skills that enforce language-specific coding conven
 | [js-conventions](./js-conventions/)                 | `.js`, `.mjs`, `.cjs`, `.jsx` files | Enforces [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript) (`AIRBNB-` prefix)                                    |
 | [ts-conventions](./ts-conventions/)                 | `.ts`, `.tsx` files                 | Enforces [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html) (`GOOGLE-` prefix)                        |
 | [md-conventions](./md-conventions/)                 | `.md` files                         | Enforces [markdownlint](https://github.com/DavidAnson/markdownlint) rules (`MD-` prefix)                                             |
+| [pr-conventions](./pr-conventions/)                 | Pull requests                       | Enforces opening PRs with `gh pr create` and writing the body in plain, jargon-free language                                         |
 
 ## Installation
 
@@ -38,6 +39,7 @@ npx skills add veeso/agents-code-conventions@cargo-toml-conventions
 npx skills add veeso/agents-code-conventions@js-conventions
 npx skills add veeso/agents-code-conventions@ts-conventions
 npx skills add veeso/agents-code-conventions@md-conventions
+npx skills add veeso/agents-code-conventions@pr-conventions
 ```
 
 ### Install globally (all projects)
