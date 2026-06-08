@@ -18,6 +18,7 @@ A collection of coding agent skills that enforce language-specific coding conven
 | [js-conventions](./js-conventions/)                 | `.js`, `.mjs`, `.cjs`, `.jsx` files | Enforces [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript) (`AIRBNB-` prefix)                                    |
 | [ts-conventions](./ts-conventions/)                 | `.ts`, `.tsx` files                 | Enforces [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html) (`GOOGLE-` prefix)                        |
 | [md-conventions](./md-conventions/)                 | `.md` files                         | Enforces [markdownlint](https://github.com/DavidAnson/markdownlint) rules (`MD-` prefix)                                             |
+| [zizmor-conventions](./zizmor-conventions/)         | GitHub Actions workflows            | Enforces [zizmor](https://github.com/woodruffw/zizmor) security audits (`ZIZMOR-` prefix) and requires running `zizmor` until clean  |
 | [pr-conventions](./pr-conventions/)                 | Pull requests                       | Enforces opening PRs with `gh pr create` and writing the body in plain, jargon-free language                                         |
 
 ## Installation
@@ -39,6 +40,7 @@ npx skills add veeso/agents-code-conventions@cargo-toml-conventions
 npx skills add veeso/agents-code-conventions@js-conventions
 npx skills add veeso/agents-code-conventions@ts-conventions
 npx skills add veeso/agents-code-conventions@md-conventions
+npx skills add veeso/agents-code-conventions@zizmor-conventions
 npx skills add veeso/agents-code-conventions@pr-conventions
 ```
 
@@ -71,14 +73,15 @@ Each skill consists of a `SKILL.md` file (which tells the agent when to activate
 
 Each skill uses prefixed IDs so individual rules can be referenced unambiguously:
 
-| Skill             | Prefix    | Source                                                                                                                                       |
-| ----------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| rust-conventions  | `M-`      | Auto-synced from [microsoft/rust-guidelines](https://github.com/microsoft/rust-guidelines)                                                   |
-| rust-conventions  | `X-`      | Custom extensions, manually maintained                                                                                                       |
-| gleam-conventions | —         | [Official Gleam conventions document](https://github.com/gleam-lang/website/blob/main/documentation/conventions-patterns-anti-patterns.djot) |
-| js-conventions    | `AIRBNB-` | Auto-fetched from [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript)                                                      |
-| ts-conventions    | `GOOGLE-` | Auto-fetched from [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html)                                          |
-| md-conventions    | `MD-`     | Auto-fetched from [markdownlint](https://github.com/DavidAnson/markdownlint)                                                                 |
+| Skill              | Prefix    | Source                                                                                                                                       |
+| ------------------ | --------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| rust-conventions   | `M-`      | Auto-synced from [microsoft/rust-guidelines](https://github.com/microsoft/rust-guidelines)                                                   |
+| rust-conventions   | `X-`      | Custom extensions, manually maintained                                                                                                       |
+| gleam-conventions  | —         | [Official Gleam conventions document](https://github.com/gleam-lang/website/blob/main/documentation/conventions-patterns-anti-patterns.djot) |
+| js-conventions     | `AIRBNB-` | Auto-fetched from [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript)                                                      |
+| ts-conventions     | `GOOGLE-` | Auto-fetched from [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html)                                          |
+| md-conventions     | `MD-`     | Auto-fetched from [markdownlint](https://github.com/DavidAnson/markdownlint)                                                                 |
+| zizmor-conventions | `ZIZMOR-` | Manually maintained from [zizmor](https://github.com/woodruffw/zizmor) audits                                                                |
 
 ### Updating Rust `M-` guidelines
 

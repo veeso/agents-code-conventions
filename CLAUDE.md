@@ -82,3 +82,5 @@ Description of the convention.
 ### New skill package
 
 Follow the existing directory pattern: `<skill-name>/<skill-name>/SKILL.md` with a guideline text file alongside it. Add a `README.md` and `LICENSE` at the package root.
+
+**Always update the root `README.md` when adding a skill**: add a row to the "Available Skills" table, an install line under "Install a specific skill", and a row to the "Guideline Systems" table if the skill uses a prefix. Run `uvx fmt-md-tables -i README.md` afterward to keep tables aligned.
