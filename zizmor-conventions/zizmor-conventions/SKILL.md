@@ -48,6 +48,35 @@ can be repointed at malicious code.
 - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 ```
 
+The trailing `# vX.Y.Z` comment is not decorative — it MUST name the **exact
+tag that the pinned SHA points to**, and that tag MUST be the **latest stable
+release** of the action. Before writing or accepting a pin, verify both facts
+against the upstream repository; never copy a SHA/version pair on trust.
+
+1. Find the latest stable release tag (skip pre-releases/drafts):
+
+   ```bash
+   gh release view --repo actions/checkout --json tagName -q .tagName
+   # fallback if no GitHub releases:
+   git ls-remote --tags https://github.com/actions/checkout.git
+   ```
+
+2. Resolve that tag to its full commit SHA and pin to it:
+
+   ```bash
+   gh api repos/actions/checkout/git/ref/tags/v4.2.2 -q .object.sha
+   # if the tag is annotated and this returns a tag object, dereference it:
+   gh api repos/actions/checkout/git/tags/<tag-object-sha> -q .object.sha
+   ```
+
+3. Write the resolved SHA with the matching `# vX.Y.Z` comment. The comment and
+   the SHA MUST refer to the same tag, and that tag MUST be the latest.
+
+When editing an existing workflow, re-check every already-pinned `uses:`: confirm
+the SHA still resolves to the tag named in its comment, and bump both the SHA and
+the comment together if a newer stable release exists. A comment that disagrees
+with its SHA, or names a stale version, is a defect to fix — not to leave.
+
 ### 2. Least-privilege permissions (ZIZMOR-EXCESSIVE-PERMISSIONS)
 
 Set an explicit top-level `permissions:` block. Default to `contents: read` and
