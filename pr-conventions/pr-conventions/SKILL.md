@@ -82,7 +82,25 @@ Write the way a person would explain the change to a colleague. Short
 sentences, plain words, no filler. Skip phrases like "this PR aims to" or "in
 order to". Say what it does and why it matters.
 
+### 6. Follow the repository PR template
+
+Before writing the body, check the `.github` folder for a pull request
+template. If one exists, you must follow it: use its sections, headings, and
+order, and fill in every part it asks for. The template wins over the default
+body template below.
+
+Common template locations:
+
+- `.github/pull_request_template.md`
+- `.github/PULL_REQUEST_TEMPLATE.md`
+- `.github/PULL_REQUEST_TEMPLATE/` (a folder of named templates)
+
+The other rules still apply inside the template: plain language, no em dashes,
+no arrows, no invented test cases.
+
 ## Body Template
+
+Use this only when the repository has no PR template in `.github`.
 
 ```markdown
 ## What changed
@@ -107,6 +125,7 @@ Anything a reviewer should know before approving.
 | Separate sentences, commas, colons | Em dashes or spaced dashes          |
 | Describe flow in words             | Arrow characters (`->`, `→`)        |
 | Leave tests as they are            | Write new test cases for the PR     |
+| Follow `.github` PR template       | Ignore an existing PR template      |
 
 ## Common Mistakes
 
@@ -114,3 +133,4 @@ Anything a reviewer should know before approving.
 - Using em dashes out of habit. Re-read the body and remove them.
 - Using arrows to describe a sequence. Rewrite as a sentence.
 - Adding test cases that the user never asked for.
+- Writing a free-form body when the repository has a PR template to follow.
