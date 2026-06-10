@@ -98,6 +98,25 @@ Common template locations:
 The other rules still apply inside the template: plain language, no em dashes,
 no arrows, no invented test cases.
 
+### 7. Do not hard-wrap the body
+
+Write each paragraph as a single unbroken line. Do not wrap the body at 80
+characters (or any other width), and never end a line with trailing spaces to
+force a break. GitHub re-flows paragraph text to the reader's window, so manual
+wrapping shows up as a column of short, broken lines instead of one clean
+paragraph. Only use a real blank line to separate paragraphs, and let list
+items and headings sit on their own lines as normal.
+
+```text
+WRONG
+The export now runs in the background. It no longer blocks the page while
+it works, so you can keep using the app and get a notification when the
+file is ready.
+
+CORRECT
+The export now runs in the background. It no longer blocks the page while it works, so you can keep using the app and get a notification when the file is ready.
+```
+
 ## Body Template
 
 Use this only when the repository has no PR template in `.github`.
@@ -126,6 +145,7 @@ Anything a reviewer should know before approving.
 | Describe flow in words             | Arrow characters (`->`, `→`)        |
 | Leave tests as they are            | Write new test cases for the PR     |
 | Follow `.github` PR template       | Ignore an existing PR template      |
+| One unbroken line per paragraph    | Hard-wrap the body at 80 chars      |
 
 ## Common Mistakes
 
@@ -134,3 +154,5 @@ Anything a reviewer should know before approving.
 - Using arrows to describe a sequence. Rewrite as a sentence.
 - Adding test cases that the user never asked for.
 - Writing a free-form body when the repository has a PR template to follow.
+- Hard-wrapping the body at 80 characters, which GitHub renders as broken
+  short lines instead of one flowing paragraph.
