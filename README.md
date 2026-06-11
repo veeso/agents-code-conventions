@@ -20,6 +20,7 @@ A collection of coding agent skills that enforce language-specific coding conven
 | [md-conventions](./md-conventions/)                 | `.md` files                         | Enforces [markdownlint](https://github.com/DavidAnson/markdownlint) rules (`MD-` prefix)                                             |
 | [zizmor-conventions](./zizmor-conventions/)         | GitHub Actions workflows            | Enforces [zizmor](https://github.com/woodruffw/zizmor) security audits (`ZIZMOR-` prefix) and requires running `zizmor` until clean  |
 | [pr-conventions](./pr-conventions/)                 | Pull requests                       | Enforces opening PRs with `gh pr create` and writing the body in plain, jargon-free language                                         |
+| [issue-conventions](./issue-conventions/)           | Issues                              | Enforces opening issues with `gh issue create` and writing the body in plain, jargon-free language                                   |
 
 ## Installation
 
@@ -42,6 +43,7 @@ npx skills add veeso/agents-code-conventions@ts-conventions
 npx skills add veeso/agents-code-conventions@md-conventions
 npx skills add veeso/agents-code-conventions@zizmor-conventions
 npx skills add veeso/agents-code-conventions@pr-conventions
+npx skills add veeso/agents-code-conventions@issue-conventions
 ```
 
 ### Install globally (all projects)
