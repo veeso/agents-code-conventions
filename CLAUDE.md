@@ -18,6 +18,7 @@ This is a monorepo of **Claude Code skills** that enforce language-specific codi
 | `md-conventions/`         | `md-conventions`                             | Markdown `.md` files                           |
 | `zizmor-conventions/`     | `zizmor-conventions`                         | GitHub Actions workflows / `action.yml`        |
 | `pr-conventions/`         | `pr-conventions`                             | Pull requests (`gh pr create`)                 |
+| `conventional-commits/`   | `conventional-commits`                       | Git commits (`git commit`)                     |
 
 ## How Skills Work
 
