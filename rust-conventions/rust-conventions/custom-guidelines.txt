@@ -257,4 +257,43 @@ A single, simple bound on a single type parameter (e.g., `<T: Clone>`) is accept
 - More than one bounded type parameter.
 - Bounds include lifetimes, associated types, or complex paths (e.g., `T: Iterator<Item = u32>`).
 
+## Document Feature Flags in `lib.rs` (X-LIB-FEATURE-FLAGS) { #X-LIB-FEATURE-FLAGS }
+
+<why>Feature flags change a crate's public API and behavior. Documenting them in the crate-level docs gives users a single, discoverable reference for what each feature does and which are enabled by default.</why>
+<version>1.0</version>
+
+When a library crate defines one or more Cargo features, the `//!` crate-level documentation in `lib.rs` MUST contain a section titled `Feature flags` that documents every feature in a Markdown table.
+
+The table MUST have one row per feature with these columns:
+
+- `name` — the feature name.
+- `description` — what the feature enables.
+- `default` — `✔` if the feature is enabled by default, empty otherwise.
+
+If the crate defines no features, this section MUST NOT exist.
+
+**Do:**
+
+```rust
+//! # my-crate
+//!
+//! A crate that does something useful.
+//!
+//! ## Feature flags
+//!
+//! | name    | description                       | default |
+//! |---------|-----------------------------------|---------|
+//! | `std`   | Enable the standard library.      | ✔       |
+//! | `serde` | Derive `Serialize`/`Deserialize`. |         |
+//! | `async` | Enable the async API.             |         |
+```
+
+**Don't** (features exist but are undocumented):
+
+```rust
+//! # my-crate
+//!
+//! A crate that does something useful.
+```
+
 <!-- Add more custom X- conventions below -->
