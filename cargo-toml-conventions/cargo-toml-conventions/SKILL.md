@@ -95,27 +95,33 @@ full = ["async", "json", "tls"]
 
 When inside a Cargo workspace, crates MUST use workspace-level dependency declarations.
 
-**Workspace root `Cargo.toml`:** declare shared dependencies under `[workspace.dependencies]`.
+**Workspace root `Cargo.toml`:** declare shared dependencies under `[workspace.dependencies]`. Declare **only the version** (and `path` for local crates). Do NOT set `features` or `default-features` at the workspace level — those belong in the member crates that actually use the dependency.
 
 ```toml
+# WRONG — features / default-features at workspace level
 [workspace.dependencies]
 serde = { version = "1", features = ["derive"] }
-tokio = { version = "1", features = ["full"] }
+tokio = { version = "1", default-features = false, features = ["full"] }
+
+# CORRECT — version only
+[workspace.dependencies]
+serde = "1"
+tokio = "1"
 ```
 
-**Member crate `Cargo.toml`:** reference with `workspace = true`.
+**Member crate `Cargo.toml`:** reference with `workspace = true`, adding `features` / `default-features` as that crate needs.
 
 ```toml
 [dependencies]
-serde = { workspace = true }
-tokio = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+tokio = { workspace = true, default-features = false, features = ["rt", "macros"] }
 ```
 
-If a member crate needs extra features beyond the workspace declaration, add them locally:
+A crate that needs no extra features references the dependency bare:
 
 ```toml
 [dependencies]
-tokio = { workspace = true, features = ["test-util"] }
+anyhow = { workspace = true }
 ```
 
 **Path dependencies to other workspace crates** MUST also go through `[workspace.dependencies]`. Never use `path = "..."` directly in a member crate's dependency table.
@@ -232,23 +238,24 @@ native-tls = { version = "0.2", optional = true }
 
 ## Quick Reference
 
-| Rule               | Check                                                                          |
-| ------------------ | ------------------------------------------------------------------------------ |
-| Deps sorted        | Each `[*dependencies]` section is alphabetical                                 |
-| `[package]` fields | name > version > edition > authors > description > license > repository > rest |
-| Section order      | package > features > deps > dev-deps > build-deps > bin/lib > workspace        |
-| Features sorted    | Feature names and their item lists are alphabetical                            |
-| Workspace deps     | Member crates use `workspace = true`, not inline versions or `path`            |
-| Bare versions      | No `^` / `~` / `=` prefix; use shortest specifier (`"1"` not `"1.0.0"`)        |
-| Short form         | `crate = "1"` not `crate = { version = "1" }` when only version is needed      |
-| Key order          | version > workspace > default-features > features > optional                   |
-| `default-features` | Set `false` only when specifying `features` and defaults aren't needed         |
-| `dep:` syntax      | Features enabling optional deps use `dep:crate_name`                           |
+| Rule               | Check                                                                                        |
+| ------------------ | -------------------------------------------------------------------------------------------- |
+| Deps sorted        | Each `[*dependencies]` section is alphabetical                                               |
+| `[package]` fields | name > version > edition > authors > description > license > repository > rest               |
+| Section order      | package > features > deps > dev-deps > build-deps > bin/lib > workspace                      |
+| Features sorted    | Feature names and their item lists are alphabetical                                          |
+| Workspace deps     | Members use `workspace = true`; root declares version only, no `features`/`default-features` |
+| Bare versions      | No `^` / `~` / `=` prefix; use shortest specifier (`"1"` not `"1.0.0"`)                      |
+| Short form         | `crate = "1"` not `crate = { version = "1" }` when only version is needed                    |
+| Key order          | version > workspace > default-features > features > optional                                 |
+| `default-features` | Set `false` only when specifying `features` and defaults aren't needed                       |
+| `dep:` syntax      | Features enabling optional deps use `dep:crate_name`                                         |
 
 ## Common Mistakes
 
 - Appending new dependencies at the end instead of inserting in sorted position
 - Duplicating a workspace dependency version in a member crate instead of using `workspace = true`
+- Declaring `features` or `default-features` in `[workspace.dependencies]` instead of in the member crate that uses them
 - Using `path = "../sibling-crate"` directly in a member crate instead of declaring the path dependency in `[workspace.dependencies]` and referencing it with `workspace = true`
 - Using `^` prefix out of habit (it's the default and redundant)
 - Omitting `edition` from `[package]`
