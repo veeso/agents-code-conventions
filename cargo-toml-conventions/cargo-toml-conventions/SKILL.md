@@ -45,18 +45,20 @@ This also applies to `workspace.dependencies` in workspace root Cargo.toml files
 
 ### 2. `[package]` Field Ordering
 
-Fields within `[package]` MUST appear in this order (omit fields that don't apply):
+Fields within `[package]` MUST appear in the order applied by the dprint TOML
+formatter (`cargo.applyConventions`): `name` first, `version` second, then every
+other field **alphabetically**, with `description` forced **last** (omit fields
+that don't apply):
 
 ```toml
 [package]
 name = "my-crate"
 version = "0.1"
-edition = "2021"
 authors = ["Alice <alice@example.com>"]
-description = "A short description"
+edition = "2021"
 license = "MIT"
 repository = "https://github.com/user/repo"
-# ... remaining fields alphabetically
+description = "A short description"
 ```
 
 **`edition` is mandatory** — always specify it explicitly, never rely on the implicit default.
@@ -242,18 +244,18 @@ native-tls = { version = "0.2", optional = true }
 
 ## Quick Reference
 
-| Rule               | Check                                                                                        |
-| ------------------ | -------------------------------------------------------------------------------------------- |
-| Deps sorted        | Each `[*dependencies]` section is alphabetical                                               |
-| `[package]` fields | name > version > edition > authors > description > license > repository > rest               |
-| Section order      | package > features > deps > dev-deps > build-deps > bin/lib > workspace                      |
-| Features sorted    | Feature names and their item lists are alphabetical                                          |
-| Workspace deps     | Members use `workspace = true` + `features`; root declares version and any `default-features = false` |
-| Bare versions      | No `^` / `~` / `=` prefix; use shortest specifier (`"1"` not `"1.0.0"`)                      |
-| Short form         | `crate = "1"` not `crate = { version = "1" }` when only version is needed                    |
-| Key order          | versioned: version > default-features > features > optional; inherited: workspace > features > optional |
+| Rule               | Check                                                                                                                     |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| Deps sorted        | Each `[*dependencies]` section is alphabetical                                                                            |
+| `[package]` fields | name > version > rest alphabetical > description (forced last)                                                            |
+| Section order      | package > features > deps > dev-deps > build-deps > bin/lib > workspace                                                   |
+| Features sorted    | Feature names and their item lists are alphabetical                                                                       |
+| Workspace deps     | Members use `workspace = true` + `features`; root declares version and any `default-features = false`                     |
+| Bare versions      | No `^` / `~` / `=` prefix; use shortest specifier (`"1"` not `"1.0.0"`)                                                   |
+| Short form         | `crate = "1"` not `crate = { version = "1" }` when only version is needed                                                 |
+| Key order          | versioned: version > default-features > features > optional; inherited: workspace > features > optional                   |
 | `default-features` | Set `false` where the version is declared (member crate or `[workspace.dependencies]`); never in a member's inherited dep |
-| `dep:` syntax      | Features enabling optional deps use `dep:crate_name`                                         |
+| `dep:` syntax      | Features enabling optional deps use `dep:crate_name`                                                                      |
 
 ## Common Mistakes
 
