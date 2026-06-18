@@ -84,6 +84,7 @@ Each skill uses prefixed IDs so individual rules can be referenced unambiguously
 | gleam-conventions  | —         | [Official Gleam conventions document](https://github.com/gleam-lang/website/blob/main/documentation/conventions-patterns-anti-patterns.djot) |
 | js-conventions     | `AIRBNB-` | Auto-fetched from [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript)                                                      |
 | ts-conventions     | `GOOGLE-` | Auto-fetched from [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html)                                          |
+| ts-conventions     | `X-`      | Custom extensions, manually maintained                                                                                                       |
 | md-conventions     | `MD-`     | Auto-fetched from [markdownlint](https://github.com/DavidAnson/markdownlint)                                                                 |
 | zizmor-conventions | `ZIZMOR-` | Manually maintained from [zizmor](https://github.com/woodruffw/zizmor) audits                                                                |
 

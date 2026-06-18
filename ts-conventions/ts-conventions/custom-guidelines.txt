@@ -1,0 +1,58 @@
+<!-- Custom TypeScript conventions maintained by this repository. -->
+<!-- These extend the Google TypeScript Style Guide and use the X- prefix. -->
+<!-- This file is never overwritten by the fetch script. -->
+
+# Custom TypeScript Conventions
+
+Rules use the `X-` prefix and are maintained by hand. They take precedence
+over the upstream Google guidelines where the two conflict.
+
+---
+
+## Explicit Return Types (X-EXPLICIT-RETURN-TYPES) { #X-EXPLICIT-RETURN-TYPES }
+
+<why>Explicit return type annotations localize type errors to the function
+itself instead of surfacing them at distant call sites, document the contract
+for readers, and prevent silent return-type widening (e.g. `Promise<A>` drifting
+to `Promise<A | undefined>`) from leaking across module boundaries.</why>
+<version>1.0</version>
+
+Always annotate the return type of every function and method, including:
+
+- Exported and public functions/methods.
+- Private helpers and local functions.
+- Class methods and accessors (getters return the property type; setters return `void`).
+- Arrow functions assigned to a named variable or used as a typed callback.
+
+```ts
+// BAD - return type inferred
+function parseUser(raw: string) {
+  return JSON.parse(raw) as User;
+}
+
+async function fetchUser(id: string) {
+  return api.get(`/users/${id}`);
+}
+
+const toLabel = (u: User) => u.name;
+```
+
+```ts
+// GOOD - return type explicit
+function parseUser(raw: string): User {
+  return JSON.parse(raw) as User;
+}
+
+async function fetchUser(id: string): Promise<User> {
+  return api.get(`/users/${id}`);
+}
+
+const toLabel = (u: User): string => u.name;
+```
+
+Exceptions:
+
+- Inline anonymous callbacks passed directly as arguments (e.g. `arr.map((x) => x * 2)`),
+  where the expected type is already fixed by the surrounding call.
+- Function expressions whose full type, including the return type, is already
+  declared on the left-hand side (e.g. `const f: () => number = () => 1;`).

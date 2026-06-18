@@ -22,6 +22,8 @@ Conventions use the **`GOOGLE-`** prefix, derived from the [Google TypeScript St
 
 Rules are identified by their section anchor from the upstream guide (e.g., section with anchor `identifiers` becomes `GOOGLE-IDENTIFIERS`). These identifiers are for referencing rules in discussion only.
 
+Custom conventions maintained by this repository use the **`X-`** prefix and live in [custom-guidelines.txt](./custom-guidelines.txt). They extend the Google guidelines and take precedence where the two conflict.
+
 **NEVER write convention identifiers as code comments** (e.g., `// GOOGLE-IDENTIFIERS ...`). Apply the conventions silently; do not annotate code with the rule that motivated it.
 
 ## Instructions
@@ -35,7 +37,7 @@ Rules are identified by their section anchor from the upstream guide (e.g., sect
 
 **Process**:
 
-1. Read [ts-guidelines.txt](./ts-guidelines.txt) to understand all compliance requirements
+1. Read [ts-guidelines.txt](./ts-guidelines.txt) and [custom-guidelines.txt](./custom-guidelines.txt) to understand all compliance requirements
 2. Before writing/modifying ANY TypeScript code, ensure edits conform to the guidelines
 3. Use `const` and `let`; never use `var` (GOOGLE-VARIABLES)
 4. Use TypeScript's type system fully: prefer interfaces for object shapes, use type aliases for unions/intersections (GOOGLE-INTERFACES-VS-TYPE-ALIASES)
@@ -46,6 +48,7 @@ Rules are identified by their section anchor from the upstream guide (e.g., sect
 9. Do NOT use decorators except in frameworks that require them (GOOGLE-DECORATORS)
 10. Do NOT use `@ts-ignore`; use `@ts-expect-error` with explanation if suppression is needed
 11. Prefer optional chaining (`?.`) and nullish coalescing (`??`) over explicit null checks
-12. Comments must ALWAYS be written in American English, unless the user explicitly requests a different language
+12. ALWAYS annotate explicit return types on functions and methods (X-EXPLICIT-RETURN-TYPES); only inline anonymous callbacks and fully left-hand-typed expressions are exempt
+13. Comments must ALWAYS be written in American English, unless the user explicitly requests a different language
 
 **No exceptions**: Even for trivial code, guidelines must be followed.

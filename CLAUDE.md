@@ -33,6 +33,7 @@ Each skill lives in a `<name>/<name>/SKILL.md` directory structure. The `SKILL.m
 - **`js-conventions/js-conventions/prettierrc.json`** — Prettier config derived from Airbnb conventions. Hand-maintained.
 - **`js-conventions/js-conventions/eslint.config.js`** — ESLint 9 flat config using `eslint-config-airbnb-extended`. Hand-maintained.
 - **`ts-conventions/ts-conventions/ts-guidelines.txt`** — Auto-fetched Google TypeScript Style Guide (HTML→Markdown). **Never hand-edit.** Updated via `bash ts-conventions/scripts/fetch-guidelines.sh`.
+- **`ts-conventions/ts-conventions/custom-guidelines.txt`** — User-maintained `X-` prefix conventions for TypeScript. Never overwritten by the fetch script.
 - **`md-conventions/md-conventions/md-guidelines.txt`** — Auto-fetched markdownlint rules documentation. **Never hand-edit.** Updated via `bash md-conventions/scripts/fetch-guidelines.sh`.
 
 ## Guideline Prefix Systems
@@ -40,7 +41,7 @@ Each skill lives in a `<name>/<name>/SKILL.md` directory structure. The `SKILL.m
 - **Rust**: `M-` = Microsoft upstream (auto-generated), `X-` = custom extensions (manually maintained)
 - **Gleam**: Uses the official Gleam conventions djot document directly (no prefix system — rules are organized by tier: Conventions, Patterns, Anti-patterns)
 - **JavaScript**: `AIRBNB-` = Airbnb Style Guide (auto-fetched), rules identified by section number (e.g., `AIRBNB-2.1`)
-- **TypeScript**: `GOOGLE-` = Google Style Guide (auto-fetched), rules identified by section anchor (e.g., `GOOGLE-IDENTIFIERS`)
+- **TypeScript**: `GOOGLE-` = Google Style Guide (auto-fetched), rules identified by section anchor (e.g., `GOOGLE-IDENTIFIERS`); `X-` = custom extensions (manually maintained in `custom-guidelines.txt`, e.g., `X-EXPLICIT-RETURN-TYPES`)
 - **Markdown**: `MD-` = markdownlint rules (auto-fetched), rules identified by rule number (e.g., `MD-001`)
 - **GitHub Actions**: `ZIZMOR-` = zizmor audits (manually maintained), rules identified by audit name (e.g., `ZIZMOR-TEMPLATE-INJECTION`); skill mandates running `zizmor` until zero findings
 - **Pull Requests**: no prefix system — `pr-conventions` governs how PRs are opened (`gh pr create`) and how the body is written (plain language, no AI dashes or arrows, never write test cases)
