@@ -5,15 +5,16 @@ written, so that anyone can understand the problem or request.
 
 ## What it enforces
 
-| Rule               | Description                                      |
-| ------------------ | ------------------------------------------------ |
-| Open with `gh`     | Create every issue with `gh issue create`        |
-| No invented facts  | Report only verified errors, steps, and versions |
-| Clear title        | A specific one-line summary, not a vague label   |
-| Readable by anyone | Plain language, no technical jargon              |
-| No AI dashes       | No em dashes or spaced dashes as connectors      |
-| No AI arrows       | No arrow characters to show flow or steps        |
-| Human language     | Short, plain sentences with no filler            |
+| Rule                | Description                                                                                                          |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Open with `gh`      | Create every issue with `gh issue create`                                                                            |
+| No invented facts   | Report only verified errors, steps, and versions                                                                     |
+| Clear title         | A specific one-line summary, not a vague label                                                                       |
+| Readable by anyone  | Plain language, no technical jargon                                                                                  |
+| No AI dashes        | No em dashes or spaced dashes as connectors                                                                          |
+| No AI arrows        | No arrow characters to show flow or steps                                                                            |
+| Human language      | Short, plain sentences with no filler                                                                                |
+| Acceptance criteria | End every issue with a checkable "done" list, written as behaviour for a report or concrete steps for a refined task |
 
 ## Installation
 

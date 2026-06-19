@@ -105,7 +105,26 @@ When the repository uses a template chooser, pick the template that matches the
 kind of issue (bug, feature, question). The other rules still apply inside the
 template: plain language, no em dashes, no arrows, no invented facts.
 
-### 8. Do not hard-wrap the body
+### 8. Always end with acceptance criteria
+
+Every issue ends with an `## Acceptance criteria` section: a short checklist of
+conditions that must all be true for the work to count as done. Write each one
+as a checkbox (`- [ ] ...`), one condition per line, in plain language a
+non-technical reader can verify. No internal names, no code detail.
+
+How you write the criteria depends on what you have:
+
+- **Reporting a problem** (a bug or a raw report): you do not know the fix yet, so
+  do not invent one. Write the criteria as the correct behaviour the user should
+  see once it is solved. Example: "Clicking Export downloads a file."
+- **A refined task** (the scope and approach are already known): write concrete,
+  checkable conditions for the work itself, in the order it gets done. Example:
+  "The reports page has an Export button" and "The exported file opens in Excel".
+
+If you cannot tell which case you are in, treat it as a report and describe the
+behaviour the user wants, not the implementation.
+
+### 9. Do not hard-wrap the body
 
 Write each paragraph as a single unbroken line. Do not wrap the body at 80
 characters (or any other width), and never end a line with trailing spaces to
@@ -124,47 +143,43 @@ CORRECT
 The export button does nothing when clicked. It shows a spinner for a few seconds and then stops, with no file and no error message anywhere on the page.
 ```
 
-## Body Templates
+## Default Body Template
 
-Use these only when the repository has no issue template in `.github`.
+Use this only when the repository has no issue template in `.github`.
 
-### Bug report
+The same structure covers both a problem report and a refined task. Fill in
+`## Description` and `## Acceptance criteria` every time. Keep the optional
+sections only when they add something, and delete the rest.
 
 ```markdown
-## What happens
+## Description
 
-A short, plain description of what is wrong.
+What this is about, in plain words. What needs to happen and why it matters. For
+a bug, say what happens now, how to make it happen, and what you expected
+instead.
 
-## Steps to reproduce
+## Out of scope
 
-1. The first thing you do.
-2. The next thing you do.
-3. What you see at the end.
+Anything that is not part of this, to keep the work focused. Remove if not needed.
 
-## What you expected
+## Dependencies
 
-What should have happened instead.
+Issues this depends on or is blocked by, and related issues. Use "Blocked by #123"
+or "Related to #123". Remove if none.
 
 ## Notes
 
-Version, environment, or anything else that helps. Leave out what you do not know.
+References, links, open questions, version, environment, or anything else that
+helps. Remove if not needed.
+
+## Acceptance criteria
+
+- [ ] ...
+- [ ] ...
 ```
 
-### Feature request
-
-```markdown
-## What you want
-
-A short, plain description of the feature or change.
-
-## Why
-
-The problem it solves or the value it adds.
-
-## Notes
-
-Anything that helps explain the request.
-```
+See rule 8 for how to write the acceptance criteria depending on whether you are
+reporting a problem or refining a task.
 
 ## Quick Reference
 
@@ -177,6 +192,8 @@ Anything that helps explain the request.
 | Separate sentences, commas, colons | Em dashes or spaced dashes          |
 | Describe flow in words             | Arrow characters (`->`, `→`)        |
 | Follow `.github` issue template    | Ignore an existing issue template   |
+| End with acceptance criteria       | Ship an issue with no clear "done"  |
+| AC as behaviour for a report       | Invent a fix you were not given     |
 | One unbroken line per paragraph    | Hard-wrap the body at 80 chars      |
 
 ## Common Mistakes
@@ -186,5 +203,8 @@ Anything that helps explain the request.
 - Using em dashes out of habit. Re-read the body and remove them.
 - Using arrows to describe a sequence. Rewrite as a sentence.
 - Writing a free-form body when the repository has an issue template to follow.
+- Leaving out the acceptance criteria, so no one can tell when the work is done.
+- Writing acceptance criteria as an invented fix when the issue is only a report.
+  Describe the behaviour the user wants instead.
 - Hard-wrapping the body at 80 characters, which GitHub renders as broken short
   lines instead of one flowing paragraph.
