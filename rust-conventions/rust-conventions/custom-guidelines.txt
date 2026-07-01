@@ -296,4 +296,76 @@ If the crate defines no features, this section MUST NOT exist.
 //! A crate that does something useful.
 ```
 
+## Write `tracing` and `log` Messages Correctly (X-LOG-MESSAGES) { #X-LOG-MESSAGES }
+
+<why>Log macros mix two independent mechanisms — structured key-value fields and format-string interpolation — and confusing them produces broken, duplicated, or literal-brace output. A common failure is emitting a structured field AND re-interpolating it in the message with double braces (`{{field}}`), which renders as literal `{field}` and silently corrupts every log line.</why>
+<version>1.0</version>
+
+This convention applies to the `tracing` macros (`trace!`, `debug!`, `info!`, `warn!`, `error!`, `event!`, `span!`) and the `log` macros (`trace!` … `error!`).
+
+### The two mechanisms
+
+A log macro call has two distinct parts:
+
+1. **Structured fields** — `key = value` pairs written *before* the message string. Only `tracing` supports these. They are recorded as machine-readable metadata and do **not** appear inside the rendered message text.
+   - `field = value` records the value directly (must be `Value`).
+   - `field = %value` records `value` via its `Display` impl.
+   - `field = ?value` records `value` via its `Debug` impl.
+2. **The message** — a normal Rust format string (the same syntax as `format!`). Interpolation happens here via `{}`, `{name}`, or `{}`, `arg = expr` trailing arguments.
+
+Fields go before the message; format args interpolate inside the message. They are separate — a structured field is NOT visible to the format string, and a format arg is NOT a structured field.
+
+### Rules
+
+- **Choose one mechanism per value.** Either record a value as a structured field OR interpolate it into the message — never both for the same value.
+- **Never use `{{ }}` to interpolate.** In a format string `{{` and `}}` are escaped literal braces. `"config at {{config.path}}"` renders the literal text `config at {config.path}` — it does NOT substitute anything.
+- **Structured fields do not print in the message.** If you record `config.path = %path` and want the path in human-readable text too, interpolate it explicitly with single braces — do not expect the field to appear on its own.
+- **`log` has no structured fields.** With the `log` crate, only format-string interpolation exists; put every value inside the message with `{name}` capture or named trailing args.
+- **No positional `{}` with bare trailing args.** `"This is {}!", user` is valid but unreadable — the placeholder gives no clue what it holds and the reader must count arguments. Capture the binding inline (`{user}`) or name the arg (`{name}", name = expr`).
+
+### Correct
+
+```rust
+// Inline capture from scope (single braces capture the `pid` binding):
+warn!("a router is already running (pid {pid}); stop it first or use a different --pidfile");
+
+// Named trailing format argument:
+info!("the path is {path}", path = db.path.display());
+
+// Structured field, constant message — the field is metadata, not text:
+info!(config.path = %path, "parsing router config");
+
+// Self-documenting placeholders — captured binding or named arg:
+info!("this is {user}!");
+info!("this is {user}!", user = account.name());
+```
+
+### Wrong
+
+```rust
+// `{{config.path}}` is escaped literal braces: renders "parsing router config at {config.path}".
+// It also duplicates the structured field. Double wrong.
+info!(config.path = %path, "parsing router config at {{config.path}}");
+
+// Same value both as a field and interpolated into the message — pick one.
+info!(config.path = %path, "parsing router config at {path}", path = path.display());
+
+// Positional placeholder with a bare trailing arg — unreadable, count-the-args.
+info!("this is {}!", user);
+```
+
+### Fixing the wrong forms
+
+If you want the path visible in the human-readable message, interpolate it once with single braces and drop the redundant field:
+
+```rust
+info!("parsing router config at {path}", path = path.display());
+```
+
+If you want it as machine-readable metadata, keep the field and a constant message:
+
+```rust
+info!(config.path = %path, "parsing router config");
+```
+
 <!-- Add more custom X- conventions below -->
