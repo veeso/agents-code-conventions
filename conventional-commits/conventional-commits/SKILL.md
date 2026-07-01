@@ -103,7 +103,7 @@ change. Do not use one without the other.
 
 ### 5. Body and footers
 
-Use the optional body to explain the *why* when it is not obvious from the
+Use the optional body to explain the _why_ when it is not obvious from the
 description. Separate the body from the description with one blank line. Footers
 go after the body, each on its own line, in the `Token: value` form (for example
 `Refs:`, `Reviewed-by:`, `BREAKING CHANGE:`).
@@ -121,38 +121,12 @@ Refs: 676104e, a215868
 
 The description is the message of the commit being reverted.
 
-### 7. GPG signing
-
-If the repository or the user has GPG commit signing enabled, you must ensure the
-commit is actually signed.
-
-1. Detect whether signing is enabled:
-
-   ```bash
-   git config --get commit.gpgsign
-   ```
-
-   Treat signing as enabled when this returns `true`, or when the user has told
-   you signing is required.
-
-2. When signing is enabled, create the commit with `-S`:
-
-   ```bash
-   git commit -S -m "<message>"
-   ```
-
-If signing fails (no key, bad passphrase, agent locked), you MUST report the
-failure to the caller with the exact error. Never push a commit when signing was
-requested but failed, and never silently fall back to an unsigned commit.
-
 ## Workflow
 
 1. Review the staged changes with `git diff --cached` (stage them first if needed).
 2. Infer the correct `type` and optional `scope` from the diff.
 3. Write an imperative-present description, plus body and footers as needed.
 4. Mark breaking changes with `!` and a `BREAKING CHANGE:` footer.
-5. Detect GPG signing and commit with `-S` when enabled; report any signing
-   failure and do not push.
 
 ## Quick Reference
 
@@ -162,8 +136,6 @@ requested but failed, and never silently fall back to an unsigned commit.
 | Imperative present description                | Past tense or third person ("added", "adds")  |
 | `feat!:` plus a `BREAKING CHANGE:` footer     | `!` without the footer, or footer without `!` |
 | `revert:` with a `Refs:` footer of the hashes | A free-form revert message                    |
-| Commit with `-S` when signing is enabled      | Silently fall back to an unsigned commit      |
-| Report signing failures to the caller         | Push a commit that failed to sign             |
 
 ## Common Mistakes
 
