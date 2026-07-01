@@ -141,12 +141,6 @@ commit is actually signed.
    git commit -S -m "<message>"
    ```
 
-3. After committing, verify the signature landed:
-
-   ```bash
-   git log --show-signature -1
-   ```
-
 If signing fails (no key, bad passphrase, agent locked), you MUST report the
 failure to the caller with the exact error. Never push a commit when signing was
 requested but failed, and never silently fall back to an unsigned commit.
@@ -157,9 +151,8 @@ requested but failed, and never silently fall back to an unsigned commit.
 2. Infer the correct `type` and optional `scope` from the diff.
 3. Write an imperative-present description, plus body and footers as needed.
 4. Mark breaking changes with `!` and a `BREAKING CHANGE:` footer.
-5. Detect GPG signing and commit with `-S` when enabled.
-6. Verify the signature when signing was requested; report any failure and do not
-   push.
+5. Detect GPG signing and commit with `-S` when enabled; report any signing
+   failure and do not push.
 
 ## Quick Reference
 
