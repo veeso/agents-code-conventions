@@ -415,4 +415,65 @@ If the value is an expression, name it as a trailing argument:
 writeln!(f, "found {count} items", count = items.len())?;
 ```
 
+## Scope Imports Used Only by `cfg`-Gated Code (X-CFG-SCOPED-IMPORTS) { #X-CFG-SCOPED-IMPORTS }
+
+<why>A top-level `use` that is only consumed by conditionally compiled code either fails to compile or triggers `unused_imports` warnings on every configuration where the gated code is compiled out. Scoping the import to the gated block keeps the conditional surface localized and self-contained.</why>
+<version>1.0</version>
+
+When a code block is exclusive to a certain configuration — `#[cfg(feature = "...")]`, `#[cfg(target_family = "...")]`, `#[cfg(target_os = "...")]`, `#[cfg(test)]`, or any other `cfg` predicate — and that block is the only consumer of an import, the import MUST NOT be an unconditional top-level `use`. Instead, either:
+
+- **Scope the `use` inside the gated item** (function, module, or block), so the import is compiled in and out together with its only consumer.
+- **Use the fully qualified path inline** and skip the import entirely.
+
+**Do** (import scoped inside the gated item):
+
+```rust
+#[cfg(unix)]
+fn make_executable(file: &std::fs::File) -> std::io::Result<()> {
+    use std::os::unix::fs::PermissionsExt;
+
+    let mut perms = file.metadata()?.permissions();
+    perms.set_mode(0o755);
+    file.set_permissions(perms)
+}
+```
+
+**Do** (fully qualified path, no import):
+
+```rust
+#[cfg(feature = "serde")]
+fn to_json(value: &MyType) -> serde_json::Result<String> {
+    serde_json::to_string(value)
+}
+```
+
+**Don't** (unconditional top-level import consumed only by gated code):
+
+```rust
+use std::os::unix::fs::PermissionsExt; // breaks or warns on non-unix targets
+
+#[cfg(unix)]
+fn make_executable(file: &std::fs::File) -> std::io::Result<()> {
+    let mut perms = file.metadata()?.permissions();
+    perms.set_mode(0o755);
+    file.set_permissions(perms)
+}
+```
+
+**Don't** (mirroring the `cfg` on a top-level `use`):
+
+```rust
+#[cfg(unix)]
+use std::os::unix::fs::PermissionsExt; // gate duplicated far from its consumer
+
+#[cfg(unix)]
+fn make_executable(file: &std::fs::File) -> std::io::Result<()> {
+    // ...
+}
+```
+
+Duplicating the predicate on the import works, but it splits one conditional unit into two locations that must stay in sync; when the predicate changes, the stray `use` is easy to miss. Prefer keeping the import inside the gated item.
+
+This convention does not apply when the import also has unconditional consumers, or when an entire module is gated (e.g., `#[cfg(unix)] mod unix_impl;`) — inside such a module, plain top-level `use` statements are already scoped by the module's gate.
+
 <!-- Add more custom X- conventions below -->
