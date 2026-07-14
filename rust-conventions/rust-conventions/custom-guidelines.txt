@@ -368,4 +368,51 @@ If you want it as machine-readable metadata, keep the field and a constant messa
 info!(config.path = %path, "parsing router config");
 ```
 
+## Use Named Placeholders in Format Macros (X-FORMAT-ARGS) { #X-FORMAT-ARGS }
+
+<why>Positional `{}` placeholders give the reader no clue what they hold and force counting arguments to match placeholders to values. Named placeholders make every format string self-documenting.</why>
+<version>1.0</version>
+
+This convention applies to all `std` format-string macros: `println!`, `print!`, `eprintln!`, `eprint!`, `write!`, `writeln!`, `format!`, `format_args!`, and `panic!`/`assert!`/`todo!`/`unimplemented!` message strings.
+
+Never use a positional `{}` placeholder with a bare trailing argument. Instead:
+
+- **Capture the binding inline** with `{variable}` when the value is a plain binding in scope.
+- **Name the trailing argument** with `"{value}", value = expr` when the value is a method call, field access, or any expression that cannot be captured inline (e.g., it is not `Display`, or requires a call like `.display()`).
+
+### Correct
+
+```rust
+// Inline capture from scope (single braces capture the `user` binding):
+println!("this is {user}!");
+
+// Named trailing argument for expressions:
+println!("the path is {path}", path = db.path.display());
+writeln!(f, "found {count} items", count = items.len())?;
+write!(out, "config: {config:?}", config = state.config())?;
+```
+
+### Wrong
+
+```rust
+// Positional placeholder with a bare trailing arg — unreadable, count-the-args.
+println!("this is {}!", user);
+writeln!(f, "found {} items", items.len())?;
+write!(out, "config: {:?}", state.config())?;
+```
+
+### Fixing the wrong forms
+
+If the value is a plain binding, move it inside the braces:
+
+```rust
+println!("this is {user}!");
+```
+
+If the value is an expression, name it as a trailing argument:
+
+```rust
+writeln!(f, "found {count} items", count = items.len())?;
+```
+
 <!-- Add more custom X- conventions below -->
