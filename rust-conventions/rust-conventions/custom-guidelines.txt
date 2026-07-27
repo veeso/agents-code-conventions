@@ -476,4 +476,46 @@ Duplicating the predicate on the import works, but it splits one conditional uni
 
 This convention does not apply when the import also has unconditional consumers, or when an entire module is gated (e.g., `#[cfg(unix)] mod unix_impl;`) — inside such a module, plain top-level `use` statements are already scoped by the module's gate.
 
+## Never Write Compliance Comments (X-NO-COMPLIANCE-COMMENTS) { #X-NO-COMPLIANCE-COMMENTS }
+
+<why>Comments that cite guideline IDs or announce that code "complies with" a convention describe the writing process, not the code. They are noise the moment they are written: the next reader gains nothing from them, and they rot as guidelines evolve.</why>
+<version>1.0</version>
+
+Never add comments that reference these guidelines, their rule IDs (`M-*`, `X-*`), or compliance status. Comments must describe the code itself — its behavior, constraints, and invariants — never the conventions it follows or the process that produced it.
+
+**Don't:**
+
+```rust
+// X-FORMAT-ARGS: use named placeholder
+println!("this is {user}!");
+
+// Complies with M-CANONICAL-DOCS.
+/// Returns the user's email address.
+fn email(&self) -> Option<&str> { /* ... */ }
+
+// Refactored to let chains per X-LET-CHAINS.
+if let Some(user) = get_user(id)
+    && user.is_active()
+{
+    // ...
+}
+```
+
+**Do:**
+
+```rust
+println!("this is {user}!");
+
+/// Returns the user's email address.
+fn email(&self) -> Option<&str> { /* ... */ }
+
+if let Some(user) = get_user(id)
+    && user.is_active()
+{
+    // ...
+}
+```
+
+This applies to all comment forms: line comments, block comments, doc comments, and commit-facing annotations inside code. Following a convention is invisible in the source; only the resulting code shows.
+
 <!-- Add more custom X- conventions below -->

@@ -38,5 +38,6 @@ Both sets of guidelines MUST be followed.
 3. Before writing/modifying ANY Rust code, ensure edits conform to both guideline sets
 4. Apply proper M-CANONICAL-DOCS documentation format
 5. Comments must ALWAYS be written in American English, unless the user explicitly requests a different comment language
+6. NEVER add comments referencing these guidelines, their rule IDs, or compliance status (e.g. `// complies with X-FORMAT-ARGS`) — comments describe the code, not the process (X-NO-COMPLIANCE-COMMENTS)
 
 **No exceptions**: Even for trivial code like "Hello World", guidelines must be followed.
