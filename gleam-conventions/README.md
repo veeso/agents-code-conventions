@@ -58,7 +58,7 @@ When activated, the skill instructs the agent to follow the official Gleam conve
 The guidelines file is a direct copy of the upstream djot file from the Gleam website repository. To update it:
 
 ```bash
-curl -sL https://raw.githubusercontent.com/gleam-lang/website/main/documentation/conventions-patterns-anti-patterns.djot \
+curl -sL https://raw.githubusercontent.com/gleam-lang/website/refs/heads/main/pages/documentation/conventions-patterns-and-anti-patterns.djot \
   -o gleam-conventions/conventions-patterns-anti-patterns.djot
 ```
 

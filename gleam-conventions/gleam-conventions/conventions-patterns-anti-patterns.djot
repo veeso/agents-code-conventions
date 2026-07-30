@@ -1,3 +1,11 @@
+---
+title = "Conventions, patterns, and anti-patterns"
+meta_title = "Conventions, patterns, and anti-patterns | Gleam programming language"
+subtitle = "Writing good code in Gleam"
+description = "Tips and guidance for writing good code in Gleam"
+preview_image = "patterns"
+---
+
 This document outlines conventions, patterns, and anti-patterns for Gleam code.
 Conventions and anti-patterns are rules that should be adhered to always, while
 patterns are to applied whenever the programmer thinks it would benefit their
@@ -47,7 +55,7 @@ their return type.
 
 ```gleam
 // Good
-fn calculate_total(amounts: List(Float), service_charge: Float) -> Float {
+fn calculate_total(amounts: List(Int), service_charge: Int) -> Int {
   int.sum(amounts) * service_charge
 }
 
@@ -57,7 +65,7 @@ fn calculate_total(amounts, service_charge) {
 }
 
 // Bad: missing return annotation
-fn calculate_total(amounts: List(Float), service_charge: Float) {
+fn calculate_total(amounts: List(Int), service_charge: Int) {
   int.sum(amounts) * service_charge
 }
 ```
@@ -166,6 +174,7 @@ pub fn to_string(id: Identifier) -> String
 // Bad
 pub fn identifier_to_string(id: Identifier) -> String
 ```
+
 Functions are used with a module qualifier, so the name of the module clarifies
 what the input value is:
 
@@ -199,7 +208,7 @@ pub fn round(data: Float) -> Int
 pub fn float_to_int(data: Float) -> Int
 ```
 
-### Conventional failible function naming
+### Conventional fallible function naming
 
 Functions that return results should be given a name that is appropriate for
 the domain and the operation they perform.
@@ -238,6 +247,7 @@ foundation for other Gleam libraries and applications.
 
 - [`gleam_stdlib`](https://hexdocs.pm/gleam_stdlib)
 - [`gleam_time`](https://hexdocs.pm/gleam_time)
+- [`gleam_json`](https://hexdocs.pm/gleam_json)
 - [`gleam_http`](https://hexdocs.pm/gleam_http)
 - [`gleam_erlang`](https://hexdocs.pm/gleam_erlang)
 - [`gleam_otp`](https://hexdocs.pm/gleam_otp)
@@ -294,7 +304,7 @@ directory can import modules from `dependencies` and `src/`, but not
 integration tests. Code in this directory can import modules from any
 dependencies and any directory.
 
-`test` is for any additional code used in development, such as code generators
+`dev` is for any additional code used in development, such as code generators
 and helper scripts. Code in this directory can import modules from any
 dependencies and any directory.
 
@@ -484,7 +494,7 @@ pub fn create_user_request(name: String) -> Request(String) {
 }
 
 /// Parse a response from the create-user endpoint.
-pub fn create_user_response(response: Response(String)) -> Result(Nil, ApiError) {
+pub fn create_user_response(response: Response(String)) -> Result(User, ApiError) {
   case response.status {
     201 -> Ok(User(name: response.body))
     409 -> Error(UserNameAlreadyInUse)
@@ -515,7 +525,6 @@ button.new(text: "Continue")
 
 Any required fields can be taken as arguments by the function that starts the
 builder pipeline, the remaining fields being set to default values.
-
 
 ```gleam
 pub type Button {
@@ -648,8 +657,8 @@ name of the package. For example, the package `lustre` places its modules in
 src/
 ├── my_package.gleam
 └── my_package/
-    ├── distribution.gleam
-    └── inventory.gleam
+    ├── distribution.gleam
+    └── inventory.gleam
 
 # Bad
 src/
@@ -699,7 +708,7 @@ import app/services/user_service
 import app/views/user_view
 
 // Good: business domain grouping
-import app/accounts
+import app/stock
 import app/billing
 ```
 
