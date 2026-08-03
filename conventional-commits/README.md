@@ -7,14 +7,15 @@ reverts, and GPG signing.
 
 ## What it enforces
 
-| Rule                | Description                                                          |
-| ------------------- | ------------------------------------------------------------------- |
-| Conventional format | `<type>[scope]: <description>` with optional body and footers       |
-| Inferred type       | The type is chosen from the actual diff, never guessed              |
-| Imperative present  | Descriptions read like "allow config to extend other configs"       |
-| Breaking changes    | Marked with `!` and a `BREAKING CHANGE:` footer                     |
-| Reverts             | `revert:` message with a `Refs:` footer of the reverted hash(es)    |
-| GPG signing         | Signs with `-S` when enabled, reports failures, never pushes broken |
+| Rule                 | Description                                                                        |
+| -------------------- | ---------------------------------------------------------------------------------- |
+| Conventional format  | `<type>[scope]: <description>` with optional body and footers                      |
+| Inferred type        | The type is chosen from the actual diff, never guessed                             |
+| Imperative present   | Descriptions read like "allow config to extend other configs"                      |
+| Breaking changes     | Marked with `!` and a `BREAKING CHANGE:` footer                                    |
+| Reverts              | `revert:` message with a `Refs:` footer of the reverted hash(es)                   |
+| GPG signing          | Signs with `-S` when enabled, reports failures, never pushes broken                |
+| No agent attribution | No `Claude-Session:` URL, `Co-Authored-By:` agent line, or "Generated with" notice |
 
 ## Installation
 
