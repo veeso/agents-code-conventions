@@ -18,6 +18,7 @@ This is a monorepo of **Claude Code skills** that enforce language-specific codi
 | `md-conventions/`         | `md-conventions`                             | Markdown `.md` files                           |
 | `zizmor-conventions/`     | `zizmor-conventions`                         | GitHub Actions workflows / `action.yml`        |
 | `pr-conventions/`         | `pr-conventions`                             | Pull requests (`gh pr create`)                 |
+| `issue-conventions/`      | `issue-conventions`                          | Issues (`gh issue create`)                     |
 | `conventional-commits/`   | `conventional-commits`                       | Git commits (`git commit`)                     |
 | `adversarial-review/`     | `adversarial-review`                         | Adversarial review of changes / PRs            |
 
@@ -86,4 +87,15 @@ Description of the convention.
 
 Follow the existing directory pattern: `<skill-name>/<skill-name>/SKILL.md` with a guideline text file alongside it. Add a `README.md` and `LICENSE` at the package root.
 
+The `SKILL.md` frontmatter must carry `name`, `description`, and `license` — CI fails the `validate-frontmatter` job if any of the three is missing.
+
 **Always update the root `README.md` when adding a skill**: add a row to the "Available Skills" table, an install line under "Install a specific skill", and a row to the "Guideline Systems" table if the skill uses a prefix. Run `uvx fmt-md-tables -i README.md` afterward to keep tables aligned.
+
+**Always update the CI workflow when adding a skill**: add an entry to the `test-install` matrix in `.github/workflows/test-skills-installation.yml`:
+
+```yaml
+- skill: my-new-skill
+  expected_files: "my-guidelines.txt"
+```
+
+Use the `name` from the skill's frontmatter (not the directory name — e.g. `rust-conventions/fetch-conventions/` installs as `fetch-rust-conventions`). Set `expected_files` to the space-separated companion files that must ship with the skill, or `""` when the skill is a single `SKILL.md`. Also update the "Repository Structure" table above.

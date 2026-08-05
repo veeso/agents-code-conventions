@@ -1,6 +1,15 @@
 ---
 name: adversarial-review
 description: ALWAYS use this skill when the user asks for an adversarial review. Triggers whenever an adversarial review of changes, a pull request, a revision, a diff, or the working tree is requested (e.g. "run an adversarial review", "adversarially review this PR"). Decides who performs the review, how review work may be delegated without duplication, what every review must cover, and how findings must be reported.
+license: MIT
+metadata:
+  author: veeso
+  version: "1.0.0"
+  tags:
+    - review
+    - code-review
+    - pull-request
+    - conventions
 ---
 
 # Adversarial Review
