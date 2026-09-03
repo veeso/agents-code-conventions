@@ -160,15 +160,15 @@ Prefer the **shortest version specifier** possible. Drop trailing `.0` segments 
 serde = "^1.0"
 tokio = "~1.38"
 anyhow = "=1.0.86"
-serde_json = "1.0"       # unnecessary .0
-my-crate = "0.8.0"       # unnecessary .0
+serde_json = "1.0" # unnecessary .0
+my-crate = "0.8.0" # unnecessary .0
 
 # CORRECT
-serde = "1"              # any 1.x.x
-tokio = "1.38"           # needs >= 1.38 for a specific feature
-anyhow = "1"             # any 1.x.x
-serde_json = "1"         # any 1.x.x
-my-crate = "0.8"         # any 0.8.x
+serde = "1" # any 1.x.x
+tokio = "1.38" # needs >= 1.38 for a specific feature
+anyhow = "1" # any 1.x.x
+serde_json = "1" # any 1.x.x
+my-crate = "0.8" # any 0.8.x
 ```
 
 Exception: `=` is acceptable when an exact pin is genuinely required (e.g., matching a proc-macro to its companion crate). Add a comment explaining why.
@@ -183,7 +183,7 @@ serde_json = { version = "1" }
 
 # CORRECT
 serde_json = "1"
-serde = { version = "1", features = ["derive"] }  # needs inline table for features
+serde = { version = "1", features = ["derive"] } # needs inline table for features
 ```
 
 ### 8. Inline Table Key Ordering

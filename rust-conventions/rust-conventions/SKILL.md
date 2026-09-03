@@ -27,12 +27,14 @@ Both sets of guidelines MUST be followed.
 ## Instructions
 
 **CRITICAL**: This skill MUST be invoked for ANY Rust code operation, including:
+
 - Creating new .rs files (even simple examples like Hello World)
 - Modifying existing .rs files (any change, no matter how small)
 - Reviewing Rust code
 - Refactoring Rust code
 
 **Process**:
+
 1. Read [rust-guidelines.txt](./rust-guidelines.txt) to understand all `M-` compliance requirements
 2. Read [custom-guidelines.txt](./custom-guidelines.txt) to understand all `X-` compliance requirements
 3. Before writing/modifying ANY Rust code, ensure edits conform to both guideline sets

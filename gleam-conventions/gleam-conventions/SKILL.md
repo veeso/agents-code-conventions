@@ -52,7 +52,7 @@ Rules under the `## Anti-patterns` heading describe practices that should be **a
 ### Reading the format
 
 - Each rule is a `###` subsection within its tier
-- Code examples use ` ```gleam ` fenced blocks with `// Good` and `// Bad` comments to show correct vs incorrect usage
+- Code examples use `` ```gleam `` fenced blocks with `// Good` and `// Bad` comments to show correct vs incorrect usage
 - Prose paragraphs explain the rationale and nuances of each rule
 - Some rules reference external talks or resources for deeper understanding
 

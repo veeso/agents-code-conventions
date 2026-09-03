@@ -21,6 +21,7 @@ This skill updates the Microsoft Rust guidelines (`M-` prefix) from the upstream
 It does NOT touch `rust-conventions/custom-guidelines.txt` (custom `X-` prefix conventions).
 
 **Process**:
+
 1. Run the fetch script: `bash scripts/fetch-guidelines.sh`
 2. Verify the script completed successfully
 3. Report the number of lines in the updated file
