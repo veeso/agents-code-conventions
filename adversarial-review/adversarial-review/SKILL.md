@@ -115,6 +115,8 @@ of the change. Loading specialized guidance does not delegate that review work
 or require another agent. Honor review priorities explicitly requested by the
 user.
 
+The code must be production level. CI is passing, that means tests, format and all other automatic checks are Ok, I need you to search for logic bugs, bad practices, low hanging fruits, etc.
+
 ### Report
 
 Return one severity-ordered report. For each finding, include:
