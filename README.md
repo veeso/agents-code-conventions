@@ -113,6 +113,14 @@ Add new `X-` rules to `rust-conventions/rust-conventions/custom-guidelines.txt`:
 Description of the convention.
 ```
 
+## Go skills
+
+Suggestions for Go development:
+
+```bash
+npx skills add samber/cc-skills-golang
+```
+
 ## License
 
 [MIT](LICENSE)
