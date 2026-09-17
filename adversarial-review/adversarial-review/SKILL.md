@@ -106,6 +106,13 @@ Prioritize actionable issues involving:
 - risky assumptions and unsupported edge cases;
 - missing or ineffective tests for changed behavior; and
 - documentation that would mislead users or contributors.
+- repeated tests
+- logic bugs
+- bad practices
+- low hanging fruits
+- test coverage
+- performance issues
+- out of scope implementations
 
 Apply any more specific repository or language review guidance in addition to
 this baseline. Before reviewing, identify the languages and file types in the
@@ -115,7 +122,8 @@ of the change. Loading specialized guidance does not delegate that review work
 or require another agent. Honor review priorities explicitly requested by the
 user.
 
-The code must be production level. CI is passing, that means tests, format and all other automatic checks are Ok, I need you to search for logic bugs, bad practices, low hanging fruits, etc.
+If a reference issue exists, check whether the change adequately addresses it,
+and flag anything out of scope by asking the user whether it should be included or removed.
 
 ### Report
 
