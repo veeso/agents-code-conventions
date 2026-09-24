@@ -21,6 +21,7 @@ This is a monorepo of **Claude Code skills** that enforce language-specific codi
 | `issue-conventions/`      | `issue-conventions`                          | Issues (`gh issue create`)                     |
 | `conventional-commits/`   | `conventional-commits`                       | Git commits (`git commit`)                     |
 | `adversarial-review/`     | `adversarial-review`                         | Adversarial review of changes / PRs            |
+| `plan-implementation/`    | `plan-implementation`                        | Implementation plans (superpowers-based)       |
 
 ## How Skills Work
 

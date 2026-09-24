@@ -10,19 +10,20 @@ A collection of coding agent skills that enforce language-specific coding conven
 
 ## Available Skills
 
-| Skill                                               | Target                              | Description                                                                                                                            |
-| --------------------------------------------------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| [rust-conventions](./rust-conventions/)             | `.rs` files                         | Enforces [Microsoft Rust Guidelines](https://github.com/microsoft/rust-guidelines) (`M-` prefix) and custom extensions (`X-` prefix)   |
-| [gleam-conventions](./gleam-conventions/)           | `.gleam` files                      | Enforces idiomatic Gleam conventions from the official Gleam conventions document                                                      |
-| [cargo-toml-conventions](./cargo-toml-conventions/) | `Cargo.toml`                        | Enforces consistent formatting, dependency sorting, section ordering, and version conventions                                          |
-| [js-conventions](./js-conventions/)                 | `.js`, `.mjs`, `.cjs`, `.jsx` files | Enforces [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript) (`AIRBNB-` prefix)                                      |
-| [ts-conventions](./ts-conventions/)                 | `.ts`, `.tsx` files                 | Enforces [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html) (`GOOGLE-` prefix)                          |
-| [md-conventions](./md-conventions/)                 | `.md` files                         | Enforces [markdownlint](https://github.com/DavidAnson/markdownlint) rules (`MD-` prefix)                                               |
-| [zizmor-conventions](./zizmor-conventions/)         | GitHub Actions workflows            | Enforces [zizmor](https://github.com/woodruffw/zizmor) security audits (`ZIZMOR-` prefix) and requires running `zizmor` until clean    |
-| [pr-conventions](./pr-conventions/)                 | Pull requests                       | Enforces opening PRs with `gh pr create` and writing the body in plain, jargon-free language                                           |
-| [issue-conventions](./issue-conventions/)           | Issues                              | Enforces opening issues with `gh issue create` and writing the body in plain, jargon-free language                                     |
-| [conventional-commits](./conventional-commits/)     | Git commits                         | Enforces the [Conventional Commits](https://www.conventionalcommits.org) format, infers the type from the diff, and signs when enabled |
-| [adversarial-review](./adversarial-review/)         | Code review                         | Runs an adversarial review of changes with an independent reviewer and a severity-ordered findings report                              |
+| Skill                                               | Target                              | Description                                                                                                                              |
+| --------------------------------------------------- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| [rust-conventions](./rust-conventions/)             | `.rs` files                         | Enforces [Microsoft Rust Guidelines](https://github.com/microsoft/rust-guidelines) (`M-` prefix) and custom extensions (`X-` prefix)     |
+| [gleam-conventions](./gleam-conventions/)           | `.gleam` files                      | Enforces idiomatic Gleam conventions from the official Gleam conventions document                                                        |
+| [cargo-toml-conventions](./cargo-toml-conventions/) | `Cargo.toml`                        | Enforces consistent formatting, dependency sorting, section ordering, and version conventions                                            |
+| [js-conventions](./js-conventions/)                 | `.js`, `.mjs`, `.cjs`, `.jsx` files | Enforces [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript) (`AIRBNB-` prefix)                                        |
+| [ts-conventions](./ts-conventions/)                 | `.ts`, `.tsx` files                 | Enforces [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html) (`GOOGLE-` prefix)                            |
+| [md-conventions](./md-conventions/)                 | `.md` files                         | Enforces [markdownlint](https://github.com/DavidAnson/markdownlint) rules (`MD-` prefix)                                                 |
+| [zizmor-conventions](./zizmor-conventions/)         | GitHub Actions workflows            | Enforces [zizmor](https://github.com/woodruffw/zizmor) security audits (`ZIZMOR-` prefix) and requires running `zizmor` until clean      |
+| [pr-conventions](./pr-conventions/)                 | Pull requests                       | Enforces opening PRs with `gh pr create` and writing the body in plain, jargon-free language                                             |
+| [issue-conventions](./issue-conventions/)           | Issues                              | Enforces opening issues with `gh issue create` and writing the body in plain, jargon-free language                                       |
+| [conventional-commits](./conventional-commits/)     | Git commits                         | Enforces the [Conventional Commits](https://www.conventionalcommits.org) format, infers the type from the diff, and signs when enabled   |
+| [adversarial-review](./adversarial-review/)         | Code review                         | Runs an adversarial review of changes with an independent reviewer and a severity-ordered findings report                                |
+| [plan-implementation](./plan-implementation/)       | Implementation plans                | Writes scope-bound, test-driven implementation plans on top of [superpowers](https://github.com/obra/superpowers) without executing them |
 
 ## Installation
 
@@ -48,6 +49,7 @@ npx skills add veeso/agents-code-conventions@pr-conventions
 npx skills add veeso/agents-code-conventions@issue-conventions
 npx skills add veeso/agents-code-conventions@conventional-commits
 npx skills add veeso/agents-code-conventions@adversarial-review
+npx skills add veeso/agents-code-conventions@plan-implementation
 ```
 
 ### Install globally (all projects)
