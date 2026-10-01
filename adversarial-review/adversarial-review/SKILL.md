@@ -1,10 +1,10 @@
 ---
 name: adversarial-review
-description: ALWAYS use this skill when the user asks for an adversarial review. Triggers whenever an adversarial review of changes, a pull request, a revision, a diff, or the working tree is requested (e.g. "run an adversarial review", "adversarially review this PR"). Decides who performs the review, how review work may be delegated without duplication, what every review must cover, and how findings must be reported.
+description: ALWAYS use this skill when the user asks for an adversarial review. Triggers whenever an adversarial review of changes, a pull request, a revision, a diff, or the working tree is requested (e.g. "run an adversarial review", "adversarially review this PR", "review this before I open the PR").
 license: MIT
 metadata:
   author: veeso
-  version: "1.0.0"
+  version: "2.0.0"
   tags:
     - review
     - code-review
@@ -14,133 +14,189 @@ metadata:
 
 # Adversarial Review
 
-Use this skill to decide who should review changes and how review work may be
-delegated without duplication. The [Review Requirements](#review-requirements)
-section defines what every review must cover and how findings must be
-reported.
+An adversarial review assumes the change is wrong until the code proves
+otherwise. The reviewer's job is to find defects, not to approve. A review
+that returns "looks good" must show the work that earned it.
 
-## Workflow
+**Violating the letter of these rules is violating the spirit of them.**
 
-Every reviewer must follow the [Review Requirements](#review-requirements)
-section. When the current agent reviews directly, apply it in the current
-session. When a fresh reviewer is required, include the full Review
-Requirements section in that reviewer's instructions.
+## Who Reviews
 
-First determine whether the current agent participated in producing the
-changes. The current agent is implementation-involved if it:
+The current agent is **implementation-involved** if it wrote, edited,
+directed, or designed the changes, or is continuing in the context where they
+were made. Reading the PR or starting a review does not count.
 
-- wrote or edited the changes;
-- directed or orchestrated their implementation;
-- made design decisions that shaped the implementation; or
-- is continuing in the same implementation context and therefore knows the
-  author's rationale.
+### Implementation-involved: launch one fresh reviewer
 
-Merely reading the PR or beginning a review does not make the current agent
-implementation-involved.
+The current agent cannot review its own work. Launch exactly one reviewer:
 
-### Post-implementation adversarial review
+- use a general-purpose agent with full tool access (it must be able to run
+  builds and tests), never a read-only or search-only agent type;
+- use the same model as the current session or a stronger one;
+- give it the PR URL or the final revision range, the intended externally
+  observable behavior, any reference issue, any priorities the user asked
+  for, and the full [Review Requirements](#review-requirements) section
+  verbatim.
 
-Use this mode when the current agent is implementation-involved. The current
-agent must launch a fresh reviewer because it cannot independently review its
-own work. Give the reviewer:
+Never give the reviewer implementation history, author rationale, your own
+conclusions, explanations of design choices, or suggested findings.
 
-- the PR URL, or the final revision when no PR exists;
-- the intended externally observable behavior, if the PR does not state it
-  clearly; and
-- any review priorities explicitly requested by the user.
+Relay the reviewer's report to the user **verbatim and complete**, nits
+included. Do not summarize it, re-rank it, dismiss findings, or fix anything
+until the user decides. If behavior-changing fixes follow, run another fresh
+review. Purely mechanical follow-ups (formatting, renames with no semantic
+effect) may skip it.
 
-Do not give the reviewer:
+### Not involved: review directly
 
-- implementation history;
-- author rationale not present in the change;
-- the current agent's conclusions;
-- explanations of why particular implementation choices were made; or
-- suggested findings.
-
-Present the reviewer's findings to the user without silently dismissing or
-fixing them. If behavior-changing fixes are made after the review, obtain
-another independent review. A repeat review may be skipped when subsequent
-changes are purely mechanical and cannot affect behavior or meaning.
-
-### Independent review task
-
-Use this mode when the current agent did not participate in the implementation,
-even if it also has verification, metadata, or other responsibilities. The
-current agent is already the independent reviewer. It should perform the review
-directly and must not launch another agent merely to repeat the same review.
-
-The current agent may delegate a narrowly bounded, materially distinct part of
-the review surface when that improves coverage or enables parallel
-investigation. Examples include:
-
-- validating one platform-specific code path;
-- experimentally testing a specific exploit hypothesis;
-- auditing one protocol or trust boundary;
-- checking concurrency behavior separately from API compatibility; or
-- inspecting a dependency or external implementation.
-
-Such delegation is ordinary review decomposition, not an additional adversarial
-review. Each delegated task must have explicit boundaries and must not repeat
-the complete end-to-end review. Limited overlap is expected when the current
-agent integrates and validates delegated findings. The current agent remains
-responsible for resolving contradictions, removing duplicates, and producing
-the final review.
+Perform the review in the current session. Do not launch another agent to
+repeat the full review. You may delegate a narrow, distinct slice (one
+platform path, one exploit hypothesis, one dependency) with explicit
+boundaries; you remain responsible for merging, de-duplicating, and verifying
+delegated results.
 
 ## Review Requirements
 
-These requirements apply to every review, whether the reviewer works directly
-or as an independent reviewer delegated by another agent.
+These requirements apply to every reviewer, direct or delegated.
 
-### Review Scope
+### 1. Establish intent and scope
 
-Inspect the complete change and read enough surrounding code or documentation
-to understand the affected contracts. Review the intended behavior first, then
-whether the implementation preserves it.
+- Write one sentence stating what the change must do, from the PR
+  description, the reference issue, or the user.
+- List every changed file and map each hunk to that intent. A hunk that does
+  not serve the intent is a **Scope** finding; ask the user whether it should
+  stay or be removed.
+- List what the intent requires but the change lacks: docs, changelog, man
+  page, help text, completions, config, migrations, tests.
+- If a reference issue exists, check the change resolves all of it, not part.
 
-Prioritize actionable issues involving:
+### 2. Run the tooling
 
-- correctness bugs and behavior regressions;
-- security and trust-boundary weaknesses;
-- type-safety problems;
-- breaking API, configuration, wire-format, or operational changes;
-- risky assumptions and unsupported edge cases;
-- missing or ineffective tests for changed behavior; and
-- documentation that would mislead users or contributors.
-- repeated tests
-- logic bugs
-- bad practices
-- low hanging fruits
-- test coverage
-- performance issues
-- out of scope implementations
+Detect the project's toolchain and run, on the change's head:
 
-Apply any more specific repository or language review guidance in addition to
-this baseline. Before reviewing, identify the languages and file types in the
-change and load any specialized review skill or repository guidance that
-applies to each subset. Apply specialized guidance only to its matching subset
-of the change. Loading specialized guidance does not delegate that review work
-or require another agent. Honor review priorities explicitly requested by the
-user.
+- build or type-check;
+- the linter at the project's configured strictness, plus warnings as errors
+  when the project allows it (e.g. `cargo clippy --all-targets`, `eslint`,
+  `tsc --noEmit`, `ruff`);
+- the formatter in check mode;
+- the full test suite, or the affected packages when the suite is very slow.
 
-If a reference issue exists, check whether the change adequately addresses it,
-and flag anything out of scope by asking the user whether it should be included or removed.
+Every warning the change introduces is a finding. If a tool cannot run, state
+which and why at the top of the report and treat that area as unverified.
 
-### Report
+Load any language or repository convention skill that matches the changed
+files and apply it to those files.
 
-Return one severity-ordered report. For each finding, include:
+### 3. Walk every hunk with the checklist
 
-- concrete file and line evidence;
-- the conditions required to trigger the issue;
-- the expected impact;
-- a suggested correction when one is reasonably clear; and
-- relevant unverified assumptions.
+Read every hunk and the surrounding code it depends on. Apply each lens below
+to each hunk. Do not skip a lens because the hunk "looks fine".
 
-Report only actionable findings. Do not include process narration or duplicate
-findings from multiple reviewers. If there are no findings, say so plainly and
-note any residual risk or untested areas.
+- **Correctness:** empty, zero, one, max, unicode, and `None` inputs?
+  Off-by-one? State reset between iterations? Ordering, races, partial
+  failure?
+- **Error handling:** can user input or I/O reach `panic`, `unwrap`,
+  `expect`, `todo!`, `unreachable`, or an uncaught `throw`? Are errors
+  propagated with context, never swallowed?
+- **API and types:** borrow instead of own (`&[T]` not `&Vec<T>`, `&str` not
+  `String`)? Needless `clone`, `collect`, or allocation? Public surface or
+  wire format changed?
+- **Performance:** work recomputed per item or inside a loop that could be
+  hoisted? Extra syscalls, allocations, or N+1 queries on a hot path?
+- **Readability:** clear names? Dead code, leftover `TODO` or `FIXME`, debug
+  prints, commented-out code? Copy-pasted logic that should be shared?
+- **Docs and comments:** is every comment and doc comment near the change
+  still true? Typos in user-facing strings, help text, or errors? README,
+  changelog, and man page updated?
+- **Consistency:** does the change follow the codebase's existing idioms? Is
+  a new helper used at every existing call site it fits? Does the same bug
+  or pattern exist elsewhere and stay unfixed?
+- **Security:** untrusted input validated? Injection, path traversal,
+  secrets, permissions, trust boundaries?
+- **Low-hanging fruits:** one-line simplifications a reviewer would ask for:
+  iterator instead of loop, early return, standard library helper, removed
+  indirection.
 
-## Output
+### 4. Audit the tests
 
-When the current agent is implementation-involved, present the independent
-review findings to the user without addressing or dismissing them until the
-user provides explicit direction.
+- For each changed behavior, name the test that fails if the behavior breaks.
+  No such test is a **Tests** finding.
+- For each new or changed test, state what makes it fail. An assertion that
+  passes on a crash (only "exit code is non-zero", empty substring match,
+  `assert!(result.is_err())` with no error check) is ineffective.
+- Repeated tests: two tests with the same setup and assertion shape that
+  differ only in input data should be one table-driven or parametrized test.
+  Tests that exercise the same code path twice add cost, not coverage.
+- Missing cases: boundaries, error paths, combinations with existing flags or
+  options, and the reverse order of anything order-sensitive.
+- Fixtures duplicated from existing fixtures instead of reused.
+
+### 5. Verify every finding
+
+Before reporting a finding, try to prove it: run the code, write a throwaway
+test outside the repository, read the dependency source in the local cache or
+vendored tree, or check the docs. A finding you could not verify goes to
+**Open questions**, never into a severity bucket. Do not modify the
+repository under review.
+
+### 6. Report
+
+Use exactly this structure. Every section is required; write "None." when a
+section is empty.
+
+```markdown
+## Adversarial review: <change title>
+
+**Intent:** <one sentence>
+**Tooling:** <command: result, for each tool run; tools that could not run and why>
+
+### Blocker
+
+### Major
+
+### Minor
+
+### Nit
+
+### Scope
+
+### Open questions
+
+### Coverage
+
+| File | Hunks | Lenses applied | Tests audited | Result |
+| ---- | ----- | -------------- | ------------- | ------ |
+```
+
+Severity:
+
+- **Blocker**: wrong behavior, crash, data loss, security hole, build or test
+  failure. Must be fixed before merge.
+- **Major**: likely bug on an edge case, missing or ineffective test for
+  changed behavior, breaking change without notice, real performance cost.
+- **Minor**: bad practice, needless allocation, stale or misleading doc,
+  repeated test, missed reuse, low-hanging fruit.
+- **Nit**: naming, typos, wording, formatting the tooling did not catch.
+
+Each finding states: `file:line`, what is wrong, how to trigger or observe it,
+impact, and the fix. One finding per root cause; merge duplicates.
+
+Report nits. Pedantry is the point of this review; the author decides what to
+skip, not the reviewer. A review may conclude with no Blocker or Major
+findings only when the Coverage table lists every changed file and the
+Tooling line shows the tools ran.
+
+## Red Flags
+
+These thoughts mean you are about to under-report. Go back to step 3.
+
+| Thought                                  | Reality                                                                |
+| ---------------------------------------- | ---------------------------------------------------------------------- |
+| "Looks good overall"                     | Overall is not a lens. Fill the Coverage table first.                  |
+| "Too minor to mention"                   | Minor and Nit sections exist for it. Report it.                        |
+| "Existing code does the same"            | Existing debt does not excuse new debt. Report it; note the precedent. |
+| "Tests pass, so it works"                | Check the tests would fail if it did not work.                         |
+| "Style is subjective"                    | If the linter or codebase idiom disagrees, it is not subjective.       |
+| "The author probably meant that"         | Review the code, not the intent you imagine. Ask in Open questions.    |
+| "Pretty sure this API does not exist"    | Verify in the source or docs. Unverified goes to Open questions.       |
+| "I'll summarize the reviewer's findings" | Relay verbatim. Summaries are where findings disappear.                |
