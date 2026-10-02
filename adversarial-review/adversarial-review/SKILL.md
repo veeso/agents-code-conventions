@@ -149,6 +149,7 @@ section is empty.
 
 **Intent:** <one sentence>
 **Tooling:** <command: result, for each tool run; tools that could not run and why>
+**Reviewed:** <every changed file, comma-separated>
 
 ### Blocker
 
@@ -161,11 +162,6 @@ section is empty.
 ### Scope
 
 ### Open questions
-
-### Coverage
-
-| File | Hunks | Lenses applied | Tests audited | Result |
-| ---- | ----- | -------------- | ------------- | ------ |
 ```
 
 Severity:
@@ -183,8 +179,9 @@ impact, and the fix. One finding per root cause; merge duplicates.
 
 Report nits. Pedantry is the point of this review; the author decides what to
 skip, not the reviewer. A review may conclude with no Blocker or Major
-findings only when the Coverage table lists every changed file and the
-Tooling line shows the tools ran.
+findings only when every changed file went through steps 3 and 4, the
+Reviewed line lists all of them, and the Tooling line shows the tools ran.
+Do not print per-file or per-lens tables; report findings only.
 
 ## Red Flags
 
@@ -192,7 +189,7 @@ These thoughts mean you are about to under-report. Go back to step 3.
 
 | Thought                                  | Reality                                                                |
 | ---------------------------------------- | ---------------------------------------------------------------------- |
-| "Looks good overall"                     | Overall is not a lens. Fill the Coverage table first.                  |
+| "Looks good overall"                     | Overall is not a lens. Walk every file through every lens first.       |
 | "Too minor to mention"                   | Minor and Nit sections exist for it. Report it.                        |
 | "Existing code does the same"            | Existing debt does not excuse new debt. Report it; note the precedent. |
 | "Tests pass, so it works"                | Check the tests would fail if it did not work.                         |
