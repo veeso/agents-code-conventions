@@ -120,16 +120,19 @@ to each hunk. Do not skip a lens because the hunk "looks fine".
 ### 4. Audit the tests
 
 - For each changed behavior, name the test that fails if the behavior breaks.
-  No such test is a **Tests** finding.
+  No such test is a **Major** finding: missing coverage.
 - For each new or changed test, state what makes it fail. An assertion that
   passes on a crash (only "exit code is non-zero", empty substring match,
-  `assert!(result.is_err())` with no error check) is ineffective.
+  `assert!(result.is_err())` with no error check) is ineffective: a **Major**
+  finding.
 - Repeated tests: two tests with the same setup and assertion shape that
   differ only in input data should be one table-driven or parametrized test.
-  Tests that exercise the same code path twice add cost, not coverage.
+  Tests that exercise the same code path twice add cost, not coverage:
+  **Minor**.
 - Missing cases: boundaries, error paths, combinations with existing flags or
-  options, and the reverse order of anything order-sensitive.
-- Fixtures duplicated from existing fixtures instead of reused.
+  options, and the reverse order of anything order-sensitive. Each untested
+  case on a changed path is a **Major** finding; elsewhere it is **Minor**.
+- Fixtures duplicated from existing fixtures instead of reused: **Minor**.
 
 ### 5. Verify every finding
 
