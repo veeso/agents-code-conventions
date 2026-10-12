@@ -15,8 +15,8 @@ and defines what every review must cover and how findings must be reported.
 | Tooling first        | Build, linter, formatter, and tests run; new warnings are findings                  |
 | Lens checklist       | Every hunk is checked for correctness, errors, types, perf, docs, consistency, etc. |
 | Test audit           | Ineffective, missing, and repeated tests are reported                               |
-| Verified findings    | Unverified claims go to Open questions, never into a severity bucket                |
-| Pedantic report      | Fixed template with Blocker, Major, Minor, Nit, Scope, and Open questions           |
+| Verified findings    | Unverified claims are dropped; the report never asks questions                      |
+| Pedantic report      | Fixed template with Blocker, Major, Minor, Nit, and Scope                           |
 | Verbatim relay       | Reviewer findings reach the user unsummarized and untouched                         |
 
 ## Installation

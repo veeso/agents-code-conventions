@@ -4,7 +4,7 @@ description: ALWAYS use this skill when the user asks for an adversarial review.
 license: MIT
 metadata:
   author: veeso
-  version: "2.0.0"
+  version: "2.1.0"
   tags:
     - review
     - code-review
@@ -64,8 +64,7 @@ These requirements apply to every reviewer, direct or delegated.
 - Write one sentence stating what the change must do, from the PR
   description, the reference issue, or the user.
 - List every changed file and map each hunk to that intent. A hunk that does
-  not serve the intent is a **Scope** finding; ask the user whether it should
-  stay or be removed.
+  not serve the intent is a **Scope** finding.
 - List what the intent requires but the change lacks: docs, changelog, man
   page, help text, completions, config, migrations, tests.
 - If a reference issue exists, check the change resolves all of it, not part.
@@ -138,9 +137,9 @@ to each hunk. Do not skip a lens because the hunk "looks fine".
 
 Before reporting a finding, try to prove it: run the code, write a throwaway
 test outside the repository, read the dependency source in the local cache or
-vendored tree, or check the docs. A finding you could not verify goes to
-**Open questions**, never into a severity bucket. Do not modify the
-repository under review.
+vendored tree, or check the docs. A finding you could not verify is dropped,
+not reported. Never ask the author or the user questions in the report; either
+prove a defect or say nothing. Do not modify the repository under review.
 
 ### 6. Report
 
@@ -163,8 +162,6 @@ section is empty.
 ### Nit
 
 ### Scope
-
-### Open questions
 ```
 
 Severity:
@@ -197,6 +194,7 @@ These thoughts mean you are about to under-report. Go back to step 3.
 | "Existing code does the same"            | Existing debt does not excuse new debt. Report it; note the precedent. |
 | "Tests pass, so it works"                | Check the tests would fail if it did not work.                         |
 | "Style is subjective"                    | If the linter or codebase idiom disagrees, it is not subjective.       |
-| "The author probably meant that"         | Review the code, not the intent you imagine. Ask in Open questions.    |
-| "Pretty sure this API does not exist"    | Verify in the source or docs. Unverified goes to Open questions.       |
+| "The author probably meant that"         | Review the code, not the intent you imagine.                           |
+| "Pretty sure this API does not exist"    | Verify in the source or docs. Unverified means not reported.           |
+| "Worth asking the author about this"     | Questions are noise. Prove a defect or drop it.                        |
 | "I'll summarize the reviewer's findings" | Relay verbatim. Summaries are where findings disappear.                |
