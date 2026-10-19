@@ -128,6 +128,10 @@ to each hunk. Do not skip a lens because the hunk "looks fine".
   differ only in input data should be one table-driven or parametrized test.
   Tests that exercise the same code path twice add cost, not coverage:
   **Minor**.
+- Tests already implemented: for each new test, search the existing suite for
+  a test that covers the same behavior with the same setup and assertions. A
+  new test that repeats an existing one adds nothing: **Minor**. Extend the
+  existing test instead.
 - Missing cases: boundaries, error paths, combinations with existing flags or
   options, and the reverse order of anything order-sensitive. Each untested
   case on a changed path is a **Major** finding; elsewhere it is **Minor**.
