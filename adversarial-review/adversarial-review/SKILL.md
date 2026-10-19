@@ -4,7 +4,7 @@ description: ALWAYS use this skill when the user asks for an adversarial review.
 license: MIT
 metadata:
   author: veeso
-  version: "2.1.0"
+  version: "3.0.0"
   tags:
     - review
     - code-review
@@ -18,46 +18,150 @@ An adversarial review assumes the change is wrong until the code proves
 otherwise. The reviewer's job is to find defects, not to approve. A review
 that returns "looks good" must show the work that earned it.
 
+The review runs as a loop. An independent reviewer reviews the change, an
+independent fixer fixes every finding, the fixes are committed, and a fresh
+reviewer reviews again, until a review comes back clean or the round limit is
+reached. At the end all fix commits are squashed into the reviewed commit.
+
 **Violating the letter of these rules is violating the spirit of them.**
 
-## Who Reviews
+## Roles
 
-The current agent is **implementation-involved** if it wrote, edited,
-directed, or designed the changes, or is continuing in the context where they
-were made. Reading the PR or starting a review does not count.
+- **Orchestrator:** the current agent. It prepares the loop, dispatches the
+  agents, commits, and squashes. It never reviews, never fixes, and never
+  judges findings itself, even when it did not write the change.
+- **Reviewer:** a fresh agent per round that runs the
+  [Review Requirements](#review-requirements) and returns a report.
+- **Fixer:** a fresh agent per round that fixes every finding in that round's
+  report.
 
-### Implementation-involved: launch one fresh reviewer
+Every reviewer and fixer must be:
 
-The current agent cannot review its own work. Launch exactly one reviewer:
-
-- use a general-purpose agent with full tool access (it must be able to run
+- a general-purpose agent with full tool access (it must be able to run
   builds and tests), never a read-only or search-only agent type;
-- use the same model as the current session or a stronger one;
-- give it the PR URL or the final revision range, the intended externally
-  observable behavior, any reference issue, any priorities the user asked
-  for, and the full [Review Requirements](#review-requirements) section
-  verbatim.
+- on the most capable model available (e.g. `opus` in Claude Code) with
+  **medium** reasoning effort, unless the user asks for another model or
+  effort;
+- working in the current checkout, never in a separate worktree.
 
-Never give the reviewer implementation history, author rationale, your own
-conclusions, explanations of design choices, or suggested findings.
+## Scope
 
-Relay the reviewer's report to the user **verbatim and complete**, nits
-included. Do not summarize it, re-rank it, dismiss findings, or fix anything
-until the user decides. If behavior-changing fixes follow, run another fresh
-review. Purely mechanical follow-ups (formatting, renames with no semantic
-effect) may skip it.
+Findings must stay strictly within the scope of the change: the reference
+issue, ticket, PR description, or task the user gave. Unless the user says
+otherwise:
 
-### Not involved: review directly
+- report only defects in the changed code, or defects the change causes or
+  leaves incomplete (missing tests, docs, or call sites the intent requires);
+- never report pre-existing problems in code the change does not touch, even
+  when they look similar to the change;
+- never fix anything outside the scope. A fix that needs code outside the
+  scope is limited to the minimum the in-scope finding requires.
 
-Perform the review in the current session. Do not launch another agent to
-repeat the full review. You may delegate a narrow, distinct slice (one
-platform path, one exploit hypothesis, one dependency) with explicit
-boundaries; you remain responsible for merging, de-duplicating, and verifying
-delegated results.
+If the user widens or narrows the scope, pass their instruction to every
+reviewer and fixer verbatim.
+
+## Step 1: Prepare the Loop
+
+1. Identify the target: a PR, a branch, a revision range, or the working
+   tree. For a PR, check out its branch locally (for example
+   `gh pr checkout <number>`), since fixes are committed on it.
+2. Require a clean working tree. If the change, or anything else, is still
+   uncommitted, stop and ask the user to commit or stash it. Fix commits must
+   never mix with unrelated changes.
+3. Record the scope source (issue, ticket, PR description, or user message)
+   and write one sentence stating what the change must do.
+4. Record the revision range under review, for example
+   `"$(git merge-base HEAD origin/main)"..HEAD`, replacing `origin/main` with
+   the actual base branch.
+5. Record the **reviewed commit**: `REVIEWED_SHA="$(git rev-parse HEAD)"`.
+   This is the commit all fixes are squashed into at the end.
+6. Set the round limit: **5**, unless the user gives another value.
+7. Create a session directory outside the repository with `mktemp -d` to keep
+   each round's report and fixer summary. Never write review files inside the
+   repository.
+
+## Step 2: Run the Rounds
+
+Set `round=1`, then repeat:
+
+1. **Review.** Dispatch a fresh reviewer. Give it the PR URL or revision
+   range from Step 1 (its end is always the current `HEAD`), the one-sentence
+   intent, the scope source, any priorities or scope instructions from the
+   user, and the full [Review Requirements](#review-requirements) section
+   verbatim. Never give it implementation history, author rationale, earlier
+   rounds' reports, your own conclusions, explanations of design choices, or
+   suggested findings. Save its report to the session directory.
+2. **Exit if clean.** If every section of the report (Blocker, Major, Minor,
+   Nit, Scope) is "None.", stop the loop and go to
+   [Step 3](#step-3-squash-the-fixes).
+3. **Fix.** Dispatch a fresh fixer. Give it the report verbatim and complete,
+   the one-sentence intent, the scope source, the user's scope instructions,
+   and these rules:
+   - fix every finding, nits included, with the smallest change that resolves
+     its root cause;
+   - stay within the [Scope](#scope); never refactor, rename, or clean up
+     anything a finding does not require;
+   - load any language or repository convention skill that matches the files
+     it edits and follow it;
+   - after fixing, run the build, linter, formatter, and the affected tests,
+     and leave them all passing;
+   - never commit, push, or create files in the repository that are not part
+     of the fix; keep scratch files outside the repository;
+   - skip a finding only when it can prove the finding wrong, and give that
+     proof;
+   - end with one line per finding: fixed, or skipped with the proof.
+
+   Save its summary to the session directory.
+4. **Commit.** Check `git status`. If the fixer changed nothing, stop the loop:
+   the remaining findings are unfixed. Otherwise stage the fixer's changes and
+   commit them with exactly this message, following the repository's signing
+   configuration:
+
+   ```bash
+   git add -A
+   git commit -m "fix: review round $round"
+   ```
+
+5. **Next round.** If `round` equals the round limit, stop the loop. Otherwise
+   increment `round` and go back to 1.
+
+Never push during the loop.
+
+## Step 3: Squash the Fixes
+
+If at least one `fix: review round` commit exists, squash all of them into the
+reviewed commit, keeping its message and author:
+
+```bash
+git reset --soft "$REVIEWED_SHA"
+git commit --amend --no-edit
+```
+
+Then confirm `git log` shows no `fix: review round` commit and that
+`git diff "$REVIEWED_SHA" HEAD` contains only the fixes.
+
+Do not push. If the reviewed commit was already pushed, tell the user the
+branch now needs a force push and wait for their approval; never force-push on
+your own. A general permission to push given earlier is not approval for a
+force push.
+
+## Step 4: Report to the User
+
+Tell the user:
+
+- how many rounds ran and why the loop stopped: clean review, round limit
+  reached, or a fixer that changed nothing;
+- each round's finding count per severity;
+- every finding the fixers skipped, with their proof, verbatim;
+- if the loop did not end on a clean review, the last reviewer report
+  **verbatim and complete**, and that the last fixes were not re-reviewed;
+- the path of the session directory holding every report and fixer summary.
+
+Do not summarize, re-rank, or dismiss findings in this report.
 
 ## Review Requirements
 
-These requirements apply to every reviewer, direct or delegated.
+These requirements apply to every reviewer.
 
 ### 1. Establish intent and scope
 
@@ -68,6 +172,9 @@ These requirements apply to every reviewer, direct or delegated.
 - List what the intent requires but the change lacks: docs, changelog, man
   page, help text, completions, config, migrations, tests.
 - If a reference issue exists, check the change resolves all of it, not part.
+- Report only findings within the scope of the change. Pre-existing problems
+  in code the change does not touch are not findings, unless the user's
+  instructions widen the scope.
 
 ### 2. Run the tooling
 
@@ -108,8 +215,8 @@ to each hunk. Do not skip a lens because the hunk "looks fine".
   still true? Typos in user-facing strings, help text, or errors? README,
   changelog, and man page updated?
 - **Consistency:** does the change follow the codebase's existing idioms? Is
-  a new helper used at every existing call site it fits? Does the same bug
-  or pattern exist elsewhere and stay unfixed?
+  a new helper used at every existing call site it fits? If the change fixes
+  a bug, does the same bug stay unfixed in code the intent covers?
 - **Security:** untrusted input validated? Injection, path traversal,
   secrets, permissions, trust boundaries?
 - **Low-hanging fruits:** one-line simplifications a reviewer would ask for:
@@ -181,24 +288,29 @@ Severity:
 Each finding states: `file:line`, what is wrong, how to trigger or observe it,
 impact, and the fix. One finding per root cause; merge duplicates.
 
-Report nits. Pedantry is the point of this review; the author decides what to
-skip, not the reviewer. A review may conclude with no Blocker or Major
-findings only when every changed file went through steps 3 and 4, the
-Reviewed line lists all of them, and the Tooling line shows the tools ran.
-Do not print per-file or per-lens tables; report findings only.
+Report nits. Pedantry is the point of this review. A review may conclude with
+no Blocker or Major findings only when every changed file went through steps 3
+and 4, the Reviewed line lists all of them, and the Tooling line shows the
+tools ran. Do not print per-file or per-lens tables; report findings only.
 
 ## Red Flags
 
-These thoughts mean you are about to under-report. Go back to step 3.
+These thoughts mean you are about to break the review. Stop and follow the
+rules above.
 
-| Thought                                  | Reality                                                                |
-| ---------------------------------------- | ---------------------------------------------------------------------- |
-| "Looks good overall"                     | Overall is not a lens. Walk every file through every lens first.       |
-| "Too minor to mention"                   | Minor and Nit sections exist for it. Report it.                        |
-| "Existing code does the same"            | Existing debt does not excuse new debt. Report it; note the precedent. |
-| "Tests pass, so it works"                | Check the tests would fail if it did not work.                         |
-| "Style is subjective"                    | If the linter or codebase idiom disagrees, it is not subjective.       |
-| "The author probably meant that"         | Review the code, not the intent you imagine.                           |
-| "Pretty sure this API does not exist"    | Verify in the source or docs. Unverified means not reported.           |
-| "Worth asking the author about this"     | Questions are noise. Prove a defect or drop it.                        |
-| "I'll summarize the reviewer's findings" | Relay verbatim. Summaries are where findings disappear.                |
+| Thought                                     | Reality                                                                  |
+| ------------------------------------------- | ------------------------------------------------------------------------ |
+| "Looks good overall"                        | Overall is not a lens. Walk every file through every lens first.         |
+| "Too minor to mention"                      | Minor and Nit sections exist for it. Report it.                          |
+| "Existing code does the same"               | Out of scope unless the change touches it. Report only what is in scope. |
+| "While we are here, let's fix this too"     | Out of scope. Neither the reviewer nor the fixer touches it.             |
+| "Tests pass, so it works"                   | Check the tests would fail if it did not work.                           |
+| "Style is subjective"                       | If the linter or codebase idiom disagrees, it is not subjective.         |
+| "The author probably meant that"            | Review the code, not the intent you imagine.                             |
+| "Pretty sure this API does not exist"       | Verify in the source or docs. Unverified means not reported.             |
+| "Worth asking the author about this"        | Questions are noise. Prove a defect or drop it.                          |
+| "I can review or fix this myself"           | The orchestrator only dispatches, commits, and squashes.                 |
+| "The reviewer should see last round's list" | Every round gets a fresh reviewer with no earlier reports.               |
+| "One more round past the limit"             | The limit holds. Report what remains.                                    |
+| "I'll summarize the remaining findings"     | Relay verbatim. Summaries are where findings disappear.                  |
+| "The branch needs a force push now"         | Ask the user first. Never force-push on your own.                        |

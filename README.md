@@ -22,7 +22,7 @@ A collection of coding agent skills that enforce language-specific coding conven
 | [pr-conventions](./pr-conventions/)                 | Pull requests                       | Enforces opening PRs with `gh pr create` and writing the body in plain, jargon-free language                                             |
 | [issue-conventions](./issue-conventions/)           | Issues                              | Enforces opening issues with `gh issue create` and writing the body in plain, jargon-free language                                       |
 | [conventional-commits](./conventional-commits/)     | Git commits                         | Enforces the [Conventional Commits](https://www.conventionalcommits.org) format, infers the type from the diff, and signs when enabled   |
-| [adversarial-review](./adversarial-review/)         | Code review                         | Runs an adversarial review of changes with an independent reviewer and a severity-ordered findings report                                |
+| [adversarial-review](./adversarial-review/)         | Code review                         | Runs adversarial review and fix rounds with independent agents, then squashes the fixes into the reviewed commit                         |
 | [plan-implementation](./plan-implementation/)       | Implementation plans                | Writes scope-bound, test-driven implementation plans on top of [superpowers](https://github.com/obra/superpowers) without executing them |
 
 ## Installation
