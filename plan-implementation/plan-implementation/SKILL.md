@@ -225,9 +225,28 @@ constraints taken from the task, adjusted by any user override:
 
 The last tasks of every plan, in this order, unless the user says otherwise:
 
-1. **Full verification.** Run the complete test suite, linters, formatters, and
+1. **Test cleanup.** Once all implementation tasks are done, review every test
+   added or modified on the branch together, for example with
+   `git diff "$(git merge-base HEAD origin/main)" -- <test paths>`, and compare
+   them against each other and against the existing test suite. Then:
+
+   - Remove any new test that asserts the same behavior as an existing test or
+     as another new test. Keep the one at the most fitting level (unit or
+     integration) and with the clearest name.
+   - Merge new tests that differ only in input values into a single
+     parameterized or table-driven test when the language and test framework
+     support it and the repository already uses that style.
+   - Do not remove the regression test that reproduces the bug, and do not
+     remove or rewrite tests that existed before the plan unless a task in the
+     plan changed them.
+   - Run the affected tests and confirm they still pass. Commit the cleanup
+     separately, for example `test: remove duplicate tests`.
+
+   Write the exact diff command and test paths in the plan.
+
+2. **Full verification.** Run the complete test suite, linters, formatters, and
    type checks the repository uses. Everything must pass.
-2. **Squash.** Squash all commits made for this plan into a single commit that
+3. **Squash.** Squash all commits made for this plan into a single commit that
    describes the task or issue solved, using
    [Conventional Commits](https://www.conventionalcommits.org). The commit body
    must summarize the change and must reference the issue it closes, for
@@ -245,7 +264,7 @@ The last tasks of every plan, in this order, unless the user says otherwise:
    Replace `origin/main` with the actual base branch. Omit the `closes` line
    only when the plan's header says `**Issue:** none`.
 
-3. **Draft pull request.** Push the branch and open a **draft** pull request
+4. **Draft pull request.** Push the branch and open a **draft** pull request
    (for example `gh pr create --draft`). Never open a pull request that is
    ready for review. If a pull request conventions skill is installed, follow
    it. The pull request body must also reference the issue it closes.
@@ -261,8 +280,8 @@ Run the `writing-plans` self-review, then also check:
   planned test.
 - **Storage:** the plan is in the right location and will not be committed
   unless the repository commits plans.
-- **Final tasks:** verification, squash with `closes #<number>`, and draft pull
-  request are the last tasks.
+- **Final tasks:** test cleanup, verification, squash with `closes #<number>`,
+  and draft pull request are the last tasks.
 - **Overrides:** every user override is recorded in `Global Constraints`.
 
 Fix any problem inline.
