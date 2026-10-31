@@ -22,10 +22,12 @@ GUIDELINE_FILES=(
     "src/guidelines/libs/ux/README.md"
     "src/guidelines/libs/resilience/README.md"
     "src/guidelines/libs/building/README.md"
+    "src/guidelines/macros/README.md"
     "src/guidelines/apps/README.md"
     "src/guidelines/ffi/README.md"
-    "src/guidelines/safety/README.md"
+    "src/guidelines/correctness/README.md"
     "src/guidelines/performance/README.md"
+    "src/guidelines/project/README.md"
     "src/guidelines/docs/README.md"
     "src/guidelines/ai/README.md"
 )
