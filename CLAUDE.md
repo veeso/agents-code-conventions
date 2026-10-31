@@ -31,7 +31,7 @@ Each skill lives in a `<name>/<name>/SKILL.md` directory structure. The `SKILL.m
 
 - **`rust-conventions/rust-conventions/rust-guidelines.txt`** — ~2500-line generated file from Microsoft's upstream mdBook. **Never hand-edit.** Updated via `bash rust-conventions/scripts/fetch-guidelines.sh`.
 - **`rust-conventions/rust-conventions/custom-guidelines.txt`** — User-maintained `X-` prefix conventions. Never overwritten by the fetch script.
-- **`gleam-conventions/gleam-conventions/conventions-patterns-anti-patterns.djot`** — Direct copy of the [official Gleam conventions document](https://github.com/gleam-lang/website/blob/main/documentation/conventions-patterns-anti-patterns.djot). **Never hand-edit.** Update by re-fetching from upstream (see Commands).
+- **`gleam-conventions/gleam-conventions/conventions-patterns-anti-patterns.djot`** — Direct copy of the [official Gleam conventions document](https://github.com/gleam-lang/website/blob/main/pages/documentation/conventions-patterns-and-anti-patterns.djot). **Never hand-edit.** Update by re-fetching from upstream (see Commands).
 - **`js-conventions/js-conventions/js-guidelines.txt`** — Auto-fetched Airbnb JavaScript Style Guide. **Never hand-edit.** Updated via `bash js-conventions/scripts/fetch-guidelines.sh`.
 - **`js-conventions/js-conventions/prettierrc.json`** — Prettier config derived from Airbnb conventions. Hand-maintained.
 - **`js-conventions/js-conventions/eslint.config.js`** — ESLint 9 flat config using `eslint-config-airbnb-extended`. Hand-maintained.
@@ -62,7 +62,7 @@ bash js-conventions/scripts/fetch-guidelines.sh
 bash ts-conventions/scripts/fetch-guidelines.sh
 
 # Update Gleam conventions from upstream
-curl -sL https://raw.githubusercontent.com/gleam-lang/website/main/documentation/conventions-patterns-anti-patterns.djot \
+curl -sL https://raw.githubusercontent.com/gleam-lang/website/main/pages/documentation/conventions-patterns-and-anti-patterns.djot \
   -o gleam-conventions/gleam-conventions/conventions-patterns-anti-patterns.djot
 
 # Update markdownlint rules from upstream

@@ -2,7 +2,7 @@
 
 ![gleam](https://img.shields.io/badge/Gleam-ffaff3?style=for-the-badge&logo=gleam&logoColor=white)
 
-A coding agent skill that enforces idiomatic Gleam coding conventions when writing or modifying `.gleam` files. The skill uses the [official Gleam conventions, patterns, and anti-patterns document](https://github.com/gleam-lang/website/blob/main/documentation/conventions-patterns-anti-patterns.djot) directly from the Gleam project.
+A coding agent skill that enforces idiomatic Gleam coding conventions when writing or modifying `.gleam` files. The skill uses the [official Gleam conventions, patterns, and anti-patterns document](https://github.com/gleam-lang/website/blob/main/pages/documentation/conventions-patterns-and-anti-patterns.djot) directly from the Gleam project.
 
 ## What it does
 
