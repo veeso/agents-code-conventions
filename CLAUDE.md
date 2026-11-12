@@ -22,6 +22,7 @@ This is a monorepo of **Claude Code skills** that enforce language-specific codi
 | `conventional-commits/`   | `conventional-commits`                       | Git commits (`git commit`)                     |
 | `adversarial-review/`     | `adversarial-review`                         | Adversarial review of changes / PRs            |
 | `plan-implementation/`    | `plan-implementation`                        | Implementation plans (superpowers-based)       |
+| `rebase/`                 | `rebase`                                     | Rebases and conflict resolution (`git rebase`) |
 
 ## How Skills Work
 

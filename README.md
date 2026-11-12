@@ -24,6 +24,7 @@ A collection of coding agent skills that enforce language-specific coding conven
 | [conventional-commits](./conventional-commits/)     | Git commits                         | Enforces the [Conventional Commits](https://www.conventionalcommits.org) format, infers the type from the diff, and signs when enabled   |
 | [adversarial-review](./adversarial-review/)         | Code review                         | Runs adversarial review and fix rounds with independent agents, then squashes the fixes into the reviewed commit                         |
 | [plan-implementation](./plan-implementation/)       | Implementation plans                | Writes scope-bound, test-driven implementation plans on top of [superpowers](https://github.com/obra/superpowers) without executing them |
+| [rebase](./rebase/)                                 | Git rebases                         | Rebases onto the default branch, resolves conflicts keeping both sides' features, verifies, and force pushes with lease                  |
 
 ## Installation
 
@@ -50,6 +51,7 @@ npx skills add veeso/agents-code-conventions@issue-conventions
 npx skills add veeso/agents-code-conventions@conventional-commits
 npx skills add veeso/agents-code-conventions@adversarial-review
 npx skills add veeso/agents-code-conventions@plan-implementation
+npx skills add veeso/agents-code-conventions@rebase
 ```
 
 ### Install globally (all projects)
