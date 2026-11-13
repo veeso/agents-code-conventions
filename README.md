@@ -102,7 +102,7 @@ The Microsoft guidelines can be refreshed from upstream:
 bash rust-conventions/scripts/fetch-guidelines.sh
 ```
 
-This regenerates `rust-conventions/rust-conventions/rust-guidelines.txt` without touching the custom `X-` conventions in `custom-guidelines.txt`.
+This regenerates the `rust-conventions/rust-conventions/rust-guidelines.txt` digest (one line per `M-` rule) without touching the custom `X-` conventions in `custom-guidelines.txt`.
 
 ### Adding custom Rust conventions
 

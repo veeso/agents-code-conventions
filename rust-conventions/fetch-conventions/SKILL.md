@@ -1,6 +1,6 @@
 ---
 name: fetch-rust-conventions
-description: Fetches the latest Microsoft Rust coding guidelines from the upstream repository and updates rust-guidelines.txt. Does NOT modify custom-guidelines.txt (X- prefix conventions). Use when you need to sync with the latest upstream guidelines.
+description: Fetches the latest Microsoft Rust coding guidelines from the upstream repository and regenerates the rust-guidelines.txt digest. Does NOT modify custom-guidelines.txt (X- prefix conventions). Use when you need to sync with the latest upstream guidelines.
 license: MIT
 metadata:
   author: veeso
@@ -27,4 +27,4 @@ It does NOT touch `rust-conventions/custom-guidelines.txt` (custom `X-` prefix c
 3. Report the number of lines in the updated file
 4. Remind the user to review the changes before committing
 
-**Note**: The script requires `git` to be available and internet access to clone the Microsoft repository.
+**Note**: The script requires `git`, `python3`, and internet access to clone the Microsoft repository. It writes a digest (one line per `M-` rule: ID, title, rationale) built by `scripts/make-digest.py`, not the full upstream text.

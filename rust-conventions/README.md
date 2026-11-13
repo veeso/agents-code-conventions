@@ -44,7 +44,7 @@ bash scripts/fetch-guidelines.sh
 
 Or invoke the `fetch-rust-conventions` skill inside a coding agent session.
 
-This only updates `rust-conventions/rust-guidelines.txt`. Your custom `X-` conventions in `rust-conventions/custom-guidelines.txt` are never modified.
+This only updates `rust-conventions/rust-guidelines.txt`. The file is a digest with one line per `M-` rule (ID, title, rationale), not the full upstream text, so the skill loads about 2k tokens instead of about 37k. Your custom `X-` conventions in `rust-conventions/custom-guidelines.txt` are never modified.
 
 ## Adding custom conventions
 

@@ -2,15 +2,17 @@
 set -euo pipefail
 
 # Fetches the latest Microsoft Rust Guidelines from the upstream repository
-# and concatenates them into rust-conventions/rust-guidelines.txt.
+# and writes a compact digest of them to rust-conventions/rust-guidelines.txt.
 #
-# Resolves mdBook {{#include}} directives so the output is a single flat file.
+# Resolves mdBook {{#include}} directives into a single flat file, then runs
+# make-digest.py to keep one line per M- rule (ID, title, rationale).
 # This script does NOT modify custom-guidelines.txt (X- prefix conventions).
 
 REPO_URL="https://github.com/microsoft/rust-guidelines.git"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 OUTPUT_FILE="$PROJECT_ROOT/rust-conventions/rust-guidelines.txt"
+DIGEST_SCRIPT="$SCRIPT_DIR/make-digest.py"
 
 # Guideline source files in SUMMARY.md order (excluding checklist which has no
 # guideline content, and non-guideline sections like agents/FAQ).
@@ -37,6 +39,8 @@ trap 'rm -rf "$TMPDIR"' EXIT
 
 echo "Cloning microsoft/rust-guidelines (shallow)..."
 git clone --depth 1 --quiet "$REPO_URL" "$TMPDIR/repo"
+
+FULL_FILE="$TMPDIR/rust-guidelines-full.md"
 
 echo "Concatenating guidelines..."
 
@@ -65,7 +69,7 @@ resolve_includes() {
 }
 
 # Write header
-cat > "$OUTPUT_FILE" <<'HEADER'
+cat > "$FULL_FILE" <<'HEADER'
 <!-- Copyright (c) Microsoft Corporation. Licensed under the MIT license. -->
 
 # Pragmatic Rust Guidelines
@@ -80,8 +84,8 @@ HEADER
 for file in "${GUIDELINE_FILES[@]}"; do
     filepath="$TMPDIR/repo/$file"
     if [[ -f "$filepath" ]]; then
-        resolve_includes "$filepath" >> "$OUTPUT_FILE"
-        printf '\n\n' >> "$OUTPUT_FILE"
+        resolve_includes "$filepath" >> "$FULL_FILE"
+        printf '\n\n' >> "$FULL_FILE"
     else
         echo "WARNING: $file not found, skipping."
     fi
@@ -90,11 +94,14 @@ done
 # Remove BOM characters if present
 if command -v sed &>/dev/null; then
     if [[ "$(uname)" == "Darwin" ]]; then
-        sed -i '' $'s/\xef\xbb\xbf//g' "$OUTPUT_FILE"
+        sed -i '' $'s/\xef\xbb\xbf//g' "$FULL_FILE"
     else
-        sed -i $'s/\xef\xbb\xbf//g' "$OUTPUT_FILE"
+        sed -i $'s/\xef\xbb\xbf//g' "$FULL_FILE"
     fi
 fi
+
+echo "Building digest..."
+python3 "$DIGEST_SCRIPT" "$FULL_FILE" > "$OUTPUT_FILE"
 
 echo "Done. Updated: $OUTPUT_FILE"
 echo "Lines: $(wc -l < "$OUTPUT_FILE")"

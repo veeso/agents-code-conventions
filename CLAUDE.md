@@ -30,7 +30,7 @@ Each skill lives in a `<name>/<name>/SKILL.md` directory structure. The `SKILL.m
 
 ## Key Files
 
-- **`rust-conventions/rust-conventions/rust-guidelines.txt`** — ~2500-line generated file from Microsoft's upstream mdBook. **Never hand-edit.** Updated via `bash rust-conventions/scripts/fetch-guidelines.sh`.
+- **`rust-conventions/rust-conventions/rust-guidelines.txt`** — ~100-line generated digest of Microsoft's upstream mdBook (one line per `M-` rule: ID, title, rationale), built by `rust-conventions/scripts/make-digest.py`. **Never hand-edit.** Updated via `bash rust-conventions/scripts/fetch-guidelines.sh`.
 - **`rust-conventions/rust-conventions/custom-guidelines.txt`** — User-maintained `X-` prefix conventions. Never overwritten by the fetch script.
 - **`gleam-conventions/gleam-conventions/conventions-patterns-anti-patterns.djot`** — Direct copy of the [official Gleam conventions document](https://github.com/gleam-lang/website/blob/main/pages/documentation/conventions-patterns-and-anti-patterns.djot). **Never hand-edit.** Update by re-fetching from upstream (see Commands).
 - **`js-conventions/js-conventions/js-guidelines.txt`** — Auto-fetched Airbnb JavaScript Style Guide. **Never hand-edit.** Updated via `bash js-conventions/scripts/fetch-guidelines.sh`.
