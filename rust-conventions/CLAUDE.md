@@ -34,9 +34,10 @@ bash scripts/fetch-guidelines.sh
 
 ### File Roles
 
-- `rust-conventions/rust-guidelines.txt` — Large generated file (~2500 lines) concatenated from Microsoft's mdBook source with `{{#include}}` directives resolved. Do not hand-edit.
+- `rust-conventions/rust-guidelines.txt` — Generated digest (~100 lines, one line per `M-` rule: ID, title, rationale) of Microsoft's mdBook source. Kept small to limit the tokens the skill loads. Do not hand-edit.
 - `rust-conventions/custom-guidelines.txt` — User-maintained custom conventions. Add new `X-` conventions here following the existing format.
-- `scripts/fetch-guidelines.sh` — Clones the Microsoft repo into a temp directory, resolves mdBook includes, and outputs the flat guidelines file. Handles macOS/Linux differences for `sed`.
+- `scripts/fetch-guidelines.sh` — Clones the Microsoft repo into a temp directory, resolves mdBook includes into a temporary flat file, then calls `scripts/make-digest.py` to write the digest. Handles macOS/Linux differences for `sed`.
+- `scripts/make-digest.py` — Turns the flat upstream guidelines into the one-line-per-rule digest.
 
 ### Adding Custom Conventions
 

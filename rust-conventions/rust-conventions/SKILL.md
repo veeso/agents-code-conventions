@@ -19,7 +19,7 @@ This skill automatically enforces Rust coding standards and best practices when 
 
 There are two sets of conventions:
 
-- **`M-` prefix** (Microsoft): Upstream guidelines from [microsoft/rust-guidelines](https://github.com/microsoft/rust-guidelines). Defined in [rust-guidelines.txt](./rust-guidelines.txt).
+- **`M-` prefix** (Microsoft): Upstream guidelines from [microsoft/rust-guidelines](https://github.com/microsoft/rust-guidelines). Defined in [rust-guidelines.txt](./rust-guidelines.txt) as a digest: one line per rule with its ID, title, and rationale.
 - **`X-` prefix** (Extension): Custom conventions added by the repository maintainer. Defined in [custom-guidelines.txt](./custom-guidelines.txt).
 
 Both sets of guidelines MUST be followed.
@@ -35,7 +35,7 @@ Both sets of guidelines MUST be followed.
 
 **Process**:
 
-1. Read [rust-guidelines.txt](./rust-guidelines.txt) to understand all `M-` compliance requirements
+1. Read [rust-guidelines.txt](./rust-guidelines.txt) to understand all `M-` compliance requirements; apply each rule as described by its title and rationale
 2. Read [custom-guidelines.txt](./custom-guidelines.txt) to understand all `X-` compliance requirements
 3. Before writing/modifying ANY Rust code, ensure edits conform to both guideline sets
 4. Apply proper M-CANONICAL-DOCS documentation format
