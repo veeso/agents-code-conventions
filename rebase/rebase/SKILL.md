@@ -260,6 +260,8 @@ original state. The backup ref from Step 1 stays as a second safety net.
 4. Never push a branch that does not build or whose tests fail because of the
    rebase. Report the failure and stop.
 
+5. If all ok, delete the backup branch.
+
 ## Step 5: Force Push
 
 Push with lease, never with a bare `--force`:
@@ -284,5 +286,3 @@ Tell the user, briefly:
 - each conflict and how it was resolved, one line each;
 - any commit skipped as empty, and why;
 - the verification commands run and their result;
-- the backup ref name, which they can delete once satisfied with
-  `git branch -D <backup-ref>`.
