@@ -4,7 +4,7 @@ description: ALWAYS use this skill when the user asks to plan, design, or write 
 license: MIT
 metadata:
   author: veeso
-  version: "1.0.0"
+  version: "1.1.0"
   tags:
     - planning
     - implementation-plan
@@ -286,7 +286,60 @@ Run the `writing-plans` self-review, then also check:
 
 Fix any problem inline.
 
-## Step 7: Hand Off Without Executing
+## Step 7: Write the Plain-Language Summary
+
+After the plan is written and self-reviewed, write a second, separate Markdown
+document that explains the plan to a human reader. The reader may not know the
+codebase, the language, or the project. A product owner, a reviewer from
+another team, or a new contributor must be able to read it and understand what
+will change and why.
+
+### Where it is stored
+
+- Create a fresh temporary directory, for example with `mktemp -d`, and write
+  the summary there. Never write it inside the repository.
+- Name the file after the plan, with a `-summary` suffix, for example
+  `2026-09-24-404-fix-broken-login-summary.md`.
+- The summary is never committed and is never referenced from the plan.
+
+### What it contains
+
+Use these sections, in this order:
+
+1. **Title and one-sentence overview.** What is being done, in one sentence.
+2. **The problem.** What is wrong or missing today, and who is affected, in
+   everyday words.
+3. **The decision.** The approach that was chosen and why. When other
+   approaches were considered, name each in one line and say why it was not
+   chosen.
+4. **The design.** How the solution works, described as behavior and moving
+   parts rather than code. A short list of steps or a small diagram is welcome
+   when it helps.
+5. **Key changes.** The important changes the plan makes, one bullet each,
+   saying what changes and what it means for the user or the system. Mention a
+   file or component name only when it helps, and explain what that part does
+   the first time it appears.
+6. **How we will know it works.** The checks and tests in plain words, for
+   example "a test reproduces the reported crash and must pass after the fix".
+7. **Not included.** The `Out of Scope` items from the plan, rephrased in plain
+   words. Omit the section when there are none.
+
+### How it is written
+
+- Use short sentences and everyday words. Explain any technical term the first
+  time it appears, or replace it with a plain description.
+- Do not include code blocks, commands, test code, or task checklists. The plan
+  holds those.
+- Keep it short: a reader should finish it in a few minutes.
+- Describe only what the plan does. Do not add anything that is not in the
+  plan.
+- Follow the repository's Markdown conventions, and a Markdown conventions
+  skill when one is installed.
+
+If the plan changes later, rewrite the summary at the same path so the two stay
+in sync.
+
+## Step 8: Hand Off Without Executing
 
 Never execute the plan, and never ask whether to execute it. This overrides the
 "Execution Handoff" section of `writing-plans`: do not offer execution
@@ -297,10 +350,13 @@ telling the user:
 
 - where the plan is saved;
 - a short summary of its tasks;
-- the items listed under `Out of Scope`, if any; and
+- the items listed under `Out of Scope`, if any;
 - that the plan is ready to be executed in a clean session, for example by
   starting a new session and asking it to execute the plan at that path with
-  `superpowers:executing-plans` or `superpowers:subagent-driven-development`.
+  `superpowers:executing-plans` or `superpowers:subagent-driven-development`;
+  and
+- as the very last line, the full absolute path of the plain-language summary
+  from Step 7, so the user can open it.
 
 Then ask the user to review the plan and wait for feedback. If the user asks for
-changes, update the plan and hand off again the same way.
+changes, update the plan, rewrite the summary, and hand off again the same way.

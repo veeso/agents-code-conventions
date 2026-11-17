@@ -20,6 +20,7 @@ adds rules for scope, testing, plan storage, git history, and handoff.
 | No worktrees           | Plans run on the current branch; asks before planning on the default branch              |
 | Single squashed commit | Final step squashes everything into one Conventional Commit with `closes #<issue>`       |
 | Draft pull request     | The pull request opened at the end is always a draft                                     |
+| Plain-language summary | Writes a jargon-free summary of the decision, design, and key changes to a temp dir      |
 | No execution           | Never executes the plan or asks to; execution happens in a clean session                 |
 | User overrides         | Any rule can be overridden by the user and is recorded in the plan                       |
 
@@ -46,7 +47,8 @@ skill suite. In Claude Code:
 
 Start a coding agent session and ask it to plan the implementation of an issue.
 The skill should activate automatically, check the superpowers suite, write the
-plan to `.superpowers/plans/`, and stop without executing it.
+plan to `.superpowers/plans/`, print the path of a plain-language summary
+written to a temporary directory, and stop without executing it.
 
 ## License
 
